@@ -20,13 +20,34 @@ c-style is one Vite-first package with seven entry points. Vuetify's SASS variab
 | `c-style/styles` | layer order, Public Sans, `--cs-*` tokens, layered overrides, unlayered Coalesce rules | browser, via Vite |
 | `c-style/tokens` | the public SCSS module for app components (`token()`, `surface`, `interactive`, `control-box`, `type`, …); emits no CSS | Sass |
 
-The package ships TypeScript and SCSS source; the consuming app's Vite compiles them. That works inside this pnpm workspace. A prebuilt `dist` for npm is not done yet (plan M19).
+The workspace links the TypeScript and SCSS in `src/`. The published package ships a prebuilt `dist/` (TypeScript bundled with tsdown; Sass, CSS and the Vite plugin copied as they are).
 
 Peer dependencies: `vue ^3.5`, `vuetify ^4.3`, `vite-plugin-vuetify ^2.1`, `vite ^7 || ^8`, `sass ^1.80`. Vuetify must resolve to one real path from both the app and c-style; with two copies, Sass silently applies none of the settings (see [Troubleshooting](#troubleshooting)).
 
 ## Install
 
-In a pnpm workspace:
+```sh
+pnpm add c-style
+```
+
+Then add the peer dependencies your app doesn't already have (`vue`, `vuetify`, `vite-plugin-vuetify`, `vite`, `sass`). c-style brings `@lucide/vue`, `@fontsource-variable/public-sans`, `inter-ui` and `culori`.
+
+### Versions
+
+A version has two parts: `<Coalesce version>-cs.<build>`. `6.5.1-cs.3` is the third c-style build, tested against `coalesce-vue-vuetify3` 6.5.1.
+
+- **Left of `-cs.`:** the Coalesce release c-style was checked against. Use the c-style build whose left side matches your Coalesce version.
+- **After `-cs.`:** c-style's own build number. It counts up within a Coalesce version and restarts at 1 for the next one.
+- **Vuetify:** the Vuetify version c-style is tested with is its `vuetify` dev dependency (currently 4.3.2). The peer range is `^4.3.0`.
+- **Pinning:** npm treats these as prereleases, so a range like `^6.5.1` won't pick them up. `pnpm add c-style` installs the newest build, and `pnpm add c-style@6.5.1-cs.3` pins one.
+
+| c-style | Coalesce | Vuetify |
+|---|---|---|
+| `6.5.1-cs.1` | 6.5.1 | 4.3.2 |
+
+### Working in this repo
+
+In a pnpm workspace, link the package instead:
 
 ```jsonc
 // package.json of the app
@@ -35,7 +56,13 @@ In a pnpm workspace:
 }
 ```
 
-Then `pnpm install`. c-style brings `@lucide/vue`, `@fontsource-variable/public-sans`, `inter-ui` and `culori`.
+The workspace uses the TypeScript and SCSS in `src/`. The published package ships the same files built to `dist/` (`pnpm --filter c-style build`).
+
+### Releasing
+
+1. Set `version` in `packages/c-style/package.json` (for example `6.5.1-cs.2`) and add a row to the table above.
+2. Commit, then tag it: `git tag v6.5.1-cs.2 && git push --tags`.
+3. The [publish workflow](../../.github/workflows/publish.yml) checks that the tag matches `package.json`, runs the tests and publishes to npm with provenance. It needs an `NPM_ACCESS_TOKEN` repository secret.
 
 ## Adopting it in a Coalesce app
 

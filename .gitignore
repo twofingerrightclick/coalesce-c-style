@@ -5,3 +5,4 @@ verify/test-results/
 verify/playwright-report/
 storybook-static/
 *.tsbuildinfo
+dist/

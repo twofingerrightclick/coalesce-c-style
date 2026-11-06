@@ -1,7 +1,22 @@
 {
   "name": "c-style",
-  "version": "0.1.0",
+  "version": "6.5.1-cs.1",
   "description": "Canon look for Vuetify 4 and Coalesce, through Vuetify's own SASS, defaults and theme channels.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twofingerrightclick/c-style.git",
+    "directory": "packages/c-style"
+  },
+  "homepage": "https://github.com/twofingerrightclick/c-style#readme",
+  "bugs": "https://github.com/twofingerrightclick/c-style/issues",
+  "keywords": [
+    "vuetify",
+    "coalesce",
+    "canon",
+    "design-system",
+    "theme",
+    "vite-plugin"
+  ],
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -43,7 +58,9 @@
   },
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "tsdown && node scripts/copy-assets.mjs",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
     "@fontsource-variable/public-sans": "5.3.0",
@@ -63,11 +80,54 @@
     "@types/node": "^24.0.0",
     "coalesce-vue-vuetify3": "6.5.1",
     "sass": "^1.99.0",
+    "tsdown": "^0.23.5",
     "typescript": "6.0.3",
     "vite": "^8.0.10",
     "vite-plugin-vuetify": "^2.1.3",
     "vitest": "^4.1.5",
     "vue": "^3.5.33",
     "vuetify": "4.3.2"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./icons": {
+        "types": "./dist/icons.d.ts",
+        "default": "./dist/icons.js"
+      },
+      "./vite": {
+        "types": "./dist/vite.d.mts",
+        "default": "./dist/vite.mjs"
+      },
+      "./fonts/inter": {
+        "types": "./dist/styles/styles.d.ts",
+        "default": "./dist/fonts/inter.css"
+      },
+      "./settings": {
+        "types": "./dist/styles/styles.d.ts",
+        "sass": "./dist/styles/settings.scss",
+        "default": "./dist/styles/settings.scss"
+      },
+      "./styles": {
+        "types": "./dist/styles/styles.d.ts",
+        "sass": "./dist/styles/index.scss",
+        "default": "./dist/styles/index.scss"
+      },
+      "./tokens": {
+        "types": "./dist/styles/styles.d.ts",
+        "sass": "./dist/tokens.scss",
+        "default": "./dist/tokens.scss"
+      }
+    }
   }
 }

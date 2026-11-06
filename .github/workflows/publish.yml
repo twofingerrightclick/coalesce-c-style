@@ -1,0 +1,34 @@
+name: Publish
+
+# Push a tag that matches packages/c-style/package.json, e.g. v6.5.1-cs.1.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: MyProject
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile --filter c-style...
+      - name: Check the tag matches the package version
+        run: test "v$(node -p "require('../packages/c-style/package.json').version")" = "${GITHUB_REF_NAME}"
+      - run: pnpm --filter c-style test
+      # A prerelease-style version needs an explicit tag, or npm refuses to publish it.
+      - run: pnpm --filter c-style publish --no-git-checks --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
