@@ -40,6 +40,10 @@ const router = createRouter({
       component: () => import("./views/showcase/Gallery.vue"),
     },
     {
+      path: "/collage",
+      component: () => import("./views/showcase/Collage.vue"),
+    },
+    {
       path: "/c-style",
       component: () => import("./views/CStyleKitchen.vue"),
     },

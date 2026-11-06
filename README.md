@@ -6,41 +6,34 @@ The C is for **Coalesce** style, for **Canon**, and for what goes away: the **ch
 
 ## Before and after
 
-Stock Coalesce starter template (Vuetify 4 + Material) on the left, the same app with c-style on the right. Same views, same 40 widgets, 1440×900.
-
-| Before | After |
-|---|---|
-| ![Dashboard, stock](docs/showcase/dashboard-before-light.png) | ![Dashboard, c-style](docs/showcase/dashboard-after-light.png) |
-| ![List and detail, stock](docs/showcase/workspace-before-light.png) | ![List and detail, c-style](docs/showcase/workspace-after-light.png) |
-| ![Settings, stock](docs/showcase/settings-before-light.png) | ![Settings, c-style](docs/showcase/settings-after-light.png) |
-
-Coalesce's generated admin pages, with no changes to routes or props:
-
-| Before | After |
-|---|---|
-| ![Admin table, stock](docs/showcase/admin-table-before-light.png) | ![Admin table, c-style](docs/showcase/admin-table-after-light.png) |
-| ![Admin editor, stock](docs/showcase/admin-editor-before-light.png) | ![Admin editor, c-style](docs/showcase/admin-editor-after-light.png) |
-| ![Audit log, stock](docs/showcase/audit-log-before-light.png) | ![Audit log, c-style](docs/showcase/audit-log-after-light.png) |
-
-Up close:
-
-| Before | After |
-|---|---|
-| ![Form fields, stock](docs/showcase/crop-form-fields-before-light.png) | ![Form fields, c-style](docs/showcase/crop-form-fields-after-light.png) |
-| ![Admin table toolbar, stock](docs/showcase/crop-table-before-light.png) | ![Admin table toolbar, c-style](docs/showcase/crop-table-after-light.png) |
-| ![Select menu, stock](docs/showcase/crop-select-open-before-light.png) | ![Select menu, c-style](docs/showcase/crop-select-open-after-light.png) |
-| ![Buttons, stock](docs/showcase/crop-buttons-before-light.png) | ![Buttons, c-style](docs/showcase/crop-buttons-after-light.png) |
-| ![Chips, stock](docs/showcase/crop-chips-before-light.png) | ![Chips, c-style](docs/showcase/crop-chips-after-light.png) |
-
-Dark:
+Stock Coalesce starter template (Vuetify 4 + Material) on the left, the same app with c-style on the right. Same view, same code, dark mode, 1440×900.
 
 | Before | After |
 |---|---|
 | ![Dashboard, stock, dark](docs/showcase/dashboard-before-dark.png) | ![Dashboard, c-style, dark](docs/showcase/dashboard-after-dark.png) |
-| ![Admin table, stock, dark](docs/showcase/admin-table-before-dark.png) | ![Admin table, c-style, dark](docs/showcase/admin-table-after-dark.png) |
-| ![Select menu, stock, dark](docs/showcase/crop-select-open-before-dark.png) | ![Select menu, c-style, dark](docs/showcase/crop-select-open-after-dark.png) |
 
-Every pair, light and dark, is in [docs/showcase/](docs/showcase/) (`<page>-<before|after>-<light|dark>.png`).
+## What's chunky about stock Vuetify
+
+Vuetify's defaults are Material Design 2 at full volume. Seven things stand out:
+
+- **The primary colour is the nav bar.** A slab of saturated brand colour across the top of every page, so the chrome competes with the content.
+- **FontAwesome Solid icons.** Heavy, filled and near-black; they outweigh the text beside them.
+- **Tabs that float in space.** An underline and nothing else, with no container to say what the tabs belong to.
+- **Buttons with drastic elevation.** Drop shadows and Material 2 ripple animations on every click.
+- **Alerts that shout.** The alert level sets the whole background, so a page with four messages looks like a traffic light.
+- **Harsh shadows on every card.** Elevation stands in for borders.
+- **A dropdown caret that doesn't match its field.** A solid triangle on a hairline outline: the heaviest mark in the control.
+
+c-style replaces each one with Canon's quieter equivalent: a neutral nav bar, 1.5px Lucide icons, tabs in a segmented container, flat tonal buttons, alerts with a status edge and an icon, hairline-and-shadow cards and a thin chevron.
+
+The collage below puts all seven on one canvas. Light and dark, stock then c-style:
+
+| Before | After |
+|---|---|
+| ![Components, stock, light](docs/showcase/collage-before-light.png) | ![Components, c-style, light](docs/showcase/collage-after-light.png) |
+| ![Components, stock, dark](docs/showcase/collage-before-dark.png) | ![Components, c-style, dark](docs/showcase/collage-after-dark.png) |
+
+Every captured pair, light and dark, is in [docs/showcase/](docs/showcase/) (`<page>-<before|after>-<light|dark>.png`).
 
 ## What you get
 
