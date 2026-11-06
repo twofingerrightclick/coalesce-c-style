@@ -28,11 +28,11 @@ export const DatePicker = tpl(
 
 export const TimePicker = tpl(
   `<sb-row label="ampm / 24hr / seconds" wrap>
-    <v-time-picker v-model="time" />
-    <v-time-picker v-model="time" format="24hr" color="primary" />
-    <v-time-picker v-model="time" use-seconds variant="input" />
+    <v-time-picker v-model="ampm" />
+    <v-time-picker v-model="h24" format="24hr" color="primary" />
+    <v-time-picker v-model="seconds" use-seconds variant="input" />
   </sb-row>`,
-  () => ({ time: ref("09:30") }),
+  () => ({ ampm: ref("09:30"), h24: ref("17:45"), seconds: ref("09:30:15") }),
 );
 
 export const Calendar = tpl(
