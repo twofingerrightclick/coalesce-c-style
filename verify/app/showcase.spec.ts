@@ -146,6 +146,16 @@ test.describe("showcase fixes", () => {
     }
   });
 
+  test("multi-select menu: option checkbox sits 8 before its title", async ({ page }) => {
+    await gotoScheme(page, "/settings", "light");
+    await page.locator(".v-autocomplete", { hasText: "Reviewers" }).locator(".v-field").first().click();
+    const option = page.locator(".v-overlay--active .v-list-item").first();
+    await option.waitFor();
+    const check = await box(option.locator(".v-selection-control"));
+    const title = await box(option.locator(".v-list-item-title"));
+    expect(Math.round(title.x - (check.x + check.width))).toBe(8);
+  });
+
   test("standalone list: no slab, rows rounded 8 and inset 4, current row the fill at 500", async ({ page }) => {
     await gallery(page);
     const list = page.locator('[data-gallery="lists"] .v-list');

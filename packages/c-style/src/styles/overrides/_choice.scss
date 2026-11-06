@@ -39,6 +39,13 @@
     padding-inline-start: var(--cs-gap);
   }
 
+  // The same shrink leaves a checkbox in a list item's prepend (multi-select
+  // menu options) touching its title: Vuetify sizes the spacer only after
+  // icons, avatars and actions, and relied on the 40px box for the gap.
+  .v-list-item__prepend > .v-selection-control ~ .v-list-item__spacer {
+    width: var(--v-list-prepend-gap, var(--cs-gap));
+  }
+
   .v-switch .v-selection-control__wrapper {
     width: auto;
   }
