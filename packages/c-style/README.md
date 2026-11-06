@@ -4,17 +4,21 @@ Canon's look for Vuetify 4 and Coalesce (`coalesce-vue-vuetify3`). c-style resty
 
 What you get, at Canon's md size: Public Sans, bundled (Canon's own Inter is an opt-in import); 32/40/48px controls (40 by default) with 20px Lucide icons at a 1.5px stroke; 4/8/12px radii; zinc neutrals with a blue accent, both generated as full 50–950 ladders from any brand hex; hairline rules, edge-and-shadow depth, a 2px+1px focus ring, and 0.12s motion with a 0.98 press. Light and dark follow the OS (`defaultTheme: 'system'`).
 
+Styling an app's own components to match: see [Styling your own components](#styling-your-own-components) (tokens, the `c-style/tokens` SCSS module, and an agent skill).
+
 ## Why it ships this way
 
-c-style is one Vite-first package with five entry points. Vuetify's SASS variables only reach its compiled component CSS through `vite-plugin-vuetify`'s `styles.configFile`, and no other plugin can inject that option, so c-style's Vite plugin replaces the app's `vite-plugin-vuetify` call and owns `configFile`. Everything else is runtime: the blueprint and theme are plain objects passed to `createVuetify`, and the CSS is one stylesheet import.
+c-style is one Vite-first package with seven entry points. Vuetify's SASS variables only reach its compiled component CSS through `vite-plugin-vuetify`'s `styles.configFile`, and no other plugin can inject that option, so c-style's Vite plugin replaces the app's `vite-plugin-vuetify` call and owns `configFile`. Everything else is runtime: the blueprint and theme are plain objects passed to `createVuetify`, and the CSS is one stylesheet import.
 
 | Entry | Contents | Runs in |
 |---|---|---|
 | `c-style/vite` | `cStyle(options)`: `vite-plugin-vuetify` with c-style's settings, plus Vuetify's layer-order `<style>` in `index.html` and dev-server file access for the package and its font | `vite.config.ts` |
-| `c-style` | `cStyleBlueprint`, `cStyleThemes`, `applyCStyleColors`, `generateLadder`, `palettes`, icons (`cs`, `csAliases`, `csIcon`, `csIconOptions`), `layerOrderCss` / `layerOrderStyle`, Canon Time components (`CsTimeField`, `CsTimeRangeField`, `CsTimeInput`), types | browser |
+| `c-style` | `cStyleBlueprint`, `cStyleThemes`, `applyCStyleColors`, `generateLadder`, `palettes`, icons (`cs`, `csAliases`, `csIcon`, `csIconOptions`), `layerOrderCss` / `layerOrderStyle`, Canon Time components (`CsTimeField`, `CsTimeRangeField`, `CsTimeInput`), `csVar`, `cStyleTokens`, `cStyleIntents`, types | browser |
 | `c-style/icons` | every `@lucide/vue` icon, re-exported, plus `csIcon` | browser |
+| `c-style/fonts/inter` | Canon's Inter (rsms's `inter-ui` build), opt-in; import after `c-style/styles` (see [Font](#font)) | browser, via Vite |
 | `c-style/settings` | Vuetify SASS settings (`@forward 'vuetify/settings' with (… !default)`); emits no CSS | Sass |
 | `c-style/styles` | layer order, Public Sans, `--cs-*` tokens, layered overrides, unlayered Coalesce rules | browser, via Vite |
+| `c-style/tokens` | the public SCSS module for app components (`token()`, `surface`, `interactive`, `control-box`, `type`, …); emits no CSS | Sass |
 
 The package ships TypeScript and SCSS source; the consuming app's Vite compiles them. That works inside this pnpm workspace. A prebuilt `dist` for npm is not done yet (plan M19).
 
@@ -169,7 +173,7 @@ Tags (`v-chip`) follow Canon's tag sizes: `x-small`, `small` and default are sm 
 
 Avatar initials take Canon's type for the avatar's size at weight 400: 24 → 10/12, 32 → 12/16, 40 → 14/20, 48 and 56 → 16/24, 64 → 24/32. Named sizes `x-small` … `x-large` are 24 … 56; a numeric `size` takes the nearest step (12–96px). Leave the text bare or in a plain `<span>`; a type class such as `text-caption` overrides it.
 
-Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`); density never changes a control's size. Tables keep Vuetify's density rows (56 / 48 / 40), Canon's default being 56; `density="compact"` gives Canon's compact 40. The `--cs-*` custom properties (`--cs-control-height`, `--cs-icon`, `--cs-radius`, `--cs-gap-md`, `--cs-hairline`, …) are Canon's md values for c-style's own rules. There is no inherited size context.
+Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`); density never changes a control's size. Tables keep Vuetify's density rows (56 / 48 / 40), Canon's default being 56; `density="compact"` gives Canon's compact 40. The `--cs-*` custom properties (`--cs-control-height`, `--cs-icon`, `--cs-radius`, `--cs-gap-md`, `--cs-hairline`, …) are Canon's md values, public for app components (see [Styling your own components](#styling-your-own-components)). There is no inherited size context.
 
 ## Icons
 
@@ -211,6 +215,289 @@ Keys: Tab / Shift+Tab per cell; Left / Right between cells; Up / Down step and w
 Canon's own checks become the field's first rule: "Enter a complete time." (left incomplete), `min` / `max` / `step` in the browser's words, "Choose an allowed time.", "The end time is before the start time.".
 
 Not covered: localised strings (labels and messages are English); no clock dial or popover (Canon has none). `v-time-picker` is unchanged and still restyled by c-style.
+
+## Styling your own components
+
+c-style restyles Vuetify and Coalesce; your app's own components need the same look in light and dark, under any accent and font. Do it through the public API: the `--cs-*` tokens, the `c-style/tokens` SCSS module and `csVar` at run time. Everything else c-style sets is internal and may change.
+
+### Which tool to use
+
+Take the first rung that can express the design:
+
+1. **Compose Vuetify components.** `v-btn`, `v-card`, `v-list`, `v-text-field`, `v-chip` and the rest are already Canon, including every state. Set props for a subtree with `<v-defaults-provider :defaults="{ VBtn: { variant: 'text', size: 'small' } }">` rather than restyling it.
+2. **Vuetify utility and type classes** for layout and one-off tweaks:
+   - Spacing `pa-*`, `ma-*`, `ga-*` keep Vuetify's 4px step, which is Canon's scale (`ga-2` = `--cs-gap-sm`, `pa-4` = `--cs-gap-md`).
+   - Re-pointed to Canon: `rounded-*` (`sm` 4, default and `md` 8, `lg` 12, `xl` 16, `xxl` 24), `elevation-*` (1 control shadow, 2 raised, 3 and 4 floating, 5 overlay, each with the edge hairline above 1), the type classes `text-display-*` … `text-label-*` (Canon's ramp, for example `text-title-medium`, `text-body-small`), `bg-*` and `text-*` colour classes (theme roles).
+   - Not re-pointed: `text-medium-emphasis` and `text-high-emphasis` are Vuetify's on-background ink at 60% and 100%. For Canon's secondary text use `color: cs.token(muted)`. `text-primary` outside a button, chip or tonal variant is the solid step (600); a label in the accent is `cs.token(primary-text)`.
+3. **Tokens and the SCSS module** for your own markup: `@use 'c-style/tokens' as cs` in the component's `<style lang="scss">`, then the mixins and `cs.token(...)` (below).
+4. **Plain CSS in the component** for what's left (grid templates, positioning). c-style's CSS sits in cascade layers, so unlayered app CSS wins without `!important`.
+
+### The token contract
+
+125 custom properties, all prefixed `--cs-`, declared by `c-style/styles` in `@layer vuetify-overrides`. The list is `cStyleTokens` (TypeScript) and `$tokens` (SCSS); a unit test keeps those and the stylesheet in step.
+
+- **Colour, shadow and font tokens are read-only.** They alias Vuetify's theme variables and are redeclared on `:root` and on every `.v-theme--*` element, so they follow `theme.change`, a `theme="dark"` subtree, `applyCStyleColors` and `applyCStyleFont` without a recompile. That redeclaration is also why a value you set on an ancestor stops at the first Vuetify component inside it. Change them through the theme: `cStyleBlueprint({ colors, font })`, `applyCStyleColors`, `applyCStyleFont`.
+- **Size and motion tokens may be overridden on `:root`.** An unlayered `:root { --cs-radius: 6px; }` wins in any import order. It reaches your components and the c-style rules that read the token; Vuetify's own component sizes (button, field, chip heights and the like) are compiled from SASS and don't read these tokens, so change those through [`c-style/settings`](#overriding-sass-settings).
+- **Tokens are the element's effective theme.** Inside a component c-style recolours (a text-variant `primary` button reads its text step as `primary`, a hovered solid button its hover step, disabled buttons and Coalesce admin toolbars their own), slot content reading `--cs-primary-solid` gets that component's value.
+- **Colour tokens are complete colours** (`color: var(--cs-muted)`), not channel lists.
+- **Not public:** Vuetify's `--v-*` variables (`--v-theme-primary`, `--v-muted`, …), c-style's internal `--cs-btn-*`, `--cs-tone-*`, `--cs-field-*`, `--cs-time-*`, the mixins' element-local `--_cs-*` slots, and the Sass partials under `src/styles/`.
+
+In the tables, `n` is the neutral ladder (zinc by default) and `i` the intent's ladder; "light / dark" gives the ladder step per mode.
+
+**Sizes** (Canon md, the same in both themes; overridable):
+
+| Token | Value | Meaning |
+|---|---|---|
+| `control-height` | 40px | md control height |
+| `control-pad` | 10px | md control inline padding |
+| `control-font` | 14px | md control text size |
+| `control-lh` | 20px | md control line height |
+| `control-gap` | 8px | icon ↔ label gap inside a control |
+| `icon` | 20px | icon size; `control-box()` sets it per size |
+| `radius` | 8px | control radius |
+| `surface-radius` | 12px | card, menu, dialog radius |
+| `gap-sm` | 8px | between items in a cluster (buttons, chips) |
+| `gap-md` | 16px | stacks, between fields; surface padding |
+| `gap-lg` | 24px | between groups |
+| `gap-xl` | 32px | between form sections |
+| `hairline` | 1px (0.5px on 2x screens) | rule and edge width |
+
+`control-gap` and `gap-sm` are both 8px but mean different things; pick by meaning.
+
+**Surfaces and neutral roles** (read-only):
+
+| Token | Light / dark | Meaning |
+|---|---|---|
+| `canvas` | n50 / n950 | page background |
+| `surface` | white / n900 | card and panel background |
+| `surface-bright` | white / n800 | a surface lifted above `surface` (dark mode's raised layer) |
+| `on-surface` | n900 / white | ink on a surface |
+| `muted` | n500 / n400 | secondary text, hints |
+| `quiet` | n400 / n500 | tertiary marks (separators, disabled breadcrumbs) |
+| `fill-hover` | n50 / n800 | neutral fill under the pointer |
+| `fill` | n100 / n800 | neutral fill (wells, tracks) |
+| `fill-strong` | n200 / n700 | stronger neutral fill (pressed) |
+| `frame` | n200 / n700 | field frame at rest |
+| `frame-hover` | n400 / n500 | field frame under the pointer |
+| `rule` | black / white at 10% | hairline rules and dividers |
+| `rule-faint` | black at 7% / white at 8% | fainter rules (toolbar and drawer edges) |
+| `link` | primary 600 / 400 | link at rest |
+| `disabled-bg` | n50 / n800 | disabled fill |
+| `disabled-fg` | n400 / n500 | disabled ink |
+| `scrim` | white at 85% / n950 at 75% | overlay backdrop |
+
+**Focus** (read-only): `focus` (primary 600 / 400, the ring colour); `focus-ring` (a `box-shadow` value: a 2px gap in the surface colour (white / n900), then 1px of `focus`).
+
+**Elevation** (read-only, `box-shadow` values; dark mode raises the alphas): `shadow-edge` (the hairline edge every surface has), `shadow-control` (low-emphasis controls), `shadow-raised` (cards), `shadow-floating` (menus, popovers), `shadow-overlay` (dialogs, drawers). Depth is always the edge plus one shadow, as `surface()` writes it.
+
+**Typography** (read-only): `font-body`, `font-heading` (Public Sans by default; the blueprint's `font`), `font-mono` (JetBrains Mono, then system monospace), `font-tracking` (the multiplier for Canon's negative letter-spacing: 1 for Inter, 0.5 for Public Sans, 0 otherwise), `control-tracking` (md control text tracking, −0.006em × `font-tracking`; it follows the font, so treat it as read-only).
+
+**Motion** (overridable; all durations 0 and the scale 1 under `prefers-reduced-motion`, so transitions written with them need no media query): `duration-state` 0.12s (colour changes), `duration-press` 0.1s, `duration-open` 0.15s, `duration-close` 0.1s, `press-scale` 0.98 (a worded button's press).
+
+**Per intent** (read-only): `--cs-<intent>-<role>` for each of `primary neutral success warning error info`, 13 roles each (78 tokens). Steps are for the accents; neutral is inverted (its solid is n900 in light, white in dark) and warning's solid is 400 with 950 ink.
+
+| Role | Light / dark | Meaning |
+|---|---|---|
+| `solid` | i600 | high-emphasis fill |
+| `on-solid` | white | label on the solid |
+| `solid-hover` | i500 | solid under the pointer |
+| `solid-active` | i700 | solid pressed |
+| `text` | i700 / i300 | intent-coloured text on a light fill or the surface |
+| `tint-1` … `tint-4` | i400 / i500 at 8, 15, 20, 25% (dark 10, 20, 25, 30%) | see-through fills: rest → hover → pressed rungs |
+| `line` | i400 / i500 | field line at rest (the field recipe) |
+| `line-hover` | i600 / i400 | field line under the pointer, and on focus |
+| `halo` | i100 / i900 | 3px field focus halo |
+| `border-low` | i200 / i300 at 35% | low-emphasis border (the button recipe) |
+
+### The SCSS module: `c-style/tokens`
+
+```scss
+<style scoped lang="scss">
+@use 'c-style/tokens' as cs;
+</style>
+```
+
+It emits no CSS, so any number of components may `@use` it, and every value it writes is a public token or a Canon constant length, so theme, accent and font changes reach the component at run time. Public members: `$tokens`, `$intents` (`primary neutral success warning error info`), `$emphases` (`high medium low minimal`), `$surfaces` (`resting raised floating overlay`), and the function and mixins below.
+
+**`token($name)`** returns `var(--cs-<name>)` and fails the build on a name outside the contract.
+
+```scss
+.hint { color: cs.token(muted); }
+```
+
+**`surface($level: resting)`**: a Canon surface. Sets `background-color` (`surface`), `color` (`on-surface`), `border-radius` (`surface-radius`) and `box-shadow`: the edge alone for `resting` (table, alert, code block), the edge plus the level's shadow for `raised` (card), `floating` (menu, popover), `overlay` (dialog, drawer).
+
+```scss
+.panel { @include cs.surface(raised); }
+```
+
+**`control-box($size: md)`**: the box of a Canon control. An inline flex row with a 1px transparent border (so every emphasis keeps the same box), and the size's height, padding, radius, gap, text and tracking. Sets `--cs-icon` on the element, so a `v-icon` inside takes the size's icon. Colour and weight are yours.
+
+| Size | Height | Padding | Radius | Text | Icon | Gap |
+|---|---|---|---|---|---|---|
+| `sm` | 32 | 8 | 4 | 12/16 | 16 | 6 |
+| `md` | 40 | 10 | 8 | 14/20 | 20 | 8 |
+| `lg` | 48 | 12 | 12 | 16/24 | 24 | 10 |
+
+```scss
+.chip { @include cs.control-box(sm); }
+```
+
+**`interactive($intent: neutral, $emphasis: medium)`**: Canon's button tone matrix on any clickable element. Sets `color`, `background-color`, a 1px `border`, `box-shadow`, `cursor: pointer`, `user-select: none` and colour transitions over `duration-state`, plus every state:
+
+- hover: pointer devices only (`@media (hover: hover)`);
+- keyboard focus (`:focus-visible`): the hover rung plus the focus ring;
+- pressed: `:active`, `aria-pressed`, `aria-checked`, `aria-selected`, `aria-expanded`, `aria-current`;
+- disabled: `:disabled` or `aria-disabled="true"`, unless `aria-busy="true"`. Grey whatever the intent; a focused `aria-disabled` element keeps its ring.
+
+| Emphasis | Ink | Rest | Hover | Pressed | Border, shadow |
+|---|---|---|---|---|---|
+| `high` | `on-solid` | `solid` | `solid-hover` | `solid-active` | none |
+| `medium` | `text` | `tint-2` | `tint-3` | `tint-4` | none |
+| `low` | `text` | transparent | `tint-1` | `tint-2` | `border-low`, `shadow-control` |
+| `minimal` | `text` | transparent | `tint-1` | `tint-2` | none |
+
+Every state selector is (0,2,0), so your own `.x:hover` rule after the include wins by source order.
+
+```scss
+.chip { @include cs.control-box(sm); @include cs.interactive(neutral, low); }
+```
+
+**`tone($intent: neutral, $emphasis: medium)`**: only the colour slots `interactive` reads. Use it in a modifier class on an element that already includes `interactive`.
+
+```scss
+.tile { @include cs.interactive(primary, low); }
+.tile--error { @include cs.tone(error, low); }
+```
+
+**`focus-ring`**: Canon's focus ring (a 1px `focus` ring 2px outside the element) as `box-shadow`, over a transparent outline for forced-colours mode. It replaces the element's `box-shadow`. `interactive` already includes it.
+
+```scss
+.card-link:focus-visible { @include cs.focus-ring; }
+```
+
+**`focus-halo($intent: primary)`**: Canon's field focus. The border turns to the intent's `line-hover` with a 3px `halo` and no gap. `primary` is the neutral field's focus.
+
+```scss
+.search:focus-within { @include cs.focus-halo; }
+```
+
+**`hairline($side: all)`**: a `hairline`-wide border in `rule`. `$side` is `all` or any `border-<side>` suffix: `top`, `right`, `bottom`, `left`, `block`, `block-start`, `block-end`, `inline`, `inline-start`, `inline-end`.
+
+```scss
+.row + .row { @include cs.hairline(top); }
+```
+
+**`type($role)`**: the font family, size, line height, weight and tracking of a Vuetify type role at Canon's ramp, identical to the `.text-<role>` class. Roles: `display-large|medium|small`, `headline-large|medium|small`, `title-large|medium|small`, `body-large|medium|small`, `label-large|medium|small`. Display, headline and `title-large` use `font-heading`, the rest `font-body`. `label-large` is control text (14/20/500); `body-small` is hint text (12/16).
+
+```scss
+.card__title { @include cs.type(title-medium); }
+```
+
+**Composition.**
+
+- Include `control-box` before `interactive`: `control-box`'s transparent border would replace the low emphasis border.
+- `surface` and `interactive` both set background, ink and shadow; give an element one or the other.
+- Recolour a variant with `tone()` in a modifier class, not a second `interactive()`.
+- `interactive` doesn't reset a `<button>`'s font; add `font: inherit` or a `type()`.
+
+**Errors.** Every argument is checked at compile time: `cs.token(mutted)` fails with "`mutted` is not a c-style token. See `$tokens` in c-style/tokens.", and a bad intent, emphasis, surface level, side, size or role fails with "Unknown intent `brand`; expected one of primary, neutral, success, warning, error, info." (and so on).
+
+### Runtime (TypeScript)
+
+From `c-style`:
+
+- `csVar(name, fallback?)` returns `var(--cs-<name>)` (or `var(--cs-<name>, <fallback>)`) for inline styles and charts: `:style="{ color: csVar('muted') }"`. `name` is type-checked against the contract.
+- `cStyleTokens`: every token name without the prefix (125). `cStyleIntents`: the six intents.
+- Types `CStyleToken`, `CStyleIntent`.
+
+To read a resolved colour (a canvas chart, say), `getComputedStyle(el).getPropertyValue('--cs-primary-solid')` on the element that hosts it, so a nested theme applies, and read it again after a theme or accent change.
+
+### Worked example
+
+`MyProject/MyCompany.MyProject.Web/src/components/OptionTiles.vue` (demo app) is a radio group of tiles written with the public API only; the Storybook story `c-style/Option tiles (app example)` and `/c-style` render it. Its styles, condensed:
+
+```vue
+<style scoped lang="scss">
+@use 'c-style/tokens' as cs;
+
+.option-tiles { @include cs.surface(raised); }
+
+.option-tiles__header {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-gap-sm);
+  padding: 12px var(--cs-gap-md);
+  @include cs.hairline(bottom);
+}
+.option-tiles__title { @include cs.type(title-small); }
+.option-tiles__hint { @include cs.type(body-small); color: cs.token(muted); }
+
+.option-tiles__clear {
+  @include cs.control-box(sm);          // box first
+  @include cs.interactive(neutral, minimal);
+  margin-inline-start: auto;
+  font-weight: 500;
+}
+
+.option-tile {                            // <button role="radio" :aria-checked>
+  @include cs.interactive(primary, low);
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: var(--cs-radius);
+  text-align: start;
+  font: inherit;
+
+  &--neutral { @include cs.tone(neutral, low); }
+  &--error { @include cs.tone(error, low); }
+}
+.option-tile__title { @include cs.type(label-large); }
+.option-tile__description {
+  @include cs.type(body-small);
+  color: cs.token(muted);
+  .option-tile:disabled & { color: inherit; }   // take the disabled ink
+}
+.option-tile__check {
+  inline-size: var(--cs-icon);
+  opacity: 0;
+  transition: opacity var(--cs-duration-state) ease;
+  .option-tile[aria-checked='true'] & { opacity: 1; }
+}
+</style>
+```
+
+The selected tile gets its pressed rung from `aria-checked`, so the template sets ARIA state and the mixin does the rest. The component also shows the keyboard model a custom choice needs (one tab stop, arrow keys move focus and selection).
+
+### Do and don't
+
+- **Do** take colours, shadows and fonts from tokens or mixins. **Don't** write hex, `rgb()` or px literals for themed values (colour, shadow, radius of a surface, icon size); Canon's constant lengths (a 12px tile padding, a 160px grid column) are fine as literals.
+- **Do** use `cs.token(...)` in SCSS, so a typo fails the build. **Don't** read `--v-*` variables or internal `--cs-*` names (`--cs-tone-*`, `--cs-btn-*`, `--cs-field-*`, `--cs-time-*`, `--_cs-*`).
+- **Do** let ARIA state drive state styling (`aria-checked`, `aria-pressed`, `aria-disabled`). **Don't** add `!important`; unlayered component CSS already beats c-style's layers.
+- **Do** change colours and fonts through `cStyleBlueprint`, `applyCStyleColors`, `applyCStyleFont`. **Don't** set colour tokens on an ancestor.
+- **Don't** restyle Vuetify internals (`.v-btn__overlay`, `.v-field__outline`, …) from app code. If a Vuetify component looks wrong, use its props, `v-defaults-provider` or `c-style/settings`, or open an issue against c-style.
+
+### Checking your component
+
+In Storybook (`c-style/Option tiles (app example)` is the model), use the toolbar's **Theme**, **Accent** and **Font** switches; in the demo app, `/c-style` (the kitchen) has the same accent and font buttons in its tokens section. For each component, check:
+
+- light and dark, and a dark subtree (`<v-theme-provider theme="dark">`) if it can sit in one;
+- an accent switch: nothing keeps the old blue;
+- a font switch: nothing clips or overflows;
+- keyboard: Tab reaches it, the focus ring shows, arrow keys work where the pattern needs them;
+- disabled: grey ink and fill, no hover, no pointer events;
+- reduced motion: no transition left running.
+
+### Agent skill
+
+The package ships an agent skill, `skills/c-style/SKILL.md`, that tells coding agents (Claude Code and others that read `SKILL.md`) to follow this section when they write or restyle a component. Copy it into the app:
+
+```sh
+mkdir -p .claude/skills
+cp -r node_modules/c-style/skills/c-style .claude/skills/
+```
+
+Re-copy it after upgrading c-style.
 
 ## What is styled where
 
