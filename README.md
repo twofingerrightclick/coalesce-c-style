@@ -4,6 +4,18 @@
 
 The C stands for **Coalesce**, **Canon**, and for what goes away: the **chunkiness**. Same `<v-btn>`, same `<c-admin-table-page>`; tighter controls, simpler color, no Material slabs.
 
+## Why these two
+
+[Coalesce](https://intellitect.github.io/Coalesce/) is for building fast, enterprise-ready apps. It shines for powerful internal tools. It isn't about making something pretty; it's about making something reliable and good.
+
+Canon shares that philosophy. It is built for teams with a back end and no front-end team, and for tools that have to last:
+
+- **Several stacks.** A React app, a server-rendered admin and an old internal tool write the same elements and attributes and get the same components.
+- **One or several brands.** One stylesheet decides the look. A rebrand, a client's colors or a new design system is a new theme, and the pages stay as they are.
+- **Years of use.** Plain HTML has no framework version to keep up with, and a script that fails to load doesn't take the screens with it.
+
+Together you get c-style: Coalesce, ready for stakeholders who expect a 2026 look, and an app by Friday.
+
 ## Before and after
 
 Stock Coalesce starter template (Vuetify 4 + Material) on the left, the same app with c-style on the right. Same view, same code, dark mode, 1440×900.
