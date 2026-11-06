@@ -61,7 +61,7 @@ $avatar-named-sizes: ('x-small': 24px, 'small': 32px, 'default': 40px, 'large': 
   // Canon tables set figures in tabular nums at control tracking.
   .v-table {
     font-variant-numeric: tabular-nums;
-    letter-spacing: var(--cs-tracking);
+    letter-spacing: var(--cs-control-tracking);
   }
 
   // A table on the page is a framed surface (12px, edge ring, no shadow);
@@ -85,7 +85,7 @@ $avatar-named-sizes: ('x-small': 24px, 'small': 32px, 'default': 40px, 'large': 
   // Canon pagination: items 8 apart with no margin outside them, so the row
   // is the control's 40 (settings.scss zeroes Vuetify's item margins).
   .v-pagination__list {
-    gap: var(--cs-gap);
+    gap: var(--cs-gap-sm);
   }
 
   // Current page: a frame line, no fill (canon §4 D Pagination).

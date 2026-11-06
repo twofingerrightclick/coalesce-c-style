@@ -306,12 +306,77 @@
         <span v-if="timeSubmitted" class="ms-4" data-time="submitted">Submitted</span>
       </v-form>
     </section>
+
+    <section data-kitchen="tokens" class="mt-8">
+      <h2 class="text-title-medium mb-4">App component on the public tokens</h2>
+      <option-tiles
+        v-model="plan"
+        label="Plan"
+        hint="OptionTiles.vue, styled with c-style/tokens only."
+        :items="plans"
+        data-tokens="primary"
+      />
+      <option-tiles
+        v-model="region"
+        class="mt-4"
+        label="Region"
+        intent="neutral"
+        :items="regions"
+        data-tokens="neutral"
+      />
+      <div class="d-flex flex-wrap ga-2 mt-4 align-center">
+        <span class="text-body-small">Accent</span>
+        <v-btn
+          v-for="(hex, name) in accents"
+          :key="name"
+          size="small"
+          color="neutral"
+          variant="outlined"
+          :data-accent="name"
+          @click="applyCStyleColors(vuetifyTheme, { primary: hex })"
+        >
+          {{ name }}
+        </v-btn>
+        <span class="text-body-small ml-4">Font</span>
+        <v-btn size="small" color="neutral" variant="outlined" data-font="public-sans" @click="applyCStyleFont(vuetifyTheme)">
+          Public Sans
+        </v-btn>
+        <v-btn size="small" color="neutral" variant="outlined" data-font="system-ui" @click="applyCStyleFont(vuetifyTheme, 'system-ui')">
+          system-ui
+        </v-btn>
+      </div>
+    </section>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { csIcon, House } from "c-style/icons";
-import { CsTimeField, CsTimeInput, CsTimeRangeField, type CsTimeRange } from "c-style";
+import {
+  applyCStyleColors,
+  applyCStyleFont,
+  CsTimeField,
+  CsTimeInput,
+  CsTimeRangeField,
+  type CsTimeRange,
+} from "c-style";
+import { useTheme } from "vuetify";
+import OptionTiles, { type OptionTileItem } from "@/components/OptionTiles.vue";
+
+const vuetifyTheme = useTheme();
+const plan = ref<string | number | null>("team");
+const plans: OptionTileItem[] = [
+  { value: "starter", title: "Starter", amount: "$0", description: "Up to 3 seats." },
+  { value: "team", title: "Team", amount: "$12", description: "Per seat, monthly." },
+  { value: "business", title: "Business", amount: "$29", description: "SSO and audit log." },
+  { value: "enterprise", title: "Enterprise", description: "Contact sales.", disabled: true },
+];
+const region = ref<string | number | null>(null);
+const regions: OptionTileItem[] = [
+  { value: "us", title: "United States" },
+  { value: "eu", title: "Europe" },
+  { value: "ap", title: "Asia Pacific" },
+];
+const accents = { canon: "#2563eb", violet: "#7c3aed", rose: "#e11d48" };
 
 const sizes = ["small", "default", "large"] as const;
 const intents = [undefined, "neutral", "error"];

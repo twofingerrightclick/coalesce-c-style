@@ -83,7 +83,7 @@
       color: rgb(var(--v-theme-on-surface));
       font-size: var(--cs-control-font);
       line-height: var(--cs-control-lh);
-      letter-spacing: var(--cs-tracking);
+      letter-spacing: var(--cs-control-tracking);
       font-weight: 500;
       transform: none;
       transition: none;
@@ -101,6 +101,6 @@
   // to forms (the blueprint classes every VForm `cs-form`): a global
   // `.v-input + .v-input` also spaces inputs laid out in a row.
   .cs-form .v-input + .v-input {
-    margin-top: var(--cs-form-gap);
+    margin-top: var(--cs-gap-md);
   }
 }

@@ -28,7 +28,7 @@ $rule: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity
 // Canon's 8px edge inset matches the row's end and puts the search icon
 // under the title text.
 :is(.c-admin-table-toolbar--search, .c-audit-logs--filters) {
-  margin-inline-start: var(--cs-gap);
+  margin-inline-start: var(--cs-gap-sm);
 }
 
 // Coalesce hides the title and its divider with `hidden-xs-only`, which
@@ -64,14 +64,14 @@ $rule: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity
 // Editor: rows a form gap apart; the label column is Canon's start-aligned
 // label (14/20/500 ink), its first line level with the field's.
 .c-admin-editor--row {
-  padding: calc(var(--cs-form-gap) / 2) 0;
+  padding: calc(var(--cs-gap-md) / 2) 0;
 }
 
 .c-admin-editor--label-col {
   font-weight: 500;
   font-size: var(--cs-control-font);
   line-height: var(--cs-control-lh);
-  letter-spacing: var(--cs-tracking);
+  letter-spacing: var(--cs-control-tracking);
 }
 
 // Methods: the section label at control type; muted descriptions and nulls.

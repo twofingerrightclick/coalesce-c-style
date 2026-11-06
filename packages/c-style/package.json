@@ -34,6 +34,11 @@
       "types": "./src/styles/styles.d.ts",
       "sass": "./src/styles/index.scss",
       "default": "./src/styles/index.scss"
+    },
+    "./tokens": {
+      "types": "./src/styles/styles.d.ts",
+      "sass": "./src/tokens.scss",
+      "default": "./src/tokens.scss"
     }
   },
   "scripts": {

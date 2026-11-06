@@ -28,6 +28,11 @@ if (vuetifyHere != vuetifyCStyle) {
 // Storybook's mocker runtime), outside any folder Vite allows by default.
 const pnpmStore = vuetifyHere.slice(0, vuetifyHere.indexOf("/links/"));
 
+// The demo app's source, for stories of app components written against
+// c-style's public API (`@demo/components/OptionTiles.vue`), so one file
+// serves both the demo and the Storybook.
+const demoSrc = fileURLToPath(new URL("../../MyProject/MyCompany.MyProject.Web/src/", import.meta.url));
+
 const config: StorybookConfig = {
   framework: {
     name: "@storybook/vue3-vite",
@@ -47,10 +52,11 @@ const config: StorybookConfig = {
       resolve: {
         alias: [
           { find: /^@\//, replacement: fileURLToPath(new URL("../src/", import.meta.url)) },
+          { find: /^@demo\//, replacement: demoSrc },
         ],
       },
       server: {
-        fs: { allow: [fileURLToPath(new URL("..", import.meta.url)), pnpmStore] },
+        fs: { allow: [fileURLToPath(new URL("..", import.meta.url)), pnpmStore, demoSrc] },
       },
       optimizeDeps: {
         include: ["coalesce-vue", "coalesce-vue-vuetify3", "vue-router", "@lucide/vue"],

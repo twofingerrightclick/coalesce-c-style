@@ -36,14 +36,14 @@
   // at Canon's 20 the label needs its 8px gap, and the switch track (wider
   // than the control) its own width.
   .v-selection-control:not(.v-switch *) .v-label {
-    padding-inline-start: var(--cs-gap);
+    padding-inline-start: var(--cs-control-gap);
   }
 
   // The same shrink leaves a checkbox in a list item's prepend (multi-select
   // menu options) touching its title: Vuetify sizes the spacer only after
   // icons, avatars and actions, and relied on the 40px box for the gap.
   .v-list-item__prepend > .v-selection-control ~ .v-list-item__spacer {
-    width: var(--v-list-prepend-gap, var(--cs-gap));
+    width: var(--v-list-prepend-gap, var(--cs-control-gap));
   }
 
   .v-switch .v-selection-control__wrapper {

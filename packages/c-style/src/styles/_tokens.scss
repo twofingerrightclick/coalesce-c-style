@@ -1,28 +1,131 @@
-// Canon's md size tokens (plan §1.3, canon §2.3), read by c-style's rules and
-// by `$icon-sizes: default`. Smaller or larger controls are per instance,
-// through Vuetify's named sizes (`size="small"` / `"large"`); there is no
-// inherited size context.
+// The public `--cs-*` token contract: the custom properties app CSS may read
+// (the list is `$tokens` in src/tokens.scss and `cStyleTokens` in
+// src/tokens.ts; test/tokens.spec.ts keeps all three in step). Every other
+// custom property c-style sets (`--v-*` theme variables, `--cs-tone-*`,
+// `--cs-btn-*`, …) is internal and may be renamed.
+//
+// Everything sits in `vuetify-overrides`, so an app's unlayered `:root`
+// override of a size or motion token wins whatever the import order.
+//
+// Sizes are Canon's md values (canon §2.3), constant in both themes; there is
+// no inherited size context, so sm / lg come from the `c-style/tokens`
+// mixins or Vuetify's named sizes. Colours, shadows and fonts alias the theme
+// variables Vuetify emits on `:root` and `.v-theme--*`, so they are declared
+// on the same elements and follow the theme, the accent
+// (`applyCStyleColors`) and the font (`applyCStyleFont`) without a recompile.
+// That redeclaration is also why they are read-only: a value set on an
+// ancestor stops at the first themed (Vuetify) element. Colour tokens are
+// complete colours (`var(--cs-muted)` is a `color` value); the theme's
+// `r, g, b` lists stay internal.
+$intents: primary, neutral, success, warning, error, info;
 
-:root {
-  --cs-control-height: 40px;
-  --cs-control-pad: 10px;
-  --cs-control-font: 14px;
-  --cs-control-lh: 20px;
-  --cs-tracking: calc(-0.006em * var(--v-font-tracking, 1));
-  --cs-icon: 20px;
-  --cs-gap: 8px;
-  --cs-radius: 8px;
-  --cs-surface-radius: 12px;
-  --cs-form-gap: 16px;
-}
-
-// Lines inside components and surface edges (canon §2.6).
-:root {
-  --cs-hairline: 1px;
-}
-
-@media (min-resolution: 2dppx) {
+@layer vuetify-overrides {
   :root {
-    --cs-hairline: 0.5px;
+    --cs-control-height: 40px;
+    --cs-control-pad: 10px;
+    --cs-control-font: 14px;
+    --cs-control-lh: 20px;
+    --cs-control-gap: 8px;
+    --cs-icon: 20px;
+    --cs-radius: 8px;
+    --cs-surface-radius: 12px;
+    // Canon's spacing scale at md (canon §2.4): clusters, stacks and fields,
+    // groups, form sections.
+    --cs-gap-sm: 8px;
+    --cs-gap-md: 16px;
+    --cs-gap-lg: 24px;
+    --cs-gap-xl: 32px;
+    // Lines inside components and surface edges (canon §2.6).
+    --cs-hairline: 1px;
+  }
+
+  @media (min-resolution: 2dppx) {
+    :root {
+      --cs-hairline: 0.5px;
+    }
+  }
+
+  :root,
+  [class*='v-theme--'] {
+    // Surfaces (canon §3.4) and neutral roles (canon §3.3).
+    --cs-canvas: rgb(var(--v-theme-background));
+    --cs-surface: rgb(var(--v-theme-surface));
+    --cs-surface-bright: rgb(var(--v-theme-surface-bright));
+    --cs-on-surface: rgb(var(--v-theme-on-surface));
+    --cs-muted: rgb(var(--v-muted));
+    --cs-quiet: rgb(var(--v-quiet));
+    --cs-fill-hover: rgb(var(--v-fill-hover));
+    --cs-fill: rgb(var(--v-fill));
+    --cs-fill-strong: rgb(var(--v-fill-strong));
+    --cs-frame: rgb(var(--v-frame));
+    --cs-frame-hover: rgb(var(--v-frame-hover));
+    --cs-rule: rgba(var(--v-border-color), var(--v-rule-opacity));
+    --cs-rule-faint: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
+    --cs-link: rgb(var(--v-link));
+    --cs-disabled-bg: rgb(var(--v-disabled-bg));
+    --cs-disabled-fg: rgb(var(--v-disabled-fg));
+    --cs-scrim: rgba(var(--v-scrim));
+
+    // Focus (canon §2.8): the ring for buttons and links, the halo for fields.
+    --cs-focus: rgb(var(--v-focus));
+    --cs-focus-ring: 0 0 0 2px rgb(var(--v-ring-offset)), 0 0 0 3px var(--cs-focus);
+
+    // Elevation (canon §2.7): depth is always the edge plus one shadow.
+    --cs-shadow-edge: var(--v-shadow-edge);
+    --cs-shadow-control: var(--v-shadow-control);
+    --cs-shadow-raised: var(--v-shadow-raised);
+    --cs-shadow-floating: var(--v-shadow-floating);
+    --cs-shadow-overlay: var(--v-shadow-overlay);
+
+    // Typography (canon §2.9). `--cs-font-tracking` scales Canon's negative
+    // letter-spacing for the active font; `--cs-control-tracking` is the
+    // control text's (−0.006em at 14px) already scaled.
+    --cs-font-body: var(--v-font-body);
+    --cs-font-heading: var(--v-font-heading);
+    --cs-font-mono: var(--v-font-mono);
+    --cs-font-tracking: var(--v-font-tracking, 1);
+    --cs-control-tracking: calc(-0.006em * var(--cs-font-tracking));
+
+    // Per intent (canon §3.5): the solid and its label, the solid's hover
+    // and pressed steps, the text step for labels on a light fill, four
+    // see-through tint rungs (rest → hover → pressed for the medium, low
+    // and minimal emphases), the field line at rest and under the pointer,
+    // the field focus halo, and the low-emphasis border.
+    @each $intent in $intents {
+      --cs-#{$intent}-solid: rgb(var(--v-theme-#{$intent}));
+      --cs-#{$intent}-on-solid: rgb(var(--v-theme-on-#{$intent}));
+      --cs-#{$intent}-solid-hover: rgb(var(--v-#{$intent}-hover));
+      --cs-#{$intent}-solid-active: rgb(var(--v-#{$intent}-active));
+      --cs-#{$intent}-text: rgb(var(--v-#{$intent}-text));
+      @for $rung from 1 through 4 {
+        --cs-#{$intent}-tint-#{$rung}: rgba(var(--v-#{$intent}-tint), var(--v-tint-#{$rung}));
+      }
+      --cs-#{$intent}-line: rgb(var(--v-#{$intent}-line));
+      --cs-#{$intent}-line-hover: rgb(var(--v-#{$intent}-line-hover));
+      --cs-#{$intent}-halo: rgb(var(--v-#{$intent}-halo));
+      --cs-#{$intent}-border-low: rgb(var(--v-#{$intent}-border-low));
+    }
+  }
+
+  // Motion (canon §2.10): state colours settle in 0.12s, a worded button
+  // presses to 98% in 0.1s, popups open in 0.15s and close in 0.1s, chevrons
+  // turn in 0.15s. Under reduced motion the durations are 0 and the press
+  // scale 1, so app transitions written against these need no media query.
+  :root {
+    --cs-duration-state: 0.12s;
+    --cs-duration-press: 0.1s;
+    --cs-duration-open: 0.15s;
+    --cs-duration-close: 0.1s;
+    --cs-press-scale: 0.98;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --cs-duration-state: 0s;
+      --cs-duration-press: 0s;
+      --cs-duration-open: 0s;
+      --cs-duration-close: 0s;
+      --cs-press-scale: 1;
+    }
   }
 }

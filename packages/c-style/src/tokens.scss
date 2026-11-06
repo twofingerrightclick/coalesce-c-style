@@ -1,0 +1,284 @@
+// c-style's public SCSS module for an app's own components:
+//
+//   @use 'c-style/tokens' as cs;
+//
+//   .tile {
+//     @include cs.surface(raised);
+//     @include cs.type(title-small);
+//   }
+//   .tile__action {
+//     @include cs.control-box(sm);
+//     @include cs.interactive(primary, low);
+//   }
+//   .tile__row { @include cs.hairline(bottom); color: cs.token(muted); }
+//
+// Emits no CSS on its own, so any number of components may `@use` it. Every
+// value it writes is a `--cs-*` token (declared by `c-style/styles`, see
+// styles/_tokens.scss) or one of Canon's constant lengths, so theme, accent
+// and font changes at run time reach the component without a recompile.
+// Rules written here reference only the public tokens and the recipe's own
+// element-local `--_cs-*` slots; test/tokens.spec.ts enforces that.
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use 'sass:string';
+@use 'styles/typography';
+
+$intents: primary, neutral, success, warning, error, info;
+$emphases: high, medium, low, minimal;
+$surfaces: resting, raised, floating, overlay;
+
+// Roles every intent has (`--cs-<intent>-<role>`).
+$-intent-roles: solid, on-solid, solid-hover, solid-active, text, tint-1, tint-2, tint-3, tint-4, line, line-hover,
+  halo, border-low;
+
+/// Every public token name, without the `--cs-` prefix. The same list is
+/// `cStyleTokens` in src/tokens.ts.
+$tokens: control-height, control-pad, control-font, control-lh, control-gap, control-tracking, icon, radius,
+  surface-radius, gap-sm, gap-md, gap-lg, gap-xl, hairline, canvas, surface, surface-bright, on-surface, muted, quiet,
+  fill-hover, fill, fill-strong, frame, frame-hover, rule, rule-faint, link, disabled-bg, disabled-fg, scrim, focus,
+  focus-ring, shadow-edge, shadow-control, shadow-raised, shadow-floating, shadow-overlay, font-body, font-heading,
+  font-mono, font-tracking, duration-state, duration-press, duration-open, duration-close, press-scale;
+
+@each $intent in $intents {
+  @each $role in $-intent-roles {
+    $tokens: list.append($tokens, string.unquote('#{$intent}-#{$role}'));
+  }
+}
+
+/// `var(--cs-<name>)`, failing the build on a name outside the contract.
+/// Colour, shadow and font tokens are read-only: change them through the
+/// theme (`cStyleBlueprint`, `applyCStyleColors`, `applyCStyleFont`), since a
+/// value set on an ancestor stops at the first Vuetify component. They
+/// resolve against the element's effective theme, so inside a Vuetify
+/// component that c-style recolours (a text-variant `primary` button's
+/// `primary` is its text step, a hovered solid button's is its hover step)
+/// they read that component's colours. Size and motion tokens may be
+/// overridden on `:root`.
+///   color: cs.token(muted);
+@function token($name) {
+  @if not list.index($tokens, $name) {
+    @error "`#{$name}` is not a c-style token. See `$tokens` in c-style/tokens.";
+  }
+  @return var(--cs-#{$name});
+}
+
+@function -check($value, $allowed, $what) {
+  @if not list.index($allowed, $value) {
+    @error "Unknown #{$what} `#{$value}`; expected one of #{$allowed}.";
+  }
+  @return $value;
+}
+
+/// A Canon surface (canon §3.4): the surface colour and ink, the surface
+/// radius, and depth as the hairline edge plus the level's shadow.
+/// `resting` (table, alert, code block) is the edge alone; `raised` is a
+/// card; `floating` a menu or popover; `overlay` a dialog or drawer.
+///   .panel { @include cs.surface(raised); }
+@mixin surface($level: resting) {
+  $level: -check($level, $surfaces, 'surface level');
+  background-color: var(--cs-surface);
+  color: var(--cs-on-surface);
+  border-radius: var(--cs-surface-radius);
+  @if $level == resting {
+    box-shadow: var(--cs-shadow-edge);
+  } @else {
+    box-shadow: var(--cs-shadow-edge), var(--cs-shadow-#{$level});
+  }
+}
+
+/// The tone slots `interactive` reads, for a modifier class that recolours
+/// an element already carrying the recipe:
+///   .tile { @include cs.interactive(primary, low); }
+///   .tile--success { @include cs.tone(success, low); }
+@mixin tone($intent: neutral, $emphasis: medium) {
+  $intent: -check($intent, $intents, 'intent');
+  $emphasis: -check($emphasis, $emphases, 'emphasis');
+  // Low and minimal: transparent, tints 1 and 2 for hover and pressed.
+  $fg: var(--cs-#{$intent}-text);
+  $bg: transparent;
+  $bg-hover: var(--cs-#{$intent}-tint-1);
+  $bg-active: var(--cs-#{$intent}-tint-2);
+  $border: transparent;
+  $shadow: none;
+  $bg-disabled: transparent;
+  $border-disabled: transparent;
+  @if $emphasis == high {
+    $fg: var(--cs-#{$intent}-on-solid);
+    $bg: var(--cs-#{$intent}-solid);
+    $bg-hover: var(--cs-#{$intent}-solid-hover);
+    $bg-active: var(--cs-#{$intent}-solid-active);
+    $bg-disabled: var(--cs-disabled-bg);
+  } @else if $emphasis == medium {
+    $bg: var(--cs-#{$intent}-tint-2);
+    $bg-hover: var(--cs-#{$intent}-tint-3);
+    $bg-active: var(--cs-#{$intent}-tint-4);
+    $bg-disabled: var(--cs-disabled-bg);
+  } @else if $emphasis == low {
+    $border: var(--cs-#{$intent}-border-low);
+    $shadow: var(--cs-shadow-control);
+    $border-disabled: var(--cs-frame);
+  }
+  --_cs-fg: #{$fg};
+  --_cs-bg: #{$bg};
+  --_cs-bg-hover: #{$bg-hover};
+  --_cs-bg-active: #{$bg-active};
+  --_cs-border: #{$border};
+  --_cs-shadow: #{$shadow};
+  --_cs-bg-disabled: #{$bg-disabled};
+  --_cs-border-disabled: #{$border-disabled};
+}
+
+/// Canon's button tone matrix (canon §3.5) on any clickable element: rest,
+/// hover (pointer devices only) and keyboard focus (the hover rung plus the
+/// focus ring), pressed (`:active`, `aria-pressed`, `aria-checked`,
+/// `aria-selected`, `aria-expanded`, `aria-current`) and disabled
+/// (`:disabled`, `aria-disabled` unless `aria-busy`; a focused
+/// `aria-disabled` element keeps its ring). `high` is the solid with its
+/// label; `medium` rests on tint 2; `low` is transparent with the low border
+/// and the control shadow; `minimal` is transparent. Disabled is grey
+/// whatever the intent. Colours settle over `--cs-duration-state`. With
+/// `control-box`, include that first: its transparent border would replace
+/// this one's.
+///   .chip { @include cs.control-box(sm); @include cs.interactive(neutral, low); }
+@mixin interactive($intent: neutral, $emphasis: medium) {
+  @include tone($intent, $emphasis);
+  color: var(--_cs-fg);
+  background-color: var(--_cs-bg);
+  border: 1px solid var(--_cs-border);
+  box-shadow: var(--_cs-shadow);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--cs-duration-state) ease,
+    border-color var(--cs-duration-state) ease,
+    color var(--cs-duration-state) ease,
+    box-shadow var(--cs-duration-state) ease;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--_cs-bg-hover);
+    }
+  }
+
+  &:focus-visible {
+    background-color: var(--_cs-bg-hover);
+    @include focus-ring;
+  }
+
+  &:is(:active, [aria-pressed='true'], [aria-checked='true'], [aria-selected='true'], [aria-expanded='true'], [aria-current]:not(:where([aria-current='false']))) {
+    background-color: var(--_cs-bg-active);
+  }
+
+  &:active:not(:where(:focus-visible)) {
+    box-shadow: none;
+  }
+
+  &:is(:disabled, [aria-disabled='true']:not(:where([aria-busy='true']))) {
+    pointer-events: none;
+    color: var(--cs-disabled-fg);
+    background-color: var(--_cs-bg-disabled);
+    border-color: var(--_cs-border-disabled);
+
+    &:not(:where(:focus-visible)) {
+      box-shadow: none;
+    }
+  }
+}
+
+/// Canon's focus ring (canon §2.8): a 1px focus-coloured ring 2px outside the
+/// element, over a transparent outline for forced-colours mode. Replaces the
+/// element's box-shadow, as Canon does.
+///   a:focus-visible { @include cs.focus-ring; }
+@mixin focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: var(--cs-focus-ring);
+}
+
+/// Canon's field focus (canon §3.5): the border turns to the intent's hover
+/// line with a 3px halo and no gap. `primary` is the neutral field's focus.
+///   .search:focus-within { @include cs.focus-halo; }
+@mixin focus-halo($intent: primary) {
+  $intent: -check($intent, $intents, 'intent');
+  outline: 2px solid transparent;
+  border-color: var(--cs-#{$intent}-line-hover);
+  box-shadow: 0 0 0 3px var(--cs-#{$intent}-halo);
+}
+
+$-sides: all, top, right, bottom, left, block, block-start, block-end, inline, inline-start, inline-end;
+
+/// A see-through rule on `$side` (canon §2.6): the hairline width (0.5px on
+/// 2x screens) in the rule colour. `all` draws the four sides; the others
+/// are any `border-<side>` suffix (`top`, `inline-start`, `block`, …).
+///   li + li { @include cs.hairline(top); }
+@mixin hairline($side: all) {
+  $side: -check($side, $-sides, 'side');
+  @if $side == all {
+    border: var(--cs-hairline) solid var(--cs-rule);
+  } @else {
+    border-#{$side}: var(--cs-hairline) solid var(--cs-rule);
+  }
+}
+
+// Canon's control sets (canon §2.3): height, inline padding, radius, text,
+// icon, icon↔label gap, tracking.
+$-control-sizes: (
+  sm: (height: 32px, pad: 8px, radius: 4px, font: 12px, lh: 16px, icon: 16px, gap: 6px, tracking: -0.007em),
+  md: (height: 40px, pad: 10px, radius: 8px, font: 14px, lh: 20px, icon: 20px, gap: 8px, tracking: -0.006em),
+  lg: (height: 48px, pad: 12px, radius: 12px, font: 16px, lh: 24px, icon: 24px, gap: 10px, tracking: -0.004em),
+);
+
+/// The box of a Canon control at `sm` / `md` / `lg` (32 / 40 / 48): an
+/// inline flex row with the size's gap, radius, text and tracking, a 1px
+/// transparent border (so every emphasis keeps one box) and content starting
+/// `control-pad` from the outer edge. Sets `--cs-icon`, so Vuetify icons
+/// inside take the size's icon. Colour and weight are the author's
+/// (`interactive`, `type`). Include it before `interactive`, whose border
+/// colours this one's.
+///   .chip { @include cs.control-box(sm); }
+@mixin control-box($size: md) {
+  $size: -check($size, map.keys($-control-sizes), 'control size');
+  $c: map.get($-control-sizes, $size);
+  --cs-icon: #{map.get($c, icon)};
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: map.get($c, gap);
+  min-height: map.get($c, height);
+  padding-block: 0;
+  padding-inline: calc(#{map.get($c, pad)} - 1px);
+  border: 1px solid transparent;
+  border-radius: map.get($c, radius);
+  font-size: map.get($c, font);
+  line-height: map.get($c, lh);
+  letter-spacing: calc(#{map.get($c, tracking)} * var(--cs-font-tracking));
+  vertical-align: middle;
+}
+
+/// One of the type roles behind Vuetify's `.text-<role>` classes, at Canon's
+/// ramp (canon §2.9): family (heading for display, headline and
+/// title-large, body otherwise, as Vuetify's classes), size, line height, weight and tracking scaled for the font.
+/// Roles: display-large/medium/small, headline-*, title-*, body-*, label-*
+/// (`label-large` is control text, 14/20/500; `body-small` is hint text).
+///   .card__title { @include cs.type(title-medium); }
+@mixin type($role) {
+  $role: -check($role, map.keys(typography.$roles), 'type role');
+  $spec: map.get(typography.$roles, $role);
+  $size: list.nth($spec, 1);
+  $tracking: list.nth($spec, 4);
+  @if string.index($role, 'display-') == 1 or string.index($role, 'headline-') == 1 or $role == 'title-large' {
+    font-family: var(--cs-font-heading);
+  } @else {
+    font-family: var(--cs-font-body);
+  }
+  font-size: #{$size}px;
+  line-height: #{list.nth($spec, 2)}px;
+  font-weight: list.nth($spec, 3);
+  @if $tracking < 0 {
+    letter-spacing: calc(#{$tracking} * var(--cs-font-tracking));
+  } @else {
+    letter-spacing: $tracking;
+  }
+}

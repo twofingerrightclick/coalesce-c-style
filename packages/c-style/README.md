@@ -169,7 +169,7 @@ Tags (`v-chip`) follow Canon's tag sizes: `x-small`, `small` and default are sm 
 
 Avatar initials take Canon's type for the avatar's size at weight 400: 24 → 10/12, 32 → 12/16, 40 → 14/20, 48 and 56 → 16/24, 64 → 24/32. Named sizes `x-small` … `x-large` are 24 … 56; a numeric `size` takes the nearest step (12–96px). Leave the text bare or in a plain `<span>`; a type class such as `text-caption` overrides it.
 
-Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`); density never changes a control's size. Tables keep Vuetify's density rows (56 / 48 / 40), Canon's default being 56; `density="compact"` gives Canon's compact 40. The `--cs-*` custom properties (`--cs-control-height`, `--cs-icon`, `--cs-radius`, `--cs-form-gap`, `--cs-hairline`, …) are Canon's md values for c-style's own rules. There is no inherited size context.
+Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`); density never changes a control's size. Tables keep Vuetify's density rows (56 / 48 / 40), Canon's default being 56; `density="compact"` gives Canon's compact 40. The `--cs-*` custom properties (`--cs-control-height`, `--cs-icon`, `--cs-radius`, `--cs-gap-md`, `--cs-hairline`, …) are Canon's md values for c-style's own rules. There is no inherited size context.
 
 ## Icons
 

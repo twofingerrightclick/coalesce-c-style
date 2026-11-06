@@ -9,7 +9,7 @@
     "jsx": "preserve",
     "lib": ["es2023", "dom", "dom.iterable"],
     "types": ["node", "vite/client"],
-    "paths": { "@/*": ["./src/*"] }
+    "paths": { "@/*": ["./src/*"], "@demo/*": ["../MyProject/MyCompany.MyProject.Web/src/*"] }
   },
   "include": [".storybook/**/*.ts", "src/**/*.ts", "src/**/*.vue", "stories/**/*.ts"]
 }

@@ -100,7 +100,7 @@ $arrow: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox=
     box-shadow: var(--v-shadow-control);
     color: rgb(var(--v-theme-on-surface));
     line-height: var(--cs-time-lh);
-    letter-spacing: var(--cs-tracking);
+    letter-spacing: var(--cs-control-tracking);
     cursor: text;
     transition:
       block-size 0.1s ease-out,
@@ -273,7 +273,7 @@ $arrow: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox=
     color: rgb(var(--v-theme-on-surface));
     font-size: var(--cs-control-font);
     line-height: var(--cs-control-lh);
-    letter-spacing: var(--cs-tracking);
+    letter-spacing: var(--cs-control-tracking);
     font-weight: 500;
     cursor: default;
   }

@@ -1,10 +1,32 @@
 // Vuetify's MD3 type roles remapped to Canon's ramp (plan §3a, canon §2.9).
 @use 'sass:math';
+@use 'sass:map';
 
 // Font families are inherited from Vuetify's map (`--v-font-body/heading`).
 // Canon's negative tracking is tuned for Inter; `--v-font-tracking` (theme,
 // see `fontVariables`) scales it for the active font. Positive (caps) tracking
 // is font-independent.
+
+// Canon's ramp as plain numbers: (font px, line px, weight, tracking em).
+// `$typography` below turns it into Vuetify's map; the public `type()` mixin
+// (src/tokens.scss) reads it too, so both emit the same role.
+$roles: (
+  'display-large': (57, 64, 600, -0.02em),
+  'display-medium': (45, 52, 600, -0.02em),
+  'display-small': (36, 44, 600, -0.02em),
+  'headline-large': (30, 36, 600, -0.015em),
+  'headline-medium': (24, 32, 600, -0.015em),
+  'headline-small': (20, 28, 600, -0.015em),
+  'title-large': (18, 28, 600, -0.01em),
+  'title-medium': (16, 24, 600, -0.01em),
+  'title-small': (14, 20, 600, -0.01em),
+  'body-large': (16, 24, 400, -0.004em),
+  'body-medium': (14, 20, 400, -0.006em),
+  'body-small': (12, 16, 400, -0.007em),
+  'label-large': (14, 20, 500, -0.006em),
+  'label-medium': (12, 16, 500, -0.007em),
+  'label-small': (10, 16, 600, 0.01em),
+);
 
 @function role($size, $line, $weight, $tracking) {
   @if $tracking < 0 {
@@ -18,20 +40,8 @@
   );
 }
 
-$typography: (
-  'display-large': role(57, 64, 600, -0.02em),
-  'display-medium': role(45, 52, 600, -0.02em),
-  'display-small': role(36, 44, 600, -0.02em),
-  'headline-large': role(30, 36, 600, -0.015em),
-  'headline-medium': role(24, 32, 600, -0.015em),
-  'headline-small': role(20, 28, 600, -0.015em),
-  'title-large': role(18, 28, 600, -0.01em),
-  'title-medium': role(16, 24, 600, -0.01em),
-  'title-small': role(14, 20, 600, -0.01em),
-  'body-large': role(16, 24, 400, -0.004em),
-  'body-medium': role(14, 20, 400, -0.006em),
-  'body-small': role(12, 16, 400, -0.007em),
-  'label-large': role(14, 20, 500, -0.006em),
-  'label-medium': role(12, 16, 500, -0.007em),
-  'label-small': role(10, 16, 600, 0.01em),
-);
+$typography: ();
+
+@each $name, $spec in $roles {
+  $typography: map.set($typography, $name, role($spec...));
+}
