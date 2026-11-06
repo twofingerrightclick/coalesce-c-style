@@ -1,11 +1,14 @@
 <script setup lang="ts">
-defineProps<{ label?: string; stack?: boolean }>();
+// `stack`: items fill a grid of ≥240px cells (fields, sliders).
+// `wrap`: items keep their own width, top-aligned, and wrap (fixed-width
+// panels such as pickers, which would overrun a 240px cell).
+defineProps<{ label?: string; stack?: boolean; wrap?: boolean }>();
 </script>
 
 <template>
   <div class="sb-row">
     <div v-if="label !== undefined" class="sb-row__label">{{ label }}</div>
-    <div :class="['sb-row__items', { 'sb-row__items--stack': stack }]"><slot /></div>
+    <div :class="['sb-row__items', { 'sb-row__items--stack': stack, 'sb-row__items--wrap': wrap }]"><slot /></div>
   </div>
 </template>
 
@@ -33,6 +36,9 @@ defineProps<{ label?: string; stack?: boolean }>();
 .sb-row__items--stack {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  align-items: start;
+}
+.sb-row__items--wrap {
   align-items: start;
 }
 </style>

@@ -17,7 +17,7 @@ export const Slider = tpl(
 );
 
 export const ColorPicker = tpl(
-  `<sb-row label="modes" stack>
+  `<sb-row label="modes" wrap>
     <v-color-picker v-model="color" />
     <v-color-picker v-model="color" show-swatches hide-canvas />
     <v-color-picker v-model="color" mode="hsla" elevation="0" border />

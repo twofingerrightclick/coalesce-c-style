@@ -8,12 +8,12 @@ export default {
 } satisfies Meta;
 
 export const DatePicker = tpl(
-  `<sb-row label="single / range / multiple" stack>
+  `<sb-row label="single / range / multiple" wrap>
     <v-date-picker v-model="date" />
     <v-date-picker v-model="range" multiple="range" />
     <v-date-picker v-model="dates" multiple color="primary" show-adjacent-months />
   </sb-row>
-  <sb-row label="month / year view, min/max, disabled" stack>
+  <sb-row label="month / year view, min/max, disabled" wrap>
     <v-date-picker view-mode="months" />
     <v-date-picker view-mode="year" />
     <v-date-picker v-model="date" :min="new Date(2026, 10, 3)" :max="new Date(2026, 10, 20)" hide-header />
@@ -27,7 +27,7 @@ export const DatePicker = tpl(
 );
 
 export const TimePicker = tpl(
-  `<sb-row label="ampm / 24hr / seconds" stack>
+  `<sb-row label="ampm / 24hr / seconds" wrap>
     <v-time-picker v-model="time" />
     <v-time-picker v-model="time" format="24hr" color="primary" />
     <v-time-picker v-model="time" use-seconds variant="input" />
