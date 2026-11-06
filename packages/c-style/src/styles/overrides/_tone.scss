@@ -1,0 +1,64 @@
+// Tone context (plan §3d): components read `--cs-tone-*`, and the intent
+// classes Vuetify puts on them (`text-<color>` / `bg-<color>`) point those
+// at the intent's role tokens from the theme. Unset intent = neutral.
+
+$roles: text, tint, hover, active, border-low, line, line-hover, halo, bar;
+$intents: (
+  'primary': primary,
+  'secondary': neutral,
+  'neutral': neutral,
+  'success': success,
+  'warning': warning,
+  'error': error,
+  'info': info,
+);
+
+@mixin tone($source) {
+  @each $role in $roles {
+    --cs-tone-#{$role}: var(--v-#{$source}-#{$role});
+  }
+}
+
+// Re-points of Vuetify's own `--v-theme-*` on a component. Most components
+// carry a `v-theme--<name>` class, whose theme variables sit in
+// `vuetify-utilities.theme-base`, above vuetify-overrides; a sublayer
+// appended after Vuetify's utility sublayers outranks them on the element.
+@mixin repoint {
+  @layer vuetify-utilities {
+    @layer c-style {
+      @content;
+    }
+  }
+}
+
+@layer vuetify-overrides {
+  :is(.v-btn, .v-chip, .v-field, .v-alert, .v-banner) {
+    @include tone(neutral);
+  }
+
+  @each $intent, $source in $intents {
+    :is(.text-#{$intent}, .bg-#{$intent}) {
+      @include tone($source);
+    }
+  }
+
+  // Canon's medium-emphasis recipe for every tonal component (avatar, card,
+  // alert, list item, tag; buttons step it per state in _btn.scss): the
+  // tone's tint at tint-2, where Vuetify washes the label colour at .12.
+  [class*='--variant-tonal'] > [class*='__underlay'] {
+    background: rgb(var(--cs-tone-tint, var(--v-neutral-tint)));
+    opacity: var(--v-tint-2);
+  }
+}
+
+// Hued labels on a light or transparent fill use the tone's text step (700 /
+// 300), not the 600 solid: buttons and tags in any emphasis, and every
+// tonal, text or plain component (avatar initials, a tonal alert's text, a
+// selected tonal card). Outlined alerts and toasts keep the 600 icon.
+@include repoint {
+  @each $intent, $source in $intents {
+    .text-#{$intent}:is(.v-btn, .v-chip, [class*='--variant-tonal'], [class*='--variant-text'], [class*='--variant-plain']) {
+      --v-theme-#{$intent}: var(--v-#{$source}-text);
+    }
+  }
+}

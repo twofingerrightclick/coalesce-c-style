@@ -1,0 +1,18 @@
+[23:46:33.556] [INFO] storybook v10.6.5
+[23:46:33.958] [DEBUG] Getting package.json info for /Users/austenfrostad/kepler/tasks/eaf810a5-b91c-4f71-8b69-5adf30184a07/c-style/storybook/package.json...
+[23:46:34.075] [DEBUG] Could not determine @babel/preset-env version in use. In case of runtime errors with @babel/preset-env, you may need to set the babelRemoveBugfixes feature flag in your `main.ts` file.
+[23:46:34.081] [DEBUG] Serving static files from storybook/public at /
+[23:46:34.081] [INFO] Starting...
+[23:46:34.087] [DEBUG] readDependencyManifest: could not resolve "coalesce-vue"
+[23:46:34.147] [DEBUG] Starting preview..
+[23:46:34.208] [DEBUG] Change detection enabled.
+[23:46:34.208] [DEBUG] Change detection: snapshotting Vite resolve config (restart required if vite.config.ts changes)
+[23:46:34.210] [DEBUG] Change detection: ignored 14 regex alias(es); related modules tracked as opaque-leaf.
+[23:46:34.210] [DEBUG] ChangeDetectionResolverFactory: skipped regex aliases [/^@\//, /^@storybook\/global$/, /^storybook\/test$/, /^storybook\/actions$/, /^storybook\/preview-api$/, /^storybook\/internal\/channels$/, /^storybook\/internal\/client-logger$/, /^storybook\/internal\/core-events$/, /^storybook\/internal\/preview-errors$/, /^storybook\/internal\/types$/, /^storybook\/internal\/preview-api$/, /^@\//, /^\/?@vite\/env/, /^\/?@vite\/client/]
+[23:46:34.211] [ERROR] [38;2;241;97;97mError: listen EADDRINUSE: address already in use 127.0.0.1:6006[39m
+    at Server.setupListenHandle [as _listen2] (node:net:2328:16)
+    at listenInCluster (node:net:2437:12)
+    at node:net:2666:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[23:46:34.211] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.

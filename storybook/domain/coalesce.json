@@ -1,0 +1,14 @@
+{
+  "webProject": {
+    "projectFile": "./StorybookDomain.Web/StorybookDomain.Web.csproj"
+  },
+  "dataProject": {
+    "projectFile": "./StorybookDomain.Data/StorybookDomain.Data.csproj"
+  },
+  "rootGenerator": "Vue",
+  "generatorConfig": {
+    "Scripts": {
+      "targetDirectory": "../../../src/domain"
+    }
+  }
+}

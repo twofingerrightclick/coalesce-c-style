@@ -1,0 +1,57 @@
+@use 'sass:math';
+
+// Canon control sizes (canon §2.3): sm 32 / md 40 / lg 48, plus the 28px in-box
+// button. Vuetify's five sizes collapse onto them (decision 3).
+
+@function text($size, $line, $tracking) {
+  @return (
+    'size': math.div($size, 16) * 1rem,
+    'line-height': math.div($line, $size),
+    'weight': 500,
+    'letter-spacing': $tracking,
+  );
+}
+
+@function button($height, $padding, $radius, $type, $icon, $gap) {
+  @return (
+    'height': $height,
+    // Canon: control padding plus the label's own inset (10 + 6 at md),
+    // less the 1px border every button carries.
+    'padding-inline': $padding - 1px,
+    'border-radius': $radius,
+    'border-radius-pressed': $radius,
+    'typography': $type,
+    'icon-size': $icon,
+    'icon-gap': $gap,
+  );
+}
+
+$sm: text(12, 16, -0.007em);
+$md: text(14, 20, -0.006em);
+$lg: text(16, 24, -0.004em);
+
+$button-named-sizes: (
+  'x-small': button(28px, 8px, 4px, $sm, 16px, 6px),
+  'small': button(32px, 12px, 4px, $sm, 16px, 6px),
+  'default': button(40px, 16px, 8px, $md, 20px, 8px),
+  'large': button(48px, 20px, 12px, $lg, 24px, 10px),
+  'x-large': button(48px, 20px, 12px, $lg, 24px, 10px),
+);
+
+$icon-btn-named-sizes: (
+  'x-small': ('icon-size': 16px),
+  'small': ('icon-size': 16px),
+  'default': ('icon-size': 20px),
+  'large': ('icon-size': 24px),
+  'x-large': ('icon-size': 24px),
+);
+
+// Density is not size (decision 4): every density renders the same box.
+$flat-density: ('default': 0, 'comfortable': 0, 'compact': 0);
+
+// Vuetify derives field paddings from density with hard-coded 16px bases
+// (`--v-input-padding-top: 16px + d/2`, outlined padding-bottom the same).
+// A uniform −12px density turns them into Canon's 10px and a 52px base
+// control height into 40px, with no CSS.
+$field-density: ('default': -3, 'comfortable': -3, 'compact': -3);
+$field-height-base: 52px;

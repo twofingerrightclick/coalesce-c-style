@@ -1,0 +1,18 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="coalesce.json" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="MyCompany.MyProject.AppHost/MyCompany.MyProject.AppHost.csproj" />
+  <Project Path="MyCompany.MyProject.Data/MyCompany.MyProject.Data.csproj" />
+  <Project Path="MyCompany.MyProject.Migrations/MyCompany.MyProject.Migrations.csproj" />
+  <Project Path="MyCompany.MyProject.Web/MyCompany.MyProject.Web.csproj" />
+  <Project Path="MyCompany.MyProject.Data.Test/MyCompany.MyProject.Data.Test.csproj" />
+</Solution>

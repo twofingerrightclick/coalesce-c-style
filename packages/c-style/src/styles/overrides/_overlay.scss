@@ -1,0 +1,81 @@
+// Overlays and lists (canon §4 E Menu, Tooltip, Dialog). Panel radius,
+// elevation, scrim colour, tooltip type and colours, list heights and the menu
+// list padding/row radius come from settings.scss and the blueprint.
+@layer vuetify-overrides {
+  // No blur variable on Vuetify's scrim.
+  .v-overlay__scrim {
+    backdrop-filter: blur(4px);
+  }
+
+  // Canon tooltip: a 1px frame line, the raised shadow and sm tracking (no
+  // variables).
+  .v-tooltip > .v-overlay__content {
+    border: 1px solid rgb(var(--v-frame));
+    box-shadow: var(--v-shadow-raised);
+    letter-spacing: -0.007em;
+  }
+
+  // List subheaders are menu headings: caps at +0.01em (no variable).
+  .v-list-subheader {
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+
+  // Menu rows show keyboard focus as their fill (Vuetify's focus overlay),
+  // not the ring: a picker focuses its chosen row when it opens. Menus only
+  // (VSelect, VAutocomplete and VCombobox open a VMenu too); a list in a
+  // dialog or sheet keeps its ring and active fill.
+  .v-menu .v-list-item:focus-visible {
+    box-shadow: none;
+  }
+
+  // A chosen option in a menu: weight 500 and a trailing tick instead of
+  // Vuetify's activated fill (canon §4 B Select option row).
+  .v-menu .v-list-item--active {
+    > .v-list-item__overlay {
+      opacity: 0;
+    }
+
+    .v-list-item-title {
+      font-weight: 500;
+    }
+
+    // Vuetify's `::after` is an absolute focus border at opacity 0; c-style's
+    // focus ring is a box-shadow (_focus.scss), so the pseudo can hold the tick.
+    &::after {
+      content: '';
+      position: static;
+      border: 0;
+      opacity: 1;
+      grid-area: append;
+      justify-self: end;
+      width: var(--cs-icon);
+      height: var(--cs-icon);
+      margin-inline-start: var(--cs-gap);
+      background: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+  }
+
+  // Canon dialog: a 72px header over a rule line, 24px body, and a footer
+  // over a rule at 23/24/24 (canon §4 E Dialog). Vuetify's dialog is a plain
+  // card (optionally in a form), so these key on its direct parts.
+  .v-dialog > .v-overlay__content > :is(.v-card, form > .v-card) {
+    > :is(.v-card-item, .v-card-title) {
+      min-height: 72px;
+      padding: 16px 16px 15px 24px;
+      border-bottom: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity));
+      align-content: center;
+    }
+
+    > .v-card-text {
+      padding: 24px;
+    }
+
+    > .v-card-actions {
+      padding: 23px 24px 24px;
+      gap: 12px;
+      border-top: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity));
+    }
+  }
+}

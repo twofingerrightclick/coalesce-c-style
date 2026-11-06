@@ -1,0 +1,34 @@
+@use 'tone';
+
+// Pickers and sliders (canon §4 C Slider, Date family). Sizes, radii and
+// the neutral colour come from settings.scss and the blueprint.
+@layer vuetify-overrides {
+  // Canon thumb = the checked radio: a ring of the fill colour around a
+  // surface centre, no hover wash. The shadow is the `elevation-*`
+  // utility's, so the ring is a border and the focus ring an outline.
+  .v-slider-thumb__surface {
+    background-color: rgb(var(--v-theme-surface));
+    border: 5px solid currentColor;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .v-slider-thumb--focus-visible .v-slider-thumb__surface {
+    outline: 1px solid rgb(var(--v-focus-choice));
+    outline-offset: 2px;
+  }
+
+  // A neutral track rests on the frame line at full strength (Vuetify:
+  // the fill colour at .38).
+  .v-slider-track__background.bg-neutral {
+    opacity: 1;
+  }
+}
+
+@include tone.repoint {
+  .v-slider-track__background.bg-neutral {
+    --v-theme-neutral: var(--v-frame);
+  }
+}

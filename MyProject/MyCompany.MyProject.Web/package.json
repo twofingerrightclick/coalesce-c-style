@@ -1,0 +1,52 @@
+{
+  "name": "MyCompany.MyProject",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.0.8",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vue-tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "coalesce": "dotnet coalesce"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@microsoft/applicationinsights-web": "^3.4.1",
+    "@vueuse/core": "^14.3.0",
+    "c-style": "workspace:*",
+    "coalesce-vue": "6.5.1",
+    "coalesce-vue-vuetify3": "6.5.1",
+    "date-fns": "^4.0.0",
+    "date-fns-tz": "^3.0.0",
+    "vue": "^3.5.33",
+    "vue-router": "^5.0.6",
+    "vuetify": "^4.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/eslint-plugin": "1.6.16",
+    "@vue/eslint-config-typescript": "14.7.0",
+    "@vue/test-utils": "^2.4.10",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-coalesce": "6.5.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-vue": "^10.9.0",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.8.3",
+    "sass": "^1.99.0",
+    "typescript": "6.0.3",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-vue-components": "^32.0.0",
+    "vite": "^8.0.10",
+    "vite-plugin-vuetify": "^2.1.3",
+    "vitest": "^4.1.5",
+    "vue-tsc": "^3.2.7"
+  }
+}

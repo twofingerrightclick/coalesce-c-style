@@ -1,0 +1,84 @@
+@use 'sass:math';
+
+$tag-sizes: (
+  'x-small' 24px 0.75rem 6px 16px,
+  'small' 24px 0.75rem 6px 16px,
+  'large' 32px 0.875rem 10px 20px,
+  'x-large' 40px 1rem 14px 24px,
+);
+
+// Data display (canon §4 D Table, Data Table, Pagination; §4 A Tag, Kbd).
+// Row heights, cell padding, line colours, the count, avatar and kbd boxes
+// come from settings.scss; pagination and tag props from the blueprint.
+@layer vuetify-overrides {
+  // Canon tables set figures in tabular nums at control tracking.
+  .v-table {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--cs-tracking);
+  }
+
+  // A table on the page is a framed surface (12px, edge ring, no shadow);
+  // inside a card the card is the frame (Canon `data-frame="none"`).
+  .v-table:not(.v-card .v-table) {
+    border-radius: var(--cs-surface-radius);
+    box-shadow: 0 0 0 var(--cs-hairline) rgba(var(--v-border-color), var(--v-border-opacity));
+  }
+
+  // Header: muted, sentence case, one line; sortable headers go to ink on
+  // hover (Vuetify's own rule, which this one would otherwise outrank).
+  .v-table > .v-table__wrapper > table > thead > tr > th {
+    color: rgb(var(--v-muted));
+    white-space: nowrap;
+
+    &.v-data-table__th--sortable:is(:hover, :focus-visible) {
+      color: rgb(var(--v-theme-on-surface));
+    }
+  }
+
+  // Canon pagination: items 8 apart with no margin outside them, so the row
+  // is the control's 40 (settings.scss zeroes Vuetify's item margins).
+  .v-pagination__list {
+    gap: var(--cs-gap);
+  }
+
+  // Current page: a frame line, no fill (canon §4 D Pagination).
+  .v-pagination__item--is-active > .v-btn {
+    border-color: rgb(var(--v-frame));
+  }
+
+  // Canon tag sizes (canon §4 Tag) for Vuetify's named sizes. sm (24, the
+  // default) is Canon's smallest, so `small` and `x-small` stay there;
+  // `large` / `x-large` are md 32 / lg 40. Text 6 / 10 / 14 in; icons,
+  // avatars and the remove icon at the line height. Vuetify steps chips by
+  // 6px and 2px of type per name (small 18 / 10px), in literal values.
+  @each $name, $height, $font, $inset, $icon in $tag-sizes {
+    .v-chip.v-chip--size-#{$name} {
+      --v-chip-height: #{$height};
+      font-size: $font;
+      padding-inline: $inset;
+
+      .v-icon {
+        --v-icon-size-multiplier: #{math.div($icon, 20px)};
+      }
+
+      .v-chip__close {
+        font-size: $icon;
+      }
+
+      .v-avatar {
+        --v-avatar-height: #{$icon};
+      }
+    }
+  }
+
+  // Low-emphasis tags take the button's quiet tone line (medium emphasis is
+  // the shared tonal recipe, _tone.scss).
+  .v-chip--variant-outlined {
+    border-color: rgb(var(--cs-tone-border-low));
+  }
+
+  .v-kbd {
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+}

@@ -1,0 +1,20 @@
+packages:
+  - MyCompany.MyProject.Web
+  - ../packages/*
+  - ../storybook
+  - ../verify
+
+overrides:
+  js-beautify>glob: "13.0.6"
+
+allowBuilds:
+  "@parcel/watcher": true
+  # Storybook's esbuild resolves its platform binary package at run time; its postinstall only re-verifies it.
+  esbuild: false
+
+minimumReleaseAgeExclude:
+  - coalesce-vue
+  - coalesce-vue-vuetify3
+  - eslint-plugin-coalesce
+
+enableGlobalVirtualStore: true

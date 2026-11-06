@@ -1,0 +1,3 @@
+// Same statement as `layerOrderCss` (src/layer-order.mjs), so the layers rank
+// correctly even when c-style's CSS is the first on the page.
+@layer vuetify-core{@layer reset,base;}@layer vuetify-components;@layer vuetify-overrides;@layer vuetify-utilities{@layer theme-base,typography,helpers,theme-background,theme-foreground,c-style;}@layer vuetify-final{@layer transitions,trumps;}

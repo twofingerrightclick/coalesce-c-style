@@ -1,0 +1,16 @@
+{
+  "webProject": {
+    "projectFile": "./MyCompany.MyProject.Web/MyCompany.MyProject.Web.csproj"
+  },
+  "dataProject": {
+    "projectFile": "./MyCompany.MyProject.Data/MyCompany.MyProject.Data.csproj"
+  },
+
+  "rootGenerator": "Vue",
+
+  "generatorConfig": {
+    "Scripts": {
+      "targetDirectory": "../src"
+    }
+  }
+}

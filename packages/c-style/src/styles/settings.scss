@@ -1,0 +1,351 @@
+// Vuetify SASS settings for c-style. Variables only: any CSS emitted here is
+// copied into every Vuetify component stylesheet.
+//
+// Values are `!default` so an app can override them:
+//   @use 'c-style/settings' with ($button-height: 36px);
+//
+// c-style's own rules read Canon's md lengths from `--cs-*` tokens
+// (_tokens.scss); this file holds the values Vuetify does SASS math on.
+
+@use 'typography' as type;
+@use 'sizes';
+
+$elevations: (
+  0: var(--v-elevation-0),
+  1: var(--v-elevation-1),
+  2: var(--v-elevation-2),
+  3: var(--v-elevation-3),
+  4: var(--v-elevation-4),
+  5: var(--v-elevation-5),
+);
+$no-ambient: (0: 0 0 transparent, 1: 0 0 transparent, 2: 0 0 transparent, 3: 0 0 transparent, 4: 0 0 transparent, 5: 0 0 transparent);
+$rule-color: rgba(var(--v-border-color), var(--v-rule-opacity));
+$rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
+
+@forward 'vuetify/settings' with (
+  // ── Global ───────────────────────────────────────────────────────────────
+  // Canon radius ladder (canon §2.3, decision 8). The root radius is also the
+  // canary in verify/app/plumbing.spec.ts: if `.v-btn` isn't 8px, Sass loaded
+  // a second copy of `vuetify/settings` and none of this file applies.
+  $border-radius-root: 8px !default,
+  $rounded: (0: 0, 'sm': 4px, null: 8px, 'md': 8px, 'lg': 12px, 'xl': 16px, 'xxl': 24px, 'pill': 9999px, 'circle': 50%, 'shaped': 12px 0) !default,
+  $typography: type.$typography !default,
+  // Theme variables carry Canon's per-mode shadows (decision 10).
+  $shadow-key: $elevations !default,
+  $shadow-ambient: $no-ambient !default,
+  $transition-duration-root: 0.15s !default,
+  $standard-easing: ease !default,
+
+  // ── Icons (decision 16) ──────────────────────────────────────────────────
+  // `default` is the `--cs-icon` token (20).
+  $icon-sizes: ('x-small': 12px, 'small': 16px, 'default': var(--cs-icon), 'large': 24px, 'x-large': 32px) !default,
+  $icon-margin-start: 8px !default,
+  $icon-margin-end: 8px !default,
+  $icon-btn-sizes: ('x-small': 28px, 'small': 32px, 'default': 40px, 'large': 48px, 'x-large': 48px) !default,
+  $icon-btn-icon-sizes: ('x-small': 16px, 'small': 16px, 'default': 20px, 'large': 24px, 'x-large': 24px) !default,
+
+  // ── Buttons ──────────────────────────────────────────────────────────────
+  $button-named-sizes: sizes.$button-named-sizes !default,
+  $icon-btn-named-sizes: sizes.$icon-btn-named-sizes !default,
+  $button-density: sizes.$flat-density !default,
+  $button-stacked-density: sizes.$flat-density !default,
+  // Canon has no raised buttons: `elevated` renders like `flat` (decision 1).
+  $button-elevation: ('default': 0, 'hover': 0, 'active': 0) !default,
+  // Canon buttons always carry a 1px border, transparent unless low emphasis,
+  // so every emphasis has the same box (named-size padding is net of it).
+  $button-border-width: 1px !default,
+  $button-border-color: transparent !default,
+  // Icon-only buttons are squares with the control radius, not circles.
+  $button-icon-border-radius: var(--v-btn-border-radius) !default,
+  // Grey whatever the intent (canon §3.5 "Disabled"): Vuetify then paints
+  // `on-surface` on `surface` at full strength, which _btn.scss re-points.
+  $button-colored-disabled: false !default,
+  $button-disabled-opacity: 1 !default,
+  // Canon's busy spinner is icon-sized.
+  $button-loader-size: var(--v-btn-icon-size, 20px) !default,
+  $icon-btn-border-radius: 8px !default,
+  $icon-btn-elevation: 0 !default,
+  // Canon Button Group: line borders and dividers on a control shadow.
+  $btn-group-height: 40px !default,
+  $btn-group-border-color: rgb(var(--v-frame)) !default,
+  $btn-group-elevation: 1 !default,
+  // `<v-icon start>` inside a button: Canon's icon sits at the control
+  // padding (10 at md) with the 8px control gap to the label.
+  $button-margin-start-multiplier: -6.6666666667 !default,
+  $button-margin-end-multiplier: 5 !default,
+
+  // ── Fields ───────────────────────────────────────────────────────────────
+  $input-density: sizes.$field-density !default,
+  $input-control-height: sizes.$field-height-base !default,
+  $field-control-height: sizes.$field-height-base !default,
+  $field-control-underlined-height: sizes.$field-height-base !default,
+  $input-font-size: 0.875rem !default,
+  $input-line-height: 1.4285714286 !default,
+  $field-font-size: 14px !default,
+  $field-letter-spacing: -0.006em !default,
+  $field-input-row-gap: 7px !default,
+  $label-font-size: 0.875rem !default,
+  $label-letter-spacing: -0.006em !default,
+  $messages-font-size: 12px !default,
+  $messages-line-height: 16px !default,
+  $input-details-letter-spacing: -0.007em !default,
+  // Canon: the message sits 8px under the frame, flush with its edge.
+  $input-details-padding-above: 8px !default,
+  $input-details-padding-inline: 0 !default,
+  $input-details-line-height: 16px !default,
+  $input-details-min-height: 16px !default,
+  $messages-min-height: 16px !default,
+  // A 1px frame in every state; _field.scss colours it.
+  $field-outline-opacity: 1 !default,
+  $field-focused-border-width: 1px !default,
+  $select-content-border-radius: 12px !default,
+  $select-content-elevation: 3 !default,
+  $autocomplete-content-border-radius: 12px !default,
+  $autocomplete-content-elevation: 3 !default,
+  $combobox-content-border-radius: 12px !default,
+  $combobox-content-elevation: 3 !default,
+
+  // ── Choices ──────────────────────────────────────────────────────────────
+  $selection-control-size: 20px !default,
+  $selection-control-density: sizes.$flat-density !default,
+  // Canon switch: a 34×20 track inside a 2px ring of its own colour, i.e. a
+  // 38×24 pill with the 20px thumb inset 2px; it travels 14px.
+  $switch-track-width: 38px !default,
+  $switch-track-height: 24px !default,
+  $switch-thumb-offset: -2px !default,
+  $switch-track-opacity: 1 !default,
+  $switch-track-background: rgb(var(--v-track)) !default,
+  $switch-thumb-elevation: 1 !default,
+  // 10px from the 34px track box = 8 from its ring.
+  $switch-label-margin-inline-start: 8px !default,
+  // Canon fieldset: the legend flush with the choices (Vuetify indents it to
+  // centre on a 40px control) and 16px above them.
+  $radio-group-label-margin-inline-start: 0 !default,
+  $radio-group-label-selection-group-padding-inline: 0 !default,
+  $radio-group-label-selection-group-margin-top: 16px !default,
+
+  // ── Lists ────────────────────────────────────────────────────────────────
+  $list-density: sizes.$flat-density !default,
+  // Canon list rows (nav list, menu) are inset from the edge (and rounded,
+  // blueprint) on whatever surface holds them: no list slab of its own.
+  // Menus paint their panel themselves; nav lists keep their own inset.
+  $list-background: transparent !default,
+  $list-padding: 8px 4px !default,
+  $list-item-min-height: 40px !default,
+  $list-item-one-line-min-height: 40px !default,
+  $list-item-two-line-min-height: 56px !default,
+  $list-item-two-line-padding: 8px 16px !default,
+  $list-item-padding: 4px 16px !default,
+  $list-item-icon-margin-start: 10px !default,
+  $list-item-icon-margin-end: 10px !default,
+  $list-item-avatar-margin-start: 12px !default,
+  $list-item-avatar-margin-end: 12px !default,
+  $list-item-action-spacer-width: 8px !default,
+  $list-item-title-font-size: 0.875rem !default,
+  $list-item-title-line-height: 1.25rem !default,
+  $list-item-title-letter-spacing: -0.006em !default,
+  $list-item-subtitle-font-size: 0.75rem !default,
+  $list-item-subtitle-letter-spacing: -0.007em !default,
+  $list-item-nav-title-font-size: 0.875rem !default,
+  $list-item-nav-title-line-height: 1.25rem !default,
+  $list-subheader-font-size: 0.625rem !default,
+  $list-nav-subheader-font-size: 0.625rem !default,
+  $list-subheader-font-weight: 600 !default,
+  // Canon menu heading: a 32px row of 10/16 muted caps.
+  $list-subheader-line-height: 1rem !default,
+  $list-subheader-min-height: 32px !default,
+
+  // ── Tabs, chips, avatars, alerts, banners, breadcrumbs ───────────────────
+  $tabs-density: sizes.$flat-density !default,
+  // Canon tabs are a segmented track (the blueprint turns `inset` on): a
+  // 40px track = 34px tabs inside a 3px inset, track radius 10 = tab 7 + 3.
+  $tabs-height: 34px !default,
+  $tab-min-width: 0 !default,
+  $tab-inset-padding: 3px !default,
+  $tab-inset-radius: 7px !default,
+  $chip-density: sizes.$flat-density !default,
+  $chip-label-border-radius: 2px !default,
+  $chip-elevation: 0 !default,
+  $avatar-density: sizes.$flat-density !default,
+  $alert-density: sizes.$flat-density !default,
+  $alert-padding: 12px !default,
+  $alert-border-radius: 12px !default,
+  $alert-elevation: 0 !default,
+  $alert-prepend-icon-size: 20px !default,
+  $alert-prepend-margin-inline-end: 12px !default,
+  $alert-title-font-size: 0.875rem !default,
+  $alert-title-font-weight: 500 !default,
+  $alert-title-line-height: 1.25rem !default,
+  // The intent bar: 4px, full strength (canon §4 E Alert).
+  $alert-border-thin-width: 4px !default,
+  $alert-border-opacity: 1 !default,
+  // Canon banner without an intent: a zinc-100 / zinc-900 strip over a rule,
+  // 8px above and below two lines, parts 12 apart, actions at the end of the
+  // row (centred in _surface.scss) rather than under the text.
+  $banner-background: rgb(var(--v-banner)) !default,
+  $banner-border-color: $rule-color !default,
+  $banner-padding-inline-start: 16px !default,
+  $banner-padding: 4px !default,
+  $banner-prepend-margin-end: 12px !default,
+  $banner-text-padding-end: 12px !default,
+  $banner-action-margin: 0 !default,
+  $banner-actions-line-margin-top: 0 !default,
+  $banner-density: sizes.$flat-density !default,
+  $breadcrumbs-density: sizes.$flat-density !default,
+  $breadcrumbs-item-icon-font-size: 16px !default,
+  // Canon breadcrumb: a control-tall row of 14/20 links, no side padding,
+  // 8px around separators; the current crumb is quieter, not faded.
+  $breadcrumbs-padding-x: 0 !default,
+  $breadcrumbs-padding-y: 10px !default,
+  $breadcrumbs-line-height: 1.25rem !default,
+  $breadcrumbs-item-padding: 0 !default,
+  $breadcrumbs-item-link-text-decoration: none !default,
+  $breadcrumbs-item-disabled-opacity: 1 !default,
+  $color-input-pip-density: sizes.$flat-density !default,
+  $time-picker-controls-field-density: sizes.$flat-density !default,
+
+  // ── Tables (density kept: 56 / 48 / 40 rows, decision 4) ─────────────────
+  $table-header-height: 40px !default,
+  $table-row-height: 56px !default,
+  // Canon cells: 7px block padding (8 less the row line) so wrapped text
+  // keeps its inset; text and line-height at control type (canon §4 D Table).
+  $table-column-padding: 7px 16px !default,
+  $table-line-height: 1.4285714286 !default,
+  // Header and row lines are the in-content `rule` (10%) at the hairline.
+  // Hover keeps Vuetify's ink at the hover opacity (≈ zinc-100 / zinc-800);
+  // stripes are half of it (≈ zinc-50).
+  $table-border-color: $rule-color !default,
+  $table-border: var(--cs-hairline) solid $rule-color !default,
+  $table-stripe-color: rgba(var(--v-border-color), calc(var(--v-hover-opacity) / 2)) !default,
+
+  // ── Pagination, tags, counts, avatars, kbd (canon §4 A, D) ───────────────
+  // Page items 8 apart (a list gap in _data.scss, no margin outside them);
+  // the current page is a frame line with no fill.
+  $pagination-item-margin: 0 !default,
+  $button-pagination-active-overlay-opacity: 0 !default,
+  // Canon tag: sm is the default size (canon §4 Tag), a 24px box of 12/16
+  // text 6px from the edge, a 16px icon, radius 2 from `label`. Vuetify's
+  // named sizes step 6px and 2px of type from it (small 18/10, large 30/14).
+  $chip-height: 24px !default,
+  $chip-font-size: 0.75rem !default,
+  $chip-padding-ratio: 4 !default,
+  $chip-font-weight: 500 !default,
+  $chip-icon-size-multiplier: 0.8 !default,
+  // Canon's remove icon is the tag's icon size (16 at sm; _data.scss sizes
+  // it for the larger names).
+  $chip-close-size: 16px !default,
+  // Canon count: a 16px pill of 10/16/600 white on the danger solid.
+  $badge-background: rgb(var(--v-theme-error)) !default,
+  $badge-color: rgb(var(--v-theme-on-error)) !default,
+  $badge-height: 16px !default,
+  $badge-min-width: 16px !default,
+  $badge-padding: 0 4px !default,
+  $badge-border-radius: 8px !default,
+  $badge-font-size: 0.625rem !default,
+  $badge-font-weight: 600 !default,
+  $badge-line-height: 1.6 !default,
+  $badge-dot-height: 8px !default,
+  $badge-dot-width: 8px !default,
+  // Canon avatar fallback: muted initials on the fill, no shadow.
+  $avatar-background: rgb(var(--v-fill)) !default,
+  $avatar-color: rgb(var(--v-muted)) !default,
+  $avatar-elevation: 0 !default,
+  // Canon kbd (md): 10/16/600 caps, 2/6 padding, radius 4, flat.
+  $kbd-font-size: 0.625rem !default,
+  $kbd-font-weight: 600 !default,
+  $kbd-line-height: 1.6 !default,
+  $kbd-padding: 2px 6px !default,
+  $kbd-elevation: 0 !default,
+  $kbd-border-width: 0 !default,
+
+  // ── Surfaces and overlays (decisions 8, 10) ──────────────────────────────
+  $card-border-radius: 12px !default,
+  $card-elevation: 2 !default,
+  $card-title-font-size: 1rem !default,
+  $card-title-font-weight: 600 !default,
+  $card-title-line-height: 1.5rem !default,
+  // Canon card: 20px padding, 16px from the header to the body, a muted
+  // 14/20 description 4px under the title (canon §4 A Card).
+  $card-item-padding: 20px 20px 16px !default,
+  $card-title-padding: 20px 20px 16px !default,
+  $card-text-padding: 20px !default,
+  $card-actions-padding: 0 20px 20px !default,
+  $card-actions-min-height: 0 !default,
+  $card-actions-gap: 8px !default,
+  $card-subtitle-font-size: 0.875rem !default,
+  $card-subtitle-line-height: 1.25rem !default,
+  $card-subtitle-header-padding: 4px 0 0 !default,
+  $expansion-panel-border-radius: 12px !default,
+  $expansion-panel-title-min-height: 40px !default,
+  $expansion-panel-active-title-min-height: 40px !default,
+  $expansion-panel-title-padding: 10px 16px !default,
+  $expansion-panel-title-font-size: 0.875rem !default,
+  $menu-content-border-radius: 12px !default,
+  $menu-elevation: 3 !default,
+  $dialog-border-radius: 24px !default,
+  $dialog-elevation: 5 !default,
+  $tooltip-border-radius: 4px !default,
+  $tooltip-font-size: 0.75rem !default,
+  $tooltip-line-height: 1.3333333333 !default,
+  $tooltip-padding: 4px 6px !default,
+  // Canon's tooltip is a light surface, not inverted (border/shadow in _overlay.scss).
+  $tooltip-background-color: rgb(var(--v-theme-surface)) !default,
+  $tooltip-text-color: rgb(var(--v-theme-on-surface)) !default,
+  // Scrim: white 85% / zinc-950 75% (a wash, not a dark veil).
+  $overlay-scrim-background: rgb(var(--v-scrim)) !default,
+  $overlay-opacity: 1 !default,
+  $snackbar-border-radius: 12px !default,
+  $snackbar-elevation: 3 !default,
+  // Canon toast: white / zinc-800 (one step above other dark surfaces), 12px
+  // in, 46 tall. The blueprint makes toasts outlined, so the fallback is the fill.
+  $snackbar-background: rgb(var(--v-theme-surface-bright)) !default,
+  $snackbar-fallback-background: rgb(var(--v-theme-surface-bright)) !default,
+  $snackbar-color: rgb(var(--v-theme-on-surface-bright)) !default,
+  $snackbar-content-padding: 12px !default,
+  $snackbar-wrapper-min-height: 0 !default,
+  $skeleton-loader-text-background: rgb(var(--v-fill)) !default,
+  $navigation-drawer-temporary-elevation: 5 !default,
+  $app-bar-elevation: 0 !default,
+  // Docked chrome: a `rule-faint` hairline, a step lighter than in-content
+  // rules (canon §4 D App Shell). The blueprint turns the app bar's on;
+  // VAppBar draws it through VToolbar's border.
+  $toolbar-border-color: $rule-faint-color !default,
+  $toolbar-border-thin-width: 0 0 var(--cs-hairline) !default,
+  $navigation-drawer-border-color: $rule-faint-color !default,
+  $navigation-drawer-border-thin-width: var(--cs-hairline) !default,
+  // Canon nav list: items 10px in and 10px apart, regular weight (500 when
+  // current, _nav.scss).
+  $list-nav-padding: 10px !default,
+  $list-item-nav-margin-top: 10px !default,
+  $list-item-nav-title-font-weight: 400 !default,
+  $toolbar-background: rgb(var(--v-theme-surface)) !default,
+  $toolbar-color: rgb(var(--v-theme-on-surface)) !default,
+  $toolbar-title-font-size: 1rem !default,
+  $toolbar-title-font-weight: 600 !default,
+  $toolbar-title-line-height: 1.5rem !default,
+
+  // ── Pickers and sliders (canon §4 C Date family, Slider, Color Picker) ───
+  // Calendar: 40px day cells with no gap (a 280px grid inside 12px padding),
+  // 40px controls row, the panel at Canon's 12px radius.
+  $date-picker-width: 304px !default,
+  $date-picker-month-day-size: 40px !default,
+  $date-picker-month-day-btn-size: 40px !default,
+  $date-picker-month-column-gap: 0px !default,
+  $date-picker-controls-height: var(--v-date-picker-controls-height, 40px) !default,
+  $picker-border-radius: 12px !default,
+  $picker-title-font-weight: 600 !default,
+  // Slider: a 5px track whose fill is the same height; an 18px thumb (its
+  // ring and centre in _pickers.scss).
+  $slider-track-size: 5px !default,
+  $slider-track-active-size-offset: 0px !default,
+  $slider-track-border-radius: 999px !default,
+  $slider-thumb-size: 18px !default,
+  $color-picker-border-radius: 12px !default,
+  $color-picker-elevation: 2 !default,
+
+  // ── Lines (canon §2.6) ───────────────────────────────────────────────────
+  $divider-border-color: $rule-color !default,
+  $divider-border-width: var(--cs-hairline) 0 0 0 !default,
+  $divider-vertical-border-width: 0 var(--cs-hairline) 0 0 !default,
+  $divider-opacity: 1 !default,
+);

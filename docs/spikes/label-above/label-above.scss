@@ -1,0 +1,31 @@
+// R4 spike: Canon's label above the field (decision 15) on Vuetify's
+// outlined variant, with `singleLine` so Vuetify renders one label and runs
+// no floating-label animation. Label 14/20/500 sits 6px above the frame.
+@layer vuetify-overrides {
+  // The label is positioned against the whole field, not the input area,
+  // so a prepend-inner icon doesn't shift it.
+  .v-field--variant-outlined.v-field--single-line .v-field__field {
+    position: static;
+  }
+
+  .v-field--variant-outlined.v-field--single-line:has(.v-field-label) {
+    margin-top: calc(var(--cs-control-lh) + 6px);
+  }
+
+  .v-field--variant-outlined.v-field--single-line .v-field-label {
+    top: auto;
+    bottom: calc(100% + 6px);
+    inset-inline-start: 0;
+    margin: 0;
+    max-width: 100%;
+    visibility: visible;
+    opacity: 1;
+    color: rgb(var(--v-theme-on-surface));
+    font-size: var(--cs-control-font);
+    line-height: var(--cs-control-lh);
+    letter-spacing: var(--cs-tracking);
+    font-weight: 500;
+    transform: none;
+    transition: none;
+  }
+}

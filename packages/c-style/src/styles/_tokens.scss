@@ -1,0 +1,28 @@
+// Canon's md size tokens (plan §1.3, canon §2.3), read by c-style's rules and
+// by `$icon-sizes: default`. Smaller or larger controls are per instance,
+// through Vuetify's named sizes (`size="small"` / `"large"`); there is no
+// inherited size context.
+
+:root {
+  --cs-control-height: 40px;
+  --cs-control-pad: 10px;
+  --cs-control-font: 14px;
+  --cs-control-lh: 20px;
+  --cs-tracking: -0.006em;
+  --cs-icon: 20px;
+  --cs-gap: 8px;
+  --cs-radius: 8px;
+  --cs-surface-radius: 12px;
+  --cs-form-gap: 16px;
+}
+
+// Lines inside components and surface edges (canon §2.6).
+:root {
+  --cs-hairline: 1px;
+}
+
+@media (min-resolution: 2dppx) {
+  :root {
+    --cs-hairline: 0.5px;
+  }
+}

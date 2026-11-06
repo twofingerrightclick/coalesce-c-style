@@ -1,0 +1,5 @@
+bin/
+obj/
+# Generated C# controllers and DTOs; only the TypeScript output is kept.
+StorybookDomain.Web/Api/Generated/
+StorybookDomain.Web/Models/Generated/

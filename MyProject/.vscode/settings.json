@@ -1,0 +1,20 @@
+{
+  "js/ts.tsdk.path": "MyCompany.MyProject.Web\\node_modules\\typescript\\lib",
+  "dotnet.defaultSolution": "MyCompany.MyProject.slnx",
+  "dotnet.solution.autoOpen": "MyCompany.MyProject.slnx",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "cSpell.words": ["Vite", "unplugin", "iconsets", "viewmodels", "composables"],
+  // XML element content is often whitespace sensitive.
+  // Introducing wrapping breaks some csproj elements.
+  "xml.format.maxLineWidth": 0,
+  "chat.tools.terminal.autoApprove": {
+    "dotnet test": true,
+    "pnpm test": true,
+    "dotnet tool restore": true,
+    "dotnet restore": true,
+    "dotnet build": true
+  }
+}

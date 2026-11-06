@@ -1,0 +1,106 @@
+@use 'tone';
+
+// Canon's field frame (canon §4 B Text Input). Height, padding, radius, type,
+// border width and opacity come from settings.scss. Vuetify colours its
+// outline with `currentColor` (the field's text) at one opacity per state, and
+// has no surface fill, control shadow, halo or label-above variant.
+@layer vuetify-overrides {
+  .v-field--variant-outlined {
+    --cs-field-line: var(--cs-tone-line);
+    --cs-field-focus: var(--v-focus);
+    --cs-field-halo: var(--v-primary-halo);
+
+    // A surface even on a coloured toolbar, so its ink too.
+    background: rgb(var(--v-theme-surface));
+    color: rgb(var(--v-theme-on-surface));
+    box-shadow: var(--v-shadow-control);
+    transition: box-shadow 0.12s;
+
+    > .v-field__outline {
+      color: rgb(var(--cs-field-line));
+      transition: color 0.12s;
+    }
+
+    &:hover {
+      --cs-field-line: var(--cs-tone-line-hover);
+    }
+
+    // Focus: accent border and a 3px halo with no gap, replacing the shadow.
+    &.v-field--focused {
+      --cs-field-line: var(--cs-field-focus);
+
+      box-shadow: 0 0 0 3px rgb(var(--cs-field-halo));
+    }
+
+    // Intents focus on their hover step (canon §3.5 "Field state recipe").
+    &.v-field--error {
+      @include tone.tone(error);
+
+      --cs-field-focus: var(--v-error-line-hover);
+      --cs-field-halo: var(--v-error-halo);
+    }
+
+    &.v-field--disabled {
+      opacity: 1;
+      color: rgb(var(--v-disabled-fg));
+      background: rgb(var(--v-disabled-bg));
+      box-shadow: none;
+    }
+  }
+
+  // Chromium pads a date/time input's fields 1px top and bottom, which
+  // makes those fields 42 tall.
+  .v-field__input::-webkit-datetime-edit-fields-wrapper {
+    padding-block: 0;
+  }
+
+  .v-input--readonly .v-field--variant-outlined > .v-field__outline > * {
+    border-style: dashed;
+  }
+
+  // Decision 15, label above the field (R4 spike, docs/spikes/label-above).
+  // The blueprint sets `singleLine` (Vuetify then renders one in-field label
+  // and no floating-label animation) and the `cs-label-above` class; toolbars
+  // swap the class off and keep Vuetify's in-field label. The label is placed
+  // against the whole field, so a prepend-inner icon doesn't shift it.
+  .cs-label-above.v-field--single-line {
+    .v-field__field {
+      position: static;
+    }
+
+    &:has(.v-field-label) {
+      margin-top: calc(var(--cs-control-lh) + 6px);
+    }
+
+    .v-field-label {
+      top: auto;
+      bottom: calc(100% + 6px);
+      inset-inline-start: 0;
+      margin: 0;
+      max-width: 100%;
+      visibility: visible;
+      opacity: 1;
+      color: rgb(var(--v-theme-on-surface));
+      font-size: var(--cs-control-font);
+      line-height: var(--cs-control-lh);
+      letter-spacing: var(--cs-tracking);
+      font-weight: 500;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  // A label inside the frame (toolbars) hides once the field is active.
+  // A select holding an empty value is dirty with nothing to show (Coalesce's
+  // audit "Entity Type" filter), so it keeps the label until something shows.
+  .cs-label-inside:where(:not(.v-field--focused):has(:is(.v-select__selection-text, .v-combobox__selection-text):empty)) .v-field-label {
+    visibility: visible;
+  }
+
+  // Canon form layout: stacked fields a form gap apart (16 at md). Scoped
+  // to forms (the blueprint classes every VForm `cs-form`): a global
+  // `.v-input + .v-input` also spaces inputs laid out in a row.
+  .cs-form .v-input + .v-input {
+    margin-top: var(--cs-form-gap);
+  }
+}

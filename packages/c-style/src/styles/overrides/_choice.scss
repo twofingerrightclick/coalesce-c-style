@@ -1,0 +1,83 @@
+// Canon checkbox, radio and switch (canon §4 C). The glyphs are c-style's
+// icon aliases (src/icons/choice.ts), sizes and the switch geometry come from
+// settings.scss, checked = neutral ink from the blueprint. Left here: Vuetify
+// fades an unchecked glyph to .6 of the label ink and hovers with a round
+// currentColor wash; Canon draws the choice line and a 3px halo on the box.
+@layer vuetify-overrides {
+  .v-selection-control__input > .v-icon {
+    opacity: 1;
+  }
+
+  .v-selection-control:not(.v-selection-control--dirty, .v-selection-control--indeterminate, .v-selection-control--error)
+    .v-selection-control__input > .v-icon {
+    color: rgb(var(--v-choice-line));
+  }
+
+  // The halo hugs the 18px box (switches have no hover look).
+  .v-selection-control:not(.v-switch *) .v-selection-control__input::before {
+    inset: 1px;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+    background: none;
+    opacity: 1;
+    transition: box-shadow 0.12s;
+  }
+
+  .v-radio .v-selection-control__input::before {
+    border-radius: 50%;
+  }
+
+  .v-selection-control:not(.v-switch *):hover .v-selection-control__input::before {
+    box-shadow: 0 0 0 3px rgb(var(--v-fill));
+  }
+
+  // Vuetify sizes the wrapper to the 40px control it was designed around;
+  // at Canon's 20 the label needs its 8px gap, and the switch track (wider
+  // than the control) its own width.
+  .v-selection-control:not(.v-switch *) .v-label {
+    padding-inline-start: var(--cs-gap);
+  }
+
+  .v-switch .v-selection-control__wrapper {
+    width: auto;
+  }
+
+  // Stacked choices are Canon fieldset items: 20px rows 8 apart (switches
+  // 12), a 28px pitch instead of Vuetify's 40px control rows. A lone choice
+  // keeps the 40px row, level with the fields beside it, and so does an
+  // inline group (items 24 apart, canon fieldset `gap-inline`). Separate
+  // inputs count as stacked only inside a form, where `cs-form` stacks
+  // inputs; elsewhere sibling inputs may sit in a row.
+  .v-selection-control-group {
+    row-gap: 8px;
+
+    &--inline {
+      column-gap: 24px;
+
+      > .v-selection-control {
+        min-height: var(--v-input-control-height);
+      }
+    }
+  }
+
+  .cs-form :is(.v-checkbox, .v-switch):where(:has(+ .v-checkbox, + .v-switch), .v-checkbox + *, .v-switch + *) {
+    --v-input-control-height: 20px;
+
+    + :is(.v-checkbox, .v-switch) {
+      margin-top: 8px;
+    }
+
+    + .v-switch {
+      margin-top: 12px;
+    }
+  }
+
+  // Canon rings the control and its label together.
+  .v-selection-control--focus-visible {
+    border-radius: 2px;
+    box-shadow:
+      0 0 0 2px rgb(var(--v-ring-offset)),
+      0 0 0 3px rgb(var(--v-focus-choice));
+  }
+}

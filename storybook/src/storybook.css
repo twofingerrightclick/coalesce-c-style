@@ -1,0 +1,7 @@
+/* Storybook chrome only; never styles a component under test. */
+.sb-app {
+  min-height: 100vh;
+}
+.sb-canvas--padded {
+  padding: 24px;
+}

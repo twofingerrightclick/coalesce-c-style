@@ -1,0 +1,119 @@
+// Navigation and shell (canon §4 D App Shell, Nav List, Tabs, Breadcrumb).
+// Bar and sidebar lines, widths, nav-list spacing, tab geometry and
+// breadcrumb spacing come from settings.scss and the blueprint.
+@layer vuetify-overrides {
+  // Current list item (nav lists, and lists outside menus): the fill one step
+  // up and a medium label, instead of Vuetify's activated currentColor wash
+  // (canon "current item" recipe). Menus mark the chosen row with a tick.
+  .v-list-item--active:not(.v-menu *) {
+    background: rgb(var(--v-fill));
+
+    > .v-list-item__overlay {
+      opacity: 0;
+    }
+
+    .v-list-item-title {
+      font-weight: 500;
+    }
+  }
+
+  // Canon's segmented track (canon §4 A Segmented Control), shared by inset
+  // tabs (the slider is the gliding card) and VBtnToggle (the active button
+  // is the card): the fill with no ring; the card is the bright surface with
+  // the tab shadow (edge at 6% + raised); rest options are muted and change
+  // only colour, no button tint. Tab geometry comes from settings.scss.
+  :is(.v-tabs--inset, .v-btn-toggle) {
+    --v-tabs-slider-background: rgb(var(--v-theme-surface-bright));
+    background: rgb(var(--v-fill));
+    box-shadow: none;
+  }
+
+  .v-tabs--inset .v-slide-group__content,
+  .v-btn-toggle {
+    gap: 2px;
+  }
+
+  .v-tabs--inset .v-tab {
+    padding-inline: calc(var(--cs-control-pad) - 1px);
+  }
+
+  // VBtnToggle is a 40px button group: a 3px inset and radius 10 around
+  // 34px options of radius 7, as the inset tabs get from their variables.
+  .v-btn-toggle {
+    padding: 3px;
+    border-radius: calc(var(--cs-radius) + 2px);
+
+    > .v-btn {
+      --v-btn-height: 34px;
+      border-color: transparent;
+      border-radius: calc(var(--cs-radius) - 1px);
+    }
+
+    > .v-btn--active {
+      background: rgb(var(--v-theme-surface-bright));
+    }
+  }
+
+  :is(.v-tabs--inset .v-tab__slider, .v-btn-toggle > .v-btn--active) {
+    box-shadow:
+      0 0 0 1px rgba(var(--v-border-color), 0.06),
+      var(--v-shadow-raised);
+  }
+
+  :is(.v-tabs--inset .v-tab:not(.v-tab--selected, :hover), .v-btn-toggle > .v-btn:not(.v-btn--active, :hover)) {
+    color: rgb(var(--v-muted));
+  }
+
+  :is(.v-tabs--inset .v-tab, .v-btn-toggle > .v-btn) > .v-btn__underlay {
+    opacity: 0;
+  }
+
+  // Tabs heading a card sit in its header: the card padding around them and
+  // the header gap below (canon §4 A Card). The card's loader slot may come
+  // first.
+  .v-card > :is(.v-tabs:first-child, .v-card__loader + .v-tabs) {
+    margin: 20px 20px 16px;
+  }
+
+  // Canon link (canon §4 Link) for the app's own anchors (router links,
+  // plain `<a href>`), not Vuetify components rendered as links: the accent
+  // at rest, its text step on hover and focus, a 1px line only then (Canon's
+  // standalone link), no visited colour, a 1px focus outline 2px out.
+  .v-application a:where([href]:not([class^='v-'], [class*=' v-'])) {
+    border-radius: 2px;
+    color: rgb(var(--v-link));
+    text-decoration-line: none;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color 0.12s;
+
+    &:is(:hover, :focus-visible) {
+      color: rgb(var(--v-primary-text));
+      text-decoration-line: underline;
+    }
+
+    &:focus-visible {
+      outline: 1px solid rgb(var(--v-focus));
+      outline-offset: 2px;
+    }
+  }
+
+  // Breadcrumb: muted links, a quieter current crumb and separators; links
+  // go to ink on hover.
+  .v-breadcrumbs {
+    font-size: var(--cs-control-font);
+    letter-spacing: var(--cs-tracking);
+  }
+
+  .v-breadcrumbs-item--link {
+    color: rgb(var(--v-muted));
+
+    &:hover {
+      color: rgb(var(--v-theme-on-surface));
+    }
+  }
+
+  :is(.v-breadcrumbs-item--disabled, .v-breadcrumbs-divider) {
+    color: rgb(var(--v-quiet));
+  }
+}

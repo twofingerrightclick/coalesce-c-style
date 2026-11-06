@@ -1,0 +1,54 @@
+// Surfaces and feedback (canon §4 A Card, Accordion; §4 E Alert). Radius,
+// padding, type, elevation and the alert bar come from settings.scss.
+@layer vuetify-overrides {
+  // Alert and toast (canon §4 E): Vuetify's outlined variant paints border,
+  // text and fill in the intent; Canon's is a neutral surface where only the
+  // icon (step 600, the `text-<intent>` colour the root keeps) and a 4px bar
+  // (the tone's `bar` step) carry it. Alert text is control type (Vuetify
+  // inherits the page's 16px), its description muted; toast text is ink.
+  .v-alert {
+    font-size: var(--cs-control-font);
+    line-height: var(--cs-control-lh);
+    letter-spacing: var(--cs-tracking);
+  }
+
+  .v-alert--variant-outlined {
+    background: rgb(var(--v-theme-surface));
+    border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+
+    > .v-alert__content {
+      color: rgb(var(--v-muted));
+    }
+
+    > .v-alert__border {
+      color: rgb(var(--cs-tone-bar));
+    }
+  }
+
+  :is(.v-alert--variant-outlined .v-alert-title, .v-snackbar--variant-outlined > .v-snackbar__content) {
+    color: rgb(var(--v-theme-on-surface));
+  }
+
+  // A toast's edge is in its shadow (edge + floating) and its bar is a
+  // shadow outside the start edge; a toast with no intent has no tone, so
+  // the bar falls back to transparent.
+  .v-snackbar--variant-outlined {
+    border-color: transparent;
+    box-shadow:
+      -4px 0 0 0 rgba(var(--cs-tone-bar, 0, 0, 0, 0)),
+      var(--v-elevation-3);
+  }
+
+  // Canon banner: one row, centred (Vuetify drops the actions to the bottom
+  // corner and tops the icon).
+  :is(.v-banner__prepend, .v-banner-actions) {
+    align-self: center;
+  }
+
+  // No weight or line-height variable for the expansion title (Canon
+  // accordion title 14/20/500; Vuetify sets line-height 1).
+  .v-expansion-panel-title {
+    font-weight: 500;
+    line-height: var(--cs-control-lh);
+  }
+}

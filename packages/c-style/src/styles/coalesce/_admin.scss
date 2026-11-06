@@ -1,0 +1,96 @@
+@use '../overrides/tone';
+
+// Coalesce admin pages (coalesce §2 Admin). Every selector starts with a
+// Coalesce class; values come from c-style tokens and theme variables.
+$rule: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity));
+
+// Admin toolbars are card headers: no `elevation="4"` shadow, a rule below,
+// and Canon toolbar rows (controls 8px from the edges and 8px apart).
+// Coalesce's `density` props set the rows to 48 or 56px through inline
+// styles (and the extension to 49px with `!important`), so these heights
+// need `!important`: the main row is a control plus 8px above and below,
+// the extension row a control plus 8px below.
+:is(.c-admin-table-toolbar, .c-admin-editor--toolbar, .c-admin-methods--toolbar) {
+  box-shadow: none;
+  border-bottom: $rule;
+
+  > .v-toolbar__content {
+    height: calc(var(--cs-control-height) + 16px) !important;
+  }
+
+  > .v-toolbar__extension {
+    height: calc(var(--cs-control-height) + 8px) !important;
+    align-items: start;
+  }
+}
+
+// The extension row starts flush (table search) or 16px in (audit filters);
+// Canon's 8px edge inset matches the row's end and puts the search icon
+// under the title text.
+:is(.c-admin-table-toolbar--search, .c-audit-logs--filters) {
+  margin-inline-start: var(--cs-gap);
+}
+
+// Coalesce hides the title and its divider with `hidden-xs-only`, which
+// Vuetify 4 renamed `hidden-xs`; same breakpoint as Vuetify's rule.
+@media (max-width: 599.98px) {
+  .c-admin-table-toolbar .hidden-xs-only {
+    display: none !important;
+  }
+}
+
+// Canon's toolbars are neutral surfaces. Coalesce paints them `bg-primary`
+// when the page gets `color="primary"` (the audit page's default, and the
+// starter template's admin routes), so the toolbar's own primary points at
+// the surface: apps keep their routes as they are. Themed descendants
+// declare their own theme variables and keep the accent.
+@include tone.repoint {
+  :is(.c-admin-table-toolbar, .c-admin-editor--toolbar, .c-admin-methods--toolbar).bg-primary {
+    --v-theme-primary: var(--v-theme-surface);
+    --v-theme-on-primary: var(--v-theme-on-surface);
+  }
+}
+
+// Page description under the toolbar: Canon card description type, muted,
+// at the card padding.
+.c-admin-page--description {
+  margin: 12px 20px 0;
+  opacity: 1;
+  color: rgb(var(--v-muted));
+  font-size: var(--cs-control-font);
+  line-height: var(--cs-control-lh);
+}
+
+// Editor: rows a form gap apart; the label column is Canon's start-aligned
+// label (14/20/500 ink), its first line level with the field's.
+.c-admin-editor--row {
+  padding: calc(var(--cs-form-gap) / 2) 0;
+}
+
+.c-admin-editor--label-col {
+  font-weight: 500;
+  font-size: var(--cs-control-font);
+  line-height: var(--cs-control-lh);
+  letter-spacing: var(--cs-tracking);
+}
+
+// Methods: the section label at control type; muted descriptions and nulls.
+.c-method--section > .v-col:first-child {
+  font-size: var(--cs-control-font);
+  font-weight: 500;
+}
+
+.c-admin-method--description {
+  opacity: 1;
+  color: rgb(var(--v-muted));
+}
+
+.c-method--result-null {
+  color: rgb(var(--v-quiet));
+}
+
+// Audit log: nested property rows hover like Canon table rows (Coalesce
+// paints black at 10%, which ignores the theme).
+.c-audit-logs--row-properties table tr:hover td {
+  background: rgba(var(--v-border-color), var(--v-hover-opacity));
+}

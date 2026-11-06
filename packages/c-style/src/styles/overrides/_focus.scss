@@ -1,0 +1,16 @@
+// Canon focus ring (canon §2.8): a 1px focus-coloured ring 2px outside the
+// element, whatever the intent. Fields use a focus border instead (M8).
+@layer vuetify-overrides {
+  :is(.v-btn, .v-chip, .v-list-item, .v-expansion-panel-title):focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+      0 0 0 2px rgb(var(--v-ring-offset)),
+      0 0 0 3px rgb(var(--v-focus));
+  }
+
+  // Vuetify's own focus ring: a 2px currentColor border at 25%.
+  .v-btn:focus-visible::after {
+    opacity: 0;
+  }
+}

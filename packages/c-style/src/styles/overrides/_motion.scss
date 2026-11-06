@@ -1,0 +1,62 @@
+// Canon motion (canon §2.10): colours settle in 0.12s, worded buttons press
+// to 98% in 0.1s, nothing overshoots, and reduced motion turns it all off.
+@layer vuetify-overrides {
+  .v-btn {
+    transition:
+      background-color 0.12s,
+      border-color 0.12s,
+      color 0.12s,
+      box-shadow 0.12s,
+      scale 0.1s ease-out;
+  }
+
+  .v-btn__overlay {
+    transition: opacity 0.12s;
+  }
+
+  .v-btn:not(.v-btn--icon, .v-btn-group .v-btn):active {
+    scale: 0.98;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v-btn,
+    .v-btn__overlay {
+      transition: none;
+    }
+
+    .v-btn:active {
+      scale: none;
+    }
+  }
+
+  // Canon popups (menus, select pickers): fade and grow from 97%, 0.15s in,
+  // 0.1s out (canon §4 E Popups). The blueprint sets `transition: 'cs-popup'`.
+  // The scale is a `transform`, which Vuetify's overlay placement undoes
+  // when it measures the panel; a `scale` property would make the panel
+  // measure 3% short as it opens, and a menu that barely fits below its
+  // field would open downward and run off the viewport.
+  .cs-popup-enter-active {
+    transition:
+      opacity 0.15s ease-out,
+      transform 0.15s ease-out;
+  }
+
+  .cs-popup-leave-active {
+    transition:
+      opacity 0.1s ease-in,
+      transform 0.1s ease-in;
+  }
+
+  .cs-popup-enter-from,
+  .cs-popup-leave-to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cs-popup-enter-from,
+    .cs-popup-leave-to {
+      transform: none;
+    }
+  }
+}

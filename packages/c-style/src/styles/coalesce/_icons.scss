@@ -1,0 +1,32 @@
+@use 'fa-masks' as *;
+
+// Coalesce renders a few FontAwesome glyphs as raw `<i class="fa fa-*">`
+// rather than through `v-icon` (row actions, page descriptions, the editor's
+// required mark, c-display's password toggle), so the `cs` icon set never
+// sees them. They keep their element; the glyph becomes the Lucide icon
+// c-style maps the same name to, drawn as a currentColor mask at the icon box.
+$hosts: '.c-admin-table, .c-admin-editor, .c-admin-page--description, .c-password-display';
+
+:is(#{$hosts}) i.fa {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  font-size: var(--cs-icon);
+  vertical-align: -0.2em;
+}
+
+// In running text (descriptions, c-display) the icon follows the text.
+:is(.c-admin-page--description, .c-password-display) i.fa {
+  font-size: 1.15em;
+}
+
+@each $name, $mask in $fa-masks {
+  :is(#{$hosts}) i.fa.fa-#{$name}::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: currentColor;
+    mask: $mask center / contain no-repeat;
+  }
+}

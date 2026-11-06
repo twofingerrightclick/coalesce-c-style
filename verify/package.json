@@ -1,0 +1,16 @@
+{
+  "name": "c-style-verify",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "baseline": "CAPTURE=1 playwright test --project=capture",
+    "storybook": "playwright test --project=storybook --workers=6",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/node": "^24.0.0",
+    "typescript": "6.0.3"
+  }
+}

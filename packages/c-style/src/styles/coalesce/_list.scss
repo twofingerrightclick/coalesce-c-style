@@ -1,0 +1,145 @@
+@use '../overrides/tone';
+
+// Coalesce lists: c-table, pagination, filters, loader (coalesce §2 Inputs,
+// Display).
+
+// Pinned actions column: Canon's pinned edge (a rule line and a hard 4px
+// band at 5%) on the table surface, instead of a blurred 40% drop shadow
+// over a frosted fill. (0,3,0) outranks Coalesce's dark-theme variant.
+.c-table .v-table__wrapper .fixed-column-right {
+  background: rgb(var(--v-theme-surface));
+  backdrop-filter: none;
+  box-shadow: -4px 0 0 rgba(var(--v-border-color), 0.05);
+  border-inline-start: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity));
+}
+
+.c-table th.fixed-column-right {
+  border-top-left-radius: 0;
+}
+
+// Editable c-table: Canon's inline edit cell (data table, "Editing cells").
+// The field spans its cell with the value where a read cell's text sits
+// (16 in, under the header text); its frame shows only under the pointer
+// (the resting field line) or while typing (the field's focus frame), so
+// neighbouring fields don't read as a grid of boxes. Errors keep their line.
+// Read-only cells don't wrap (Canon data table cells), so every row stays a
+// field plus 16. Coalesce pads headers and read-only cells 8 and field text 6.
+.c-table.c-table--editable .v-table tr {
+  > th {
+    padding: revert-layer;
+  }
+
+  > td:not(.c-admin-table--actions) > :not(.v-input) {
+    padding-inline: 16px;
+    white-space: nowrap;
+  }
+
+  > td .v-field__input {
+    padding-left: revert-layer;
+    padding-right: revert-layer;
+  }
+
+  > td .v-field--variant-outlined:not(.v-field--focused) {
+    background: transparent;
+    box-shadow: none;
+
+    &:hover {
+      --cs-field-line: var(--cs-tone-line);
+    }
+
+    &:not(:hover, .v-field--error) > .v-field__outline {
+      color: transparent;
+    }
+  }
+}
+
+// Pagination and the admin toolbar's "Showing 1 - 10 of 40": Canon info
+// type (control size, muted), items 8 apart (Coalesce: 16px text and `.5em`
+// margins with `!important`).
+:is(.c-list-pagination, .c-list-page, .c-list-page-size, .c-admin-table-toolbar--range) {
+  font-size: var(--cs-control-font);
+  line-height: var(--cs-control-lh);
+  color: rgb(var(--v-muted));
+}
+
+:is(.c-list-page, .c-list-page-size) > * {
+  margin: 0 4px !important;
+}
+
+// Prev/next have no colour prop, so they took the global accent; Canon
+// pagination arrows are neutral with muted icons.
+.c-list-page .v-btn:not(.v-btn--disabled) {
+  @include tone.tone(neutral);
+  color: rgb(var(--v-muted));
+}
+
+// Coalesce draws them as 28px outlined squares with 16px icons beside the
+// 40px page field; Canon's arrows are control-size squares with no frame
+// and a default-size icon (canon §4 D Pagination).
+.c-list-page > .v-btn {
+  width: var(--cs-control-height);
+  height: var(--cs-control-height);
+  border-color: transparent;
+  border-radius: var(--cs-radius);
+  box-shadow: none;
+
+  .v-icon {
+    font-size: var(--cs-icon);
+  }
+}
+
+// The active-filter count sits on the icon's corner, past the button's top
+// edge, which clips it.
+.c-list-filters {
+  overflow: visible;
+}
+
+// The filter menu's Reset row: Coalesce nudges its icon with inline margins
+// sized for a FontAwesome glyph, which pull the label over a 20px icon.
+.c-list-filters--card .v-list-item__prepend > .v-icon {
+  margin: 0 !important;
+}
+
+// Loader bar: Canon's 4px progress line (Coalesce: a 10px prop default,
+// set inline on the bar and its group).
+.c-loader-status .c-loader-status--progress-group {
+  min-height: min(var(--c-loader-status-progress-height), 4px) !important;
+  max-height: min(var(--c-loader-status-progress-height), 4px) !important;
+}
+
+.c-loader-status .c-loader-status--progress {
+  height: 4px !important;
+}
+
+// c-select's menu search is a hard-coded `filled` field. Canon's menu
+// search is a plain row over the panel with a rule below it.
+.c-select__menu-content .v-field--variant-filled {
+  background: transparent;
+
+  > .v-field__overlay {
+    opacity: 0;
+  }
+
+  .v-field__outline::before {
+    border-color: rgba(var(--v-border-color), var(--v-rule-opacity));
+    border-width: 0 0 var(--cs-hairline);
+    opacity: 1;
+  }
+
+  .v-field__outline::after {
+    display: none;
+  }
+}
+
+// c-time-picker's header is a 32px readout on a solid colour sheet; Canon's
+// calendar heads its panel with a 40px row of title type on the surface,
+// like the date picker's controls beside it.
+.c-time-picker-header {
+  padding: 8px 12px;
+  background: transparent;
+  color: rgb(var(--v-theme-on-surface));
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}

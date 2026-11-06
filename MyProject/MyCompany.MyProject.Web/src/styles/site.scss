@@ -1,0 +1,7 @@
+// Vuetify3 lost the padding for ul/ol that Vuetify2 had. Restore it.
+.v-application {
+  ul:not(.v-breadcrumbs),
+  ol {
+    padding-left: 24px;
+  }
+}

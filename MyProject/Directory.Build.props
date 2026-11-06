@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <ImplicitUsings>true</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>d7a302d6-ef11-4e2f-ab95-d31aac7167f4</UserSecretsId>
+
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+
+    <CoalesceVersion>6.5.1</CoalesceVersion>
+    <!-- Disable Source Link attribute in Debug to avoid hot reload issues.
+         In Release, the source revision is included for app update detection. -->
+    <IncludeSourceRevisionInInformationalVersion Condition="'$(Configuration)' == 'Debug'">false</IncludeSourceRevisionInInformationalVersion>
+
+  </PropertyGroup>
+</Project>

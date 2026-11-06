@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node", "vitest", "vitest/config"]
+  },
+  "include": ["vite.config.ts"],
+  "exclude": ["node_modules"]
+}

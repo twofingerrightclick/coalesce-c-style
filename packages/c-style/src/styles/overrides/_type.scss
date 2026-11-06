@@ -1,0 +1,6 @@
+// Inter's stylistic alternates are part of Canon's look (canon §2.9).
+@layer vuetify-overrides {
+  :root {
+    font-feature-settings: "ss01", "cv11", "cv04", "cv03", "cv02";
+  }
+}

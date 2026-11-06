@@ -1,0 +1,107 @@
+@use 'tone';
+
+// Canon's button recipe (canon §3.5 "Button tone matrix"). Sizes, radius,
+// border, elevation and the disabled colour model come from settings.scss;
+// what's left has no Vuetify variable:
+// - Vuetify tints with `currentColor` (the label colour) and stacks a hover
+//   overlay on top. Canon swaps one tint of the tone's 400/500 step per
+//   state, so the overlay is off and the underlay carries every rung.
+// - `color="x"` paints through `text-x` / `bg-x` utilities, which sit above
+//   this layer; their `--v-theme-x` is re-pointed on the button instead
+//   (`tone.repoint`).
+@layer vuetify-overrides {
+  .v-btn > .v-btn__overlay {
+    opacity: 0;
+  }
+
+  // Medium emphasis rests on tint-2; low and minimal on nothing. Hover (and
+  // keyboard focus, canon §2.8) moves one rung, press and current two.
+  .v-btn:is(.v-btn--variant-tonal, .v-btn--variant-outlined, .v-btn--variant-text) {
+    &:is(:hover, :focus-visible) {
+      --cs-btn-tint: var(--v-tint-1);
+    }
+
+    &:is(:active, .v-btn--active, [aria-expanded='true']) {
+      --cs-btn-tint: var(--v-tint-2);
+    }
+
+    > .v-btn__underlay {
+      background: rgb(var(--cs-tone-tint));
+      opacity: var(--cs-btn-tint, 0);
+    }
+  }
+
+  .v-btn.v-btn--variant-tonal {
+    --cs-btn-tint: var(--v-tint-2);
+
+    &:is(:hover, :focus-visible) {
+      --cs-btn-tint: var(--v-tint-3);
+    }
+
+    &:is(:active, .v-btn--active, [aria-expanded='true']) {
+      --cs-btn-tint: var(--v-tint-4);
+    }
+  }
+
+  // Low emphasis: a quiet tone line and the control shadow, which drops
+  // while pressed.
+  .v-btn--variant-outlined {
+    border-color: rgb(var(--cs-tone-border-low));
+
+    &:not(.v-btn-group > .v-btn, .v-btn--disabled) {
+      box-shadow: var(--v-shadow-control);
+
+      &:active:not(:focus-visible) {
+        box-shadow: none;
+      }
+    }
+  }
+
+  // Neutral icons are muted until the button is pressed, current or open.
+  .v-btn.text-neutral:not(:active, .v-btn--active, [aria-expanded='true']) :where(.v-icon) {
+    color: rgb(var(--v-muted));
+  }
+
+  // Canon has no pill buttons: an extended FAB keeps the button radius, like
+  // the icon-only one (Vuetify rounds it fully, in its overrides layer).
+  .v-fab.v-fab--extended .v-btn {
+    border-radius: var(--v-btn-border-radius);
+  }
+
+  // Disabled is grey whatever the intent (canon §3.5). Settings put Vuetify's
+  // disabled colours in its `trumps` layer as `on-surface` text on a
+  // `surface` fill; the re-points below turn those into Canon's greys.
+  .v-btn.v-btn--disabled {
+    --cs-btn-tint: 0;
+
+    &.v-btn--variant-tonal {
+      background: rgb(var(--v-disabled-bg));
+    }
+
+    &.v-btn--variant-outlined {
+      border-color: rgb(var(--v-frame));
+    }
+  }
+}
+
+@include tone.repoint {
+  @each $intent, $source in tone.$intents {
+    // High emphasis: hover one step lighter, press one darker (neutral moves
+    // toward the page instead; the theme encodes that).
+    .v-btn.bg-#{$intent}:is(:hover, :focus-visible) {
+      --v-theme-#{$intent}: var(--v-#{$source}-hover);
+    }
+
+    .v-btn.bg-#{$intent}:is(:active, .v-btn--active, [aria-expanded='true']) {
+      --v-theme-#{$intent}: var(--v-#{$source}-active);
+    }
+  }
+
+  .v-btn--disabled {
+    --v-theme-on-surface: var(--v-disabled-fg);
+  }
+
+  .v-btn--disabled:is(.v-btn--variant-flat, .v-btn--variant-elevated) {
+    --v-theme-surface: var(--v-disabled-bg);
+  }
+}
