@@ -536,3 +536,27 @@ Report: date and colour picker stories (dark) showed neighbouring pickers' colum
 
 Tests: `verify/lib/layout.ts` `pickerSpill` (any picker body section, button, day grid, slider track, canvas or input reaching past the picker's left/right edge) and `rowOverlaps` (overlapping `sb-row` items). `verify/parity/pickers.spec.ts` (7): date/time/colour picker stories × light/dark fit and don't overlap; every month-view date picker's grid is 12 / 280 / 12 with cells 40 apart. `stories.spec.ts` now also fails any story whose row items overlap. `verify/app/pickers.spec.ts`: cells exactly 40 apart; `/c-style` pickers (month, months and years views) and `/gallery` date card fit, light and dark. All of these fail on the old settings/story. Suites: app 119/119, unit 38/38, Storybook 371/371, `tsc` (verify) and Storybook `vue-tsc` clean.
 
+
+## Fixes: avatar and icon in a tag
+
+Report: an avatar in a chip is too big next to Canon's tag (gallery `pill` chip: a 24px avatar filling the 24px tag, flush with the edge); Canon tags round more as they grow.
+
+Canon (`tag.css`, measured in `Parity/Data/Tag Media`), sm / md / lg: tag 24 / 32 / 40, radius 2 / 4 / 8; avatar and icon = line height 16 / 20 / 24, centred, `padding` 4 / 6 / 8 from the start edge, gap + label inset 4 / 8 / 12 to the text; remove icon the same size, 4 / 8 / 12 after the text and 4 / 6 / 8 from the end; initials 0.4 × line height (6.4 / 8 / 9.6px) at 400, seeded tint tone-400 @ .15 / 700 (dark tone-500 @ .2 / 300).
+
+| Before (c-style) | sm | md (`large`) | lg (`x-large`) |
+|---|---|---|---|
+| avatar | 18 (default size had no re-point; `pill` 24) | 20 | 24 |
+| avatar / icon start inset | 1.8 / 3 (`pill` 0) | 4.4 / 6 | 7.7 / 9.5 |
+| gap to text | 3 | 4 | 4.5 |
+| remove gap / end inset | 3 / 3 | 4 / 2 (20px icon in a 16px close box) | 4.5 / 1.5 |
+| initials | 12 / 500 | 14 / 500 | 16 / 500 |
+| radius | 2 | 2 | 2 |
+
+After: every value equals Canon's (tint colours already did).
+
+Lever: no SASS setting covers it (Vuetify's `chip-sizes` mixin emits avatar height = height − 6, full height on pills, and media margins from its literal 6px steps; there is no `$chip-avatar-size`). `_data.scss`'s per-size loop now takes Canon's tag metrics (padding, gap, label inset, line height, font size, radius), includes `default`, and derives height, text inset, `label` radius, avatar size and initials, start/end media margins and the close box's max size from them. +39 lines (+29 non-comment).
+
+Tests: Storybook `Parity/Data/Tag Media` (photo avatar, blue-seeded initials, icon + remove × sm/md/lg) in the parity gate (one new allowance: Canon cuts the avatar circle with a mask, no radius); `verify/parity/tag.spec.ts` compares media size, start inset, label gap and remove gap/end inset with Canon's frame. `showcase.spec.ts`: gallery avatar tag light/dark (16 avatar 4 in and 4 before the text, 6.4/400 initials, blue 700/300 on its tint); chip radius 2 (small) / 4 (large).
+
+Not done: Canon's neutral remove segment on hued tags (README deviation).
+Suites: app 121/121, unit 38/38, Storybook 377/377, `tsc` (verify) and Storybook `vue-tsc` clean.

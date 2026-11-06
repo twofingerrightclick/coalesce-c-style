@@ -1,10 +1,17 @@
 @use 'sass:math';
+@use 'sass:list';
 
+// Canon tag metrics (canon §4 Tag) per Vuetify size name: padding, gap,
+// label inset, line height (= icon and avatar size), font size, radius.
+$tag-sm: 4px 2px 2px 16px 0.75rem 2px;
+$tag-md: 6px 4px 4px 20px 0.875rem 4px;
+$tag-lg: 8px 6px 6px 24px 1rem 8px;
 $tag-sizes: (
-  'x-small' 24px 0.75rem 6px 16px,
-  'small' 24px 0.75rem 6px 16px,
-  'large' 32px 0.875rem 10px 20px,
-  'x-large' 40px 1rem 14px 24px,
+  'x-small': $tag-sm,
+  'small': $tag-sm,
+  'default': $tag-sm,
+  'large': $tag-md,
+  'x-large': $tag-lg,
 );
 
 // Data display (canon §4 D Table, Data Table, Pagination; §4 A Tag, Kbd).
@@ -46,27 +53,59 @@ $tag-sizes: (
     border-color: rgb(var(--v-frame));
   }
 
-  // Canon tag sizes (canon §4 Tag) for Vuetify's named sizes. sm (24, the
-  // default) is Canon's smallest, so `small` and `x-small` stay there;
-  // `large` / `x-large` are md 32 / lg 40. Text 6 / 10 / 14 in; icons,
-  // avatars and the remove icon at the line height. Vuetify steps chips by
-  // 6px and 2px of type per name (small 18 / 10px), in literal values.
-  @each $name, $height, $font, $inset, $icon in $tag-sizes {
+  // Canon tag sizes for Vuetify's named sizes. sm (24, the default) is
+  // Canon's smallest, so `small` and `x-small` stay there; `large` /
+  // `x-large` are md 32 / lg 40. Vuetify's chip mixin derives avatar size
+  // and media margins from its own literal 6px height steps (avatar =
+  // height - 6, full height on pills), so each size re-points them: media
+  // (icon, avatar, filter, remove) at the line height, `padding` from the
+  // edge, label inset + gap from the text; initials at 0.4 of the avatar,
+  // regular weight.
+  @each $name, $metrics in $tag-sizes {
+    $padding: list.nth($metrics, 1);
+    $gap: list.nth($metrics, 2);
+    $label-inset: list.nth($metrics, 3);
+    $line: list.nth($metrics, 4);
+    $text-inset: $padding + $label-inset;
+    $text-gap: $gap + $label-inset;
+
     .v-chip.v-chip--size-#{$name} {
-      --v-chip-height: #{$height};
-      font-size: $font;
-      padding-inline: $inset;
+      --v-chip-height: #{$line + 2 * $padding};
+      font-size: list.nth($metrics, 5);
+      padding-inline: $text-inset;
+
+      &.v-chip--label {
+        border-radius: list.nth($metrics, 6);
+      }
 
       .v-icon {
-        --v-icon-size-multiplier: #{math.div($icon, 20px)};
+        --v-icon-size-multiplier: #{math.div($line, 20px)};
       }
 
       .v-chip__close {
-        font-size: $icon;
+        font-size: $line;
+        max-width: $line;
+        max-height: $line;
       }
 
       .v-avatar {
-        --v-avatar-height: #{$icon};
+        --v-avatar-height: #{$line};
+        font-size: 0.4 * $line;
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      :is(.v-avatar--start, .v-icon--start, .v-chip__filter) {
+        margin-inline: ($padding - $text-inset) $text-gap;
+      }
+
+      :is(.v-avatar--end, .v-icon--end, .v-chip__close) {
+        margin-inline: $text-gap ($padding - $text-inset);
+      }
+
+      :is(.v-avatar--end, .v-icon--end, .v-chip__append) + .v-chip__close {
+        margin-inline-start: $gap;
       }
     }
   }

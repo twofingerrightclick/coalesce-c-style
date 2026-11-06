@@ -51,6 +51,10 @@ const expected: { why: string; match: Match }[] = [
     match: on(["tag-*"], ["line-height", "letter-spacing", "color"]),
   },
   {
+    why: "Canon cuts the avatar circle with a mask (the face has no radius); Vuetify rounds the avatar 50%.",
+    match: on(["avatar-*"], ["border-radius"]),
+  },
+  {
     why: "Container heights within Canon's 1px transparent frame top and bottom (plus hairline rounding).",
     match: (d) =>
       d.prop == "block-size" &&

@@ -24,6 +24,18 @@ async function colors(page: Page, el: Locator, props: string[]) {
   return normalizeColors(page, await style(el, props));
 }
 
+/** Distance from the outer left edge of `el`'s tag to the start of `text` inside `el`. */
+function textOffset(el: Locator, text: string) {
+  return el.evaluate((node, text) => {
+    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+    let n: Node | null;
+    while ((n = walker.nextNode()) && !n.textContent!.includes(text));
+    const range = document.createRange();
+    range.selectNodeContents(n!);
+    return range.getBoundingClientRect().left - node.closest(".v-chip")!.getBoundingClientRect().left;
+  }, text);
+}
+
 const gallery = (page: Page, scheme: "light" | "dark" = "light") => gotoScheme(page, "/gallery", scheme);
 
 test.describe("showcase fixes", () => {
@@ -74,17 +86,17 @@ test.describe("showcase fixes", () => {
     expect((await style(u, ["opacity"])).opacity).toBe("0.15");
   });
 
-  test("chips: small is Canon's sm (24, 12px), large md (32, 14px); remove icon at the icon size", async ({ page }) => {
+  test("chips: small is Canon's sm (24, 12px, radius 2), large md (32, 14px, radius 4); remove icon at the icon size", async ({ page }) => {
     await gotoScheme(page, "/dashboard", "light");
     const small = page.locator(".v-data-table .v-chip--size-small").first();
     await small.waitFor();
     expect((await box(small)).height).toBe(24);
-    expect((await style(small, ["font-size"]))["font-size"]).toBe("12px");
+    expect(await style(small, ["font-size", "border-radius"])).toEqual({ "font-size": "12px", "border-radius": "2px" });
 
     await gallery(page);
     const large = page.locator('[data-gallery="chips"] .v-chip--size-large');
     expect((await box(large)).height).toBe(32);
-    expect((await style(large, ["font-size"]))["font-size"]).toBe("14px");
+    expect(await style(large, ["font-size", "border-radius"])).toEqual({ "font-size": "14px", "border-radius": "4px" });
     const close = page.locator('[data-gallery="chips"] .v-chip__close .v-icon');
     expect(await box(close)).toMatchObject({ width: 16, height: 16 });
 
@@ -98,6 +110,27 @@ test.describe("showcase fixes", () => {
       expect(await box(chip.locator(".v-chip__close .v-icon"))).toMatchObject({ width: 16, height: 16 });
     }
   });
+
+  for (const [scheme, ink, tint, alpha] of [
+    ["light", "#1d4ed8", "#60a5fa", "0.15"], // blue-700 on blue-400 @ .15
+    ["dark", "#93c5fd", "#3b82f6", "0.2"], // blue-300 on blue-500 @ .2
+  ] as const) {
+    test(`${scheme}: an avatar in a tag is the line height, 4 in, 4 before the label; initials 0.4 of it, regular`, async ({ page }) => {
+      await gallery(page, scheme);
+      const chip = page.locator('[data-gallery="chips"] .v-chip', { hasText: "Grace" });
+      const avatar = chip.locator(".v-avatar");
+      const [c, a] = [await box(chip), await box(avatar)];
+      expect([c.height, a.width, a.height]).toEqual([24, 16, 16]);
+      expect(a.x - c.x).toBe(4);
+      expect(a.y - c.y).toBeCloseTo(4, 1);
+      expect((await textOffset(chip.locator(".v-chip__content"), "Grace")) - (a.x + a.width - c.x)).toBeCloseTo(4, 1);
+      expect(await style(avatar, ["font-size", "font-weight"])).toEqual({ "font-size": "6.4px", "font-weight": "400" });
+      expect((await colors(page, avatar, ["color"])).color).toBe(ink);
+      const u = avatar.locator(".v-avatar__underlay");
+      expect(await colors(page, u, ["background-color"])).toEqual({ "background-color": tint });
+      expect((await style(u, ["opacity"])).opacity).toBe(alpha);
+    });
+  }
 
   test("tabs heading a card sit at the card padding, 16 above the body", async ({ page }) => {
     await gotoScheme(page, "/dashboard", "light");
