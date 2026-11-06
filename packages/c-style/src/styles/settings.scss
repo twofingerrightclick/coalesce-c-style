@@ -326,12 +326,16 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
 
   // ── Pickers and sliders (canon §4 C Date family, Slider, Color Picker) ───
   // Calendar: 40px day cells with no gap (a 280px grid inside 12px padding),
-  // 40px controls row, the panel at Canon's 12px radius.
+  // 40px controls row, the panel at Canon's 12px radius. The controls row
+  // must fit the 280px grid too: with Vuetify's 12px 8px month and year
+  // toggles it needs 288.5, which widens the picker body past its 304px box
+  // (clipped, and every day column becomes 41.2).
   $date-picker-width: 304px !default,
   $date-picker-month-day-size: 40px !default,
   $date-picker-month-day-btn-size: 40px !default,
   $date-picker-month-column-gap: 0px !default,
   $date-picker-controls-height: var(--v-date-picker-controls-height, 40px) !default,
+  $date-picker-controls-docked-toggle-btn-padding: 8px 4px !default,
   $picker-border-radius: 12px !default,
   $picker-title-font-weight: 600 !default,
   // Slider: a 5px track whose fill is the same height; an 18px thumb (its

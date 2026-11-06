@@ -354,14 +354,14 @@ Deviations: the demo keeps `<v-app-bar density="compact">` (48 = Canon's sm bar;
 
 ## M14 — Pickers (done)
 
-- **SASS**: date picker width 304, day cell and day button 40, column gap 0, controls row 40 (`--v-date-picker-controls-height` fallback); `$picker-border-radius: 12px`, title 600; slider track 5 (fill the same, radius pill), thumb 18; color picker radius 12, elevation 2.
+- **SASS**: date picker width 304, day cell and day button 40, column gap 0, controls row 40 (`--v-date-picker-controls-height` fallback), month/year toggles padded 8 / 4 so the controls row fits the 280 grid (see Fixes: picker overlap); `$picker-border-radius: 12px`, title 600; slider track 5 (fill the same, radius pill), thumb 18; color picker radius 12, elevation 2.
 - **Blueprint**: `VDatePicker { color: 'neutral', hideHeader: true, VBtn: neutral minimal }` (its day, month and arrow buttons are plain VBtns that took the global accent); `VColorPicker { VBtn: neutral minimal }`; `VTimePicker`, `VSlider`, `VRangeSlider { color: 'neutral' }`.
 - **`overrides/_pickers.scss`** (34 lines, 22 non-comment): slider thumb = surface centre with a 5px currentColor border (the shadow is the `elevation-*` utility's, so ring = border, focus = outline), no hover wash; neutral track at full strength on `frame` (re-point in the `c-style` sublayer).
 - Fixture: `/c-style` pickers section (date picker, slider, range slider, color picker).
 
-Acceptance (`verify/app/pickers.spec.ts`, 3 tests): no MD header; day buttons 40×40, radius 8, ink; selected zinc-900/white; controls ink; cells ≈ 41 apart (see deviation); slider track zinc-200 5px at opacity 1, fill zinc-900 5px, thumb 18 with a 5px zinc-900 ring around white; color picker radius 12.
+Acceptance (`verify/app/pickers.spec.ts`, 3 tests): no MD header; day buttons 40×40, radius 8, ink; selected zinc-900/white; controls ink; cells 40 apart; slider track zinc-200 5px at opacity 1, fill zinc-900 5px, thumb 18 with a 5px zinc-900 ring around white; color picker radius 12.
 
-Deviations: Vuetify's month/year controls row is wider than Canon's 280px grid, so the 1fr day columns are ≈ 41 (buttons stay 40); today is an outlined ring (Canon: a 4px dot); weekday header, rows-8-apart and the inline calendar border not styled; slider value tooltip and marks untouched; VCalendar, VRating, VFileUpload, VCarousel and the media/render-only components get only the global levers.
+Deviations: today is an outlined ring (Canon: a 4px dot); weekday header, rows-8-apart and the inline calendar border not styled; slider value tooltip and marks untouched; VCalendar, VRating, VFileUpload, VCarousel and the media/render-only components get only the global levers.
 
 ### Fixes from the M8/M11 checkpoints
 
@@ -523,3 +523,16 @@ Working note: changing `packages/c-style/package.json` `exports` needs a Vite re
 
 New `verify/app/showcase.spec.ts` (17 tests): link colours/line light and dark; dark and light tonal avatar text/tint, tonal alert, selected tonal card; tag 24/12 and 32/14, 16px remove icon, combobox fields 40 with 24 tags; tabs at (20, 20) with 16 below; pagination row 40, 8 apart, no item margin; `c-list-page` arrows 40 frameless at the field's y with 20px icons; radio legend flush and 16 above; list transparent, rows 4 in, radius 8, current fill/500; stepper current ink badge, upcoming faded; FAB radii 8; banner fill light/dark, 8 padding, 20 icon, centred 32px neutral actions; datetime menu opens above inside the viewport at 1440×900; filter count unclipped; `c-style/icons` icon 20px at stroke 1.5. `overlay.spec.ts` now expects `transform: scale(0.97)`.
 `coalesce.spec.ts` pagination test now expects frameless arrows. Suites: app 116/116, unit 38/38, Storybook 364/364 (render, parity gate, coverage), `tsc` (package, verify) and demo `vue-tsc` clean. Showcase screenshots regenerated in `verify/screenshots/showcase/` (no console errors or warnings).
+
+## Fixes: picker overlap (Storybook)
+
+Report: date and colour picker stories (dark) showed neighbouring pickers' columns colliding ("S S", "7 1", "2115"), controls rows "> <" touching, month/year views running into the next picker.
+
+| Overlap | Cause | Fix |
+|---|---|---|
+| Pickers drawn over each other (date, time, colour) | **Story.** `sb-row stack` lays items in a grid of `minmax(240px, 1fr)` cells, 252 apart; the pickers are fixed 304 (date), 328 (time), 300 (colour) wide, so each overran the next by 52 / 76 / 48px. Every collision in the screenshot is this | `SbRow` gets a `wrap` prop (items keep their width, top-aligned, wrap 12 apart); the date, time and colour picker rows use it |
+| Date picker content wider than its box, day columns 41.2 | **Library.** The docked controls row is 12 + month group 140.5 (36 + 68.5 + 36) + year group 148 (36 + 76 + 36) + 12 = 312.5 > 304. The picker body is a flex column, so the month, months and years views stretched to 312.5 too and `overflow: hidden` clipped 8.5px: grid 288.5 (7 × 41.2), 12 in on the left, 4 on the right | SASS `$date-picker-controls-docked-toggle-btn-padding: 8px 4px` (Vuetify 12px 8px): groups 130.5 + 138 = 268.5 ≤ 280. Every view is 304, the grid 280 (7 × 40) 12 in on both sides. This was M14's "≈ 41 apart" deviation, now gone |
+| Colour picker content | Fits: canvas, preview and inputs inside the 300 box (the 5px preview scroll overflow is the slider thumb's invisible 28px ripple) | — |
+
+Tests: `verify/lib/layout.ts` `pickerSpill` (any picker body section, button, day grid, slider track, canvas or input reaching past the picker's left/right edge) and `rowOverlaps` (overlapping `sb-row` items). `verify/parity/pickers.spec.ts` (7): date/time/colour picker stories × light/dark fit and don't overlap; every month-view date picker's grid is 12 / 280 / 12 with cells 40 apart. `stories.spec.ts` now also fails any story whose row items overlap. `verify/app/pickers.spec.ts`: cells exactly 40 apart; `/c-style` pickers (month, months and years views) and `/gallery` date card fit, light and dark. All of these fail on the old settings/story. Suites: app 119/119, unit 38/38, Storybook 371/371, `tsc` (verify) and Storybook `vue-tsc` clean.
+

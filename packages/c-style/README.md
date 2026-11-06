@@ -203,7 +203,7 @@ Kept on purpose or not reachable through Vuetify; the parity gate (`verify/parit
 - **Stepper** (no Canon counterpart): current and completed steps get the ink badge; a step only counts as completed when the app marks it (`complete`, or `rules`), as in Vuetify.
 - **FAB / speed dial** (no Canon counterpart): button radius for both icon-only and extended; otherwise Vuetify's.
 - **Dialog** opens with Vuetify's transition (Canon scales from .98); tooltips have no arrow.
-- **Date picker:** today is a ring (Canon a dot); its controls row is Vuetify's (month and year menus).
+- **Date picker:** today is a ring (Canon a dot); its controls row is Vuetify's (month and year menus, toggles padded 8 / 4 so the row fits the 280px grid). Longer month or year labels than English "Sep" / "2026" by more than about 11px would widen the row past the 304px box again.
 - **Stacked choices:** separate checkboxes and switches stack at Canon's 28 / 32px pitch only inside a `v-form` (or as a `v-radio-group`); elsewhere sibling inputs may be laid out in a row, so they keep the 40px row.
 - **Theme on the same element** (`<v-btn theme="dark">`) wins over c-style's re-points on that element; a theme on an ancestor is fine.
 

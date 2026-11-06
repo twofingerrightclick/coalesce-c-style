@@ -1,8 +1,10 @@
 import { expect, test, type Locator } from "@playwright/test";
 import { normalizeColors } from "../lib/computed";
-import { gotoScheme } from "../lib/page";
+import { pickerSpill } from "../lib/layout";
+import { gotoScheme, type Scheme } from "../lib/page";
 
-// M14 pickers (canon §4 C Date family, Slider, Color Picker), on `/c-style`.
+// M14 pickers (canon §4 C Date family, Slider, Color Picker), on `/c-style`
+// and `/gallery`.
 
 function style(el: Locator, props: string[]) {
   return el.evaluate((node, props) => {
@@ -17,17 +19,14 @@ test.describe("M14 pickers", () => {
     await page.locator('[data-picker="date"]').waitFor();
   });
 
-  test("calendar: 40px day cells, radius 8, ~no gap, ink days; selected = ink fill; no MD header", async ({ page }) => {
+  test("calendar: 40px day cells, radius 8, no gap, ink days; selected = ink fill; no MD header", async ({ page }) => {
     const cal = page.locator('[data-picker="date"]');
     await expect(cal.locator(".v-picker__header")).toHaveCount(0);
     const days = cal.locator(".v-date-picker-month__day-btn");
     const a = (await days.nth(0).boundingBox())!;
     const b = (await days.nth(1).boundingBox())!;
     expect([a.width, a.height]).toEqual([40, 40]);
-    // Columns are 1fr; Vuetify's month/year controls row is a little wider
-    // than Canon's 280px grid, so cells sit ≈ 41 apart.
-    expect(b.x - a.x).toBeGreaterThanOrEqual(40);
-    expect(b.x - a.x).toBeLessThan(42);
+    expect(b.x - a.x).toBe(40);
     await expect(days.nth(0)).toHaveCSS("border-top-left-radius", "8px");
     expect((await normalizeColors(page, await style(days.nth(0), ["color"]))).color).toBe("#18181b");
     const sel = cal.locator(".v-date-picker-month__day--selected .v-btn");
@@ -55,3 +54,25 @@ test.describe("M14 pickers", () => {
     await expect(page.locator('[data-picker="color"]')).toHaveCSS("border-top-left-radius", "12px");
   });
 });
+
+for (const scheme of ["light", "dark"] as Scheme[]) {
+  test(`pickers keep their content inside their box (${scheme})`, async ({ page }) => {
+    await gotoScheme(page, "/c-style", scheme);
+    const kitchen = page.locator('[data-kitchen="pickers"]');
+    await kitchen.locator('[data-picker="date"]').waitFor();
+    expect(await pickerSpill(kitchen)).toEqual([]);
+    // The month and year views, opened from the controls row and closed again.
+    for (const [toggle, view] of [["month", "months"], ["year", "years"]]) {
+      const btn = kitchen.locator(`.v-date-picker-controls__only-${toggle}-btn`);
+      await btn.click();
+      await kitchen.locator(`.v-date-picker-${view}`).waitFor();
+      expect(await pickerSpill(kitchen), view).toEqual([]);
+      await btn.click();
+      await kitchen.locator(".v-date-picker-month").waitFor();
+    }
+    await gotoScheme(page, "/gallery", scheme);
+    const card = page.locator('[data-gallery="date"]');
+    await card.locator(".v-date-picker").waitFor();
+    expect(await pickerSpill(card)).toEqual([]);
+  });
+}
