@@ -57,7 +57,7 @@
       </v-col>
     </v-row>
 
-    <v-row class="mt-2">
+    <v-row class="mt-6">
       <v-col cols="12" lg="8">
         <v-card>
           <v-tabs v-model="tab">

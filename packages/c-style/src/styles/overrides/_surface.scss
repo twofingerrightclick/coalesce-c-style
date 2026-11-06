@@ -1,6 +1,14 @@
 // Surfaces and feedback (canon §4 A Card, Accordion; §4 E Alert). Radius,
 // padding, type, elevation and the alert bar come from settings.scss.
 @layer vuetify-overrides {
+  // `$card-actions-padding` drops the top padding because a preceding card
+  // section already supplies the gap. Actions that open the card (a bare
+  // action bar) need the card padding on top too. The loader slot may come
+  // first.
+  .v-card > :is(.v-card-actions:first-child, .v-card__loader + .v-card-actions) {
+    padding-top: 20px;
+  }
+
   // Alert and toast (canon §4 E): Vuetify's outlined variant paints border,
   // text and fill in the intent; Canon's is a neutral surface where only the
   // icon (step 600, the `text-<intent>` colour the root keeps) and a 4px bar
