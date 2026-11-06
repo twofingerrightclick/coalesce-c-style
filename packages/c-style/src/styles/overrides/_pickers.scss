@@ -25,10 +25,47 @@
   .v-slider-track__background.bg-neutral {
     opacity: 1;
   }
+
+  // Time picker fields read as the segmented control beside them (_nav.scss
+  // paints AM / PM): muted on the fill; the field the clock edits is the
+  // raised card in ink (Vuetify: the same fill, an overlay .04 / .12 apart).
+  // Focused, Canon's time cell takes the text input's focus line and halo.
+  .v-time-picker-controls__time__field {
+    color: rgb(var(--v-muted));
+
+    .v-field {
+      background: rgb(var(--v-fill));
+      transition: color 0.12s, background-color 0.12s, box-shadow 0.12s;
+
+      > .v-field__overlay {
+        opacity: 0;
+      }
+    }
+
+    &--active .v-field {
+      background: rgb(var(--v-segment));
+      box-shadow:
+        0 0 0 1px rgba(var(--v-border-color), 0.06),
+        var(--v-shadow-raised);
+    }
+
+    .v-field--focused {
+      box-shadow:
+        inset 0 0 0 1px rgb(var(--v-focus)),
+        0 0 0 3px rgb(var(--v-primary-halo));
+    }
+  }
 }
 
 @include tone.repoint {
   .v-slider-track__background.bg-neutral {
     --v-theme-neutral: var(--v-frame);
+  }
+
+  // The unchosen period is muted. Both periods carry `text-neutral` (the
+  // blueprint colours the unchosen one to keep the accent off it), and that
+  // utility outranks the overrides layer.
+  .v-time-picker-controls__ampm > .v-btn:not(.v-btn--active, :hover) {
+    --v-theme-neutral: var(--v-muted);
   }
 }

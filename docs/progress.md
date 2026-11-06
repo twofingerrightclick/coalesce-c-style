@@ -108,7 +108,7 @@ Since M1 (all additive except the blueprint signature, which only gained an opti
 | New: `cStyleThemes(colors?)` → `{ light, dark }` Vuetify theme definitions; `applyCStyleColors(useTheme(), colors?)` recolours a running app in place (no reload). | `c-style` |
 | New: `generateLadder(hex)`, `palettes` (Tailwind v3: zinc slate gray neutral stone red orange amber yellow lime green emerald teal cyan sky blue indigo violet purple fuchsia pink rose), `steps`; types `CStyleColors`, `CStyleBlueprintOptions`, `ColorInput`, `Ladder`, `PaletteName`, `Step`. | `c-style` |
 | `CStyleColors`: `{ primary, neutral, success, warning, error, info, dark: {…same} }`, each a hex, a palette name or a full ladder. `info` defaults to `primary`. | `c-style` |
-| CSS contract (theme variables, emitted by Vuetify as `--v-*`): ladders `--v-<intent>-<step>` (intents `primary neutral success warning error info`); role tokens `--v-<intent>-{text,tint,hover,active,border-low,line,line-hover,halo,bar}`; neutral roles `--v-{muted,quiet,frame,frame-hover,choice-line,fill-hover,fill,fill-strong,disabled-bg,disabled-fg,focus,focus-choice,ring-offset,scrim}`; `--v-tint-1…4`, `--v-rule-opacity`, `--v-rule-faint-opacity`; `--v-shadow-{edge,control,raised,floating,overlay}`, `--v-elevation-0…5`; `--v-font-{body,heading,mono}`. Colour tokens are `r, g, b` channel lists: `rgb(var(--v-primary-text))`. | theme |
+| CSS contract (theme variables, emitted by Vuetify as `--v-*`): ladders `--v-<intent>-<step>` (intents `primary neutral success warning error info`); role tokens `--v-<intent>-{text,tint,hover,active,border-low,line,line-hover,halo,bar}`; neutral roles `--v-{muted,quiet,frame,frame-hover,choice-line,fill-hover,fill,fill-strong,segment,disabled-bg,disabled-fg,focus,focus-choice,ring-offset,scrim}`; `--v-tint-1…4`, `--v-rule-opacity`, `--v-rule-faint-opacity`; `--v-shadow-{edge,control,raised,floating,overlay}`, `--v-elevation-0…5`; `--v-font-{body,heading,mono}`. Colour tokens are `r, g, b` channel lists: `rgb(var(--v-primary-text))`. | theme |
 | CSS tokens: `--cs-control-height/-pad/-font/-lh`, `--cs-tracking`, `--cs-icon`, `--cs-gap`, `--cs-radius`, `--cs-surface-radius`, `--cs-inset`, `--cs-input-gap`, `--cs-shell-inset`, `--cs-hairline`; size classes `.cs-size-sm/.cs-size-md/.cs-size-lg`. Only `--cs-icon` (default-size icons) follows the size class so far; the Vuetify re-point rules are M14b (R1). | `c-style/styles` |
 | `c-style/styles` now self-hosts InterVariable (`inter-ui`, via a CSS `@import`), sets Inter's alternates on `:root`, and adds the tone context, focus ring and press motion in `@layer vuetify-overrides`. | `c-style/styles` |
 | New deps: `culori`, `inter-ui`; dev `@types/culori`. | package.json |
@@ -350,7 +350,7 @@ Deviations: chip `small` is 26 (Vuetify's 6px size step is a literal; Canon sm 2
 
 Acceptance (`verify/app/nav.spec.ts`, 5 tests): light/dark app bar and sidebar = surface, no shadow, 1px `rule-faint` line (bar bottom only), sidebar 264; nav items H 40, radius 8, icon 10 in, 10 apart, current zinc-100 / 500 / overlay 0, rest 400; tabs track 40 zinc-100 radius 10 no ring, tab 34 radius 7, 2 apart, text 10 in, selected card white with the 6% ring, selected zinc-900 / rest zinc-500, 14/500; breadcrumb row 40 flush left, links zinc-500, current and separators zinc-400 at opacity 1, 14px.
 
-Deviations: the demo keeps `<v-app-bar density="compact">` (48 = Canon's sm bar; 64 at md); breadcrumb separator stays Vuetify's text `/` (VBreadcrumbs takes a string, Canon draws a chevron); dark nav current is zinc-800 (`fill`; Canon zinc-700) and nav hover is Vuetify's ink at hover opacity (≈ zinc-100, Canon zinc-50); sidebar inline inset 10 (Canon 16: Vuetify uses one variable for the list and item padding); tab card dark = zinc-800 (Canon zinc-700). VBottomNavigation, VStepper, VSystemBar, VFooter untouched.
+Deviations: the demo keeps `<v-app-bar density="compact">` (48 = Canon's sm bar; 64 at md); breadcrumb separator stays Vuetify's text `/` (VBreadcrumbs takes a string, Canon draws a chevron); dark nav current is zinc-800 (`fill`; Canon zinc-700) and nav hover is Vuetify's ink at hover opacity (≈ zinc-100, Canon zinc-50); sidebar inline inset 10 (Canon 16: Vuetify uses one variable for the list and item padding). VBottomNavigation, VStepper, VSystemBar, VFooter untouched.
 
 ## M14 — Pickers (done)
 
@@ -560,3 +560,26 @@ Tests: Storybook `Parity/Data/Tag Media` (photo avatar, blue-seeded initials, ic
 
 Not done: Canon's neutral remove segment on hued tags (README deviation).
 Suites: app 121/121, unit 38/38, Storybook 377/377, `tsc` (verify) and Storybook `vue-tsc` clean.
+
+## Fixes: time picker AM / PM and fields
+
+Report (dark): the chosen period didn't read as chosen. AM (chosen) was grey text on a grey tint; PM (unchosen) light blue on a blue tint with a blue frame, so it looked like the selection.
+
+Cause: VTimePickerControls passes `color` only to the chosen period's VBtn (`undefined` to the other), so the unchosen one took the global `VBtn { color: 'primary', variant: 'tonal' }` blueprint and Vuetify's 1px currentColor frame; the chosen one was neutral tonal. The hour / minute fields differed only by Vuetify's overlay (.04 vs .12 on `surface-light`). Also: the segmented card (tabs, VBtnToggle) used `surface-bright`, which in dark is zinc-800, the track's own colour, so the card vanished there.
+
+Canon: Segmented Control (canon §4 A): track `fill`, 3px inset, options 2 apart; chosen = card (white / zinc-700, 6% edge ring + raised shadow) in ink; unchosen muted, no frame, hover to ink; focus = the button ring in place of the card shadow.
+
+Levers, in order:
+- Theme: neutral role `segment` (white / zinc-700), the segmented card. Inset tabs and VBtnToggle use it too (their dark card was zinc-800, an M13 deviation now gone).
+- Blueprint: `VTimePicker { color: 'neutral', VBtn: { color: 'neutral' } }`, so neither period takes the accent.
+- SASS: `$time-picker-controls-ampm-height: 36px`, `$time-picker-controls-input-ampm-height: 32px`: the AM / PM track is as tall as the fields (80 / 72).
+- `_nav.scss`: the segmented-track rules (fill, inset, radius, card, shadow, underlay off) widened from `.v-btn-toggle` to `.v-time-picker-controls__ampm`; options get a full transparent 1px border (Vuetify drops PM's top border); the card shadow yields to the focus ring on `:focus-visible`.
+- `_pickers.scss`: fields muted on `fill`; the field the clock edits is the card in ink (its `text-neutral` from VTimePickerField); a focused field takes the text input's focus line and halo. The unchosen period re-points `--v-theme-neutral` to `muted` in the `c-style` sublayer (`text-neutral` outranks the overrides layer).
+
+CSS: `_nav.scss` +12 / −9 non-comment, `_pickers.scss` +24, settings +2.
+
+Fixture: `/c-style` gets a second time picker, `variant="input" use-seconds`, with its model on `data-value`.
+
+Tests (`verify/app/pickers.spec.ts`, +3): light and dark, AM then PM chosen: track = `fill` and as tall as a field; chosen period = card bg + ink + shadow, unchosen = transparent + muted, chosen contrast at least 3 above unchosen; hour field card + ink, minute `fill` + muted; focusing the minute field moves the card and adds the inset focus line; keyboard focus on PM shows the 2 + 3px ring. Input variant: typing into hour, minute and second each updates the model (`09:30:15` → `11:45:07`). The input-variant "second field didn't work" report was the story sharing one `HH:mm` model (19e3d00).
+
+Suites: app 124/124, unit 38/38, Storybook 377/377 (one Data Table parity timeout under 6 workers, passes alone).

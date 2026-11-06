@@ -129,7 +129,8 @@ export const defaults: Partial<DefaultsInstance> = {
   // global accent; Canon's are ink.
   VDatePicker: { color: "neutral", hideHeader: true, ...quietButton },
   VColorPicker: quietButton,
-  VTimePicker: { color: "neutral" },
+  // Its unchosen period button gets no colour, so it would take the accent.
+  VTimePicker: { color: "neutral", VBtn: { color: "neutral" } },
   VSlider: { color: "neutral" },
   VRangeSlider: { color: "neutral" },
   // Canon pagination is neutral: ink numbers, muted arrows (_btn.scss).

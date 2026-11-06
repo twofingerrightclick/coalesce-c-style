@@ -101,6 +101,8 @@ function neutralVariables(p: Palette, mode: Mode): Variables {
     "fill-hover": at(n, 50, 800),
     fill: at(n, 100, 800),
     "fill-strong": at(n, 200, 700),
+    // The chosen card on a segmented track (canon §4 A Segmented Control).
+    segment: light ? white : n[700],
     "disabled-bg": at(n, 50, 800),
     "disabled-fg": at(n, 400, 500),
     // Canon banner without an intent (canon §4 E Banner).

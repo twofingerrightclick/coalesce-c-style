@@ -255,6 +255,8 @@
           <v-range-slider :model-value="[20, 60]" data-picker="range" />
         </div>
         <v-color-picker data-picker="color" />
+        <v-time-picker v-model="time" data-picker="time" />
+        <v-time-picker v-model="timeInput" variant="input" use-seconds :data-value="timeInput" data-picker="time-input" />
       </div>
     </section>
   </v-container>
@@ -269,6 +271,8 @@ const variants = ["flat", "tonal", "outlined", "text"] as const;
 const snackbar = ref(false);
 const tab = ref("one");
 const date = ref(new Date(2026, 10, 12));
+const time = ref("09:30");
+const timeInput = ref("09:30:15");
 const crumbs = [
   { title: "Home", href: "/" },
   { title: "Admin", href: "/admin" },

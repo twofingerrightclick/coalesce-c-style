@@ -18,18 +18,20 @@
   }
 
   // Canon's segmented track (canon §4 A Segmented Control), shared by inset
-  // tabs (the slider is the gliding card) and VBtnToggle (the active button
-  // is the card): the fill with no ring; the card is the bright surface with
-  // the tab shadow (edge at 6% + raised); rest options are muted and change
-  // only colour, no button tint. Tab geometry comes from settings.scss.
-  :is(.v-tabs--inset, .v-btn-toggle) {
-    --v-tabs-slider-background: rgb(var(--v-theme-surface-bright));
+  // tabs (the slider is the gliding card), VBtnToggle and the time picker's
+  // AM / PM (the active button is the card): the fill with no ring; the card
+  // is `segment` with the tab shadow (edge at 6% + raised); rest options are
+  // muted (AM / PM: _pickers.scss) and change only colour, no button tint.
+  // Tab and AM / PM heights come from settings.scss.
+  :is(.v-tabs--inset, .v-btn-toggle, .v-time-picker-controls__ampm) {
+    --v-tabs-slider-background: rgb(var(--v-segment));
     background: rgb(var(--v-fill));
     box-shadow: none;
   }
 
   .v-tabs--inset .v-slide-group__content,
-  .v-btn-toggle {
+  .v-btn-toggle,
+  .v-time-picker-controls__ampm {
     gap: 2px;
   }
 
@@ -39,22 +41,26 @@
 
   // VBtnToggle is a 40px button group: a 3px inset and radius 10 around
   // 34px options of radius 7, as the inset tabs get from their variables.
-  .v-btn-toggle {
+  .v-btn-toggle > .v-btn {
+    --v-btn-height: 34px;
+  }
+
+  :is(.v-btn-toggle, .v-time-picker-controls__ampm) {
     padding: 3px;
     border-radius: calc(var(--cs-radius) + 2px);
 
     > .v-btn {
-      --v-btn-height: 34px;
-      border-color: transparent;
+      border: 1px solid transparent;
       border-radius: calc(var(--cs-radius) - 1px);
     }
 
     > .v-btn--active {
-      background: rgb(var(--v-theme-surface-bright));
+      background: rgb(var(--v-segment));
     }
   }
 
-  :is(.v-tabs--inset .v-tab__slider, .v-btn-toggle > .v-btn--active) {
+  // Focus: the button's ring in place of the card shadow (canon §4 A).
+  :is(.v-tabs--inset .v-tab__slider, :is(.v-btn-toggle, .v-time-picker-controls__ampm) > .v-btn--active:not(:focus-visible)) {
     box-shadow:
       0 0 0 1px rgba(var(--v-border-color), 0.06),
       var(--v-shadow-raised);
@@ -64,7 +70,7 @@
     color: rgb(var(--v-muted));
   }
 
-  :is(.v-tabs--inset .v-tab, .v-btn-toggle > .v-btn) > .v-btn__underlay {
+  :is(.v-tabs--inset .v-tab, :is(.v-btn-toggle, .v-time-picker-controls__ampm) > .v-btn) > .v-btn__underlay {
     opacity: 0;
   }
 

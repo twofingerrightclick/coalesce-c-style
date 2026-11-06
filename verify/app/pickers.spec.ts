@@ -76,3 +76,108 @@ for (const scheme of ["light", "dark"] as Scheme[]) {
     expect(await pickerSpill(card)).toEqual([]);
   });
 }
+
+// WCAG contrast of two opaque `#rrggbb` colours.
+function contrast(a: string, b: string) {
+  const lum = (hex: string) => {
+    const [r, g, bl] = [1, 3, 5].map((i) => {
+      const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+// Waits out the CSS transitions under `el` (ripples and spinners run forever).
+function settle(el: Locator) {
+  return el.evaluate((node) =>
+    Promise.all(node.getAnimations({ subtree: true }).filter((a) => a instanceof CSSTransition).map((a) => a.finished)),
+  );
+}
+
+const timeColors = {
+  light: { fill: "#f4f4f5", card: "#ffffff", ink: "#18181b", fieldInk: "#18181b", muted: "#71717a" },
+  dark: { fill: "#27272a", card: "#3f3f46", ink: "#f4f4f5", fieldInk: "#ffffff", muted: "#a1a1aa" },
+};
+
+for (const scheme of ["light", "dark"] as Scheme[]) {
+  test(`time picker: chosen period and field = raised card in ink, the rest muted on the fill (${scheme})`, async ({ page }) => {
+    const c = timeColors[scheme];
+    await gotoScheme(page, "/c-style", scheme);
+    const picker = page.locator('[data-picker="time"]');
+    const track = picker.locator(".v-time-picker-controls__ampm");
+    const am = track.locator(".v-time-picker-controls__ampm__am");
+    const pm = track.locator(".v-time-picker-controls__ampm__pm");
+    const fields = picker.locator(".v-time-picker-controls__time__field");
+
+    const colors = async (el: Locator, props = ["background-color", "color", "box-shadow"]) => {
+      const s = await style(el, props);
+      const n = await normalizeColors(page, { bg: s["background-color"], fg: s.color });
+      return { ...n, shadow: s["box-shadow"] };
+    };
+    const expectPeriods = async (chosen: Locator, other: Locator) => {
+      await settle(track);
+      const on = await colors(chosen);
+      const off = await colors(other);
+      expect({ bg: on.bg, fg: on.fg }).toEqual({ bg: c.card, fg: c.ink });
+      expect(on.shadow).not.toBe("none");
+      expect({ bg: off.bg, fg: off.fg }).toEqual({ bg: "rgba(0, 0, 0, 0)", fg: c.muted });
+      expect(contrast(on.fg, on.bg)).toBeGreaterThan(contrast(off.fg, c.fill) + 3);
+    };
+
+    expect((await colors(track)).bg).toBe(c.fill);
+    expect((await track.boundingBox())!.height).toBe((await fields.first().locator(".v-field").boundingBox())!.height);
+    await expectPeriods(am, pm);
+
+    // The field the clock edits (hour at rest) is the card; the other muted on the fill.
+    const hour = await colors(fields.nth(0).locator(".v-field"));
+    const minute = await colors(fields.nth(1).locator(".v-field"));
+    expect({ bg: hour.bg, fg: (await colors(fields.nth(0).locator("input"))).fg }).toEqual({ bg: c.card, fg: c.fieldInk });
+    expect({ bg: minute.bg, fg: (await colors(fields.nth(1).locator("input"))).fg }).toEqual({ bg: c.fill, fg: c.muted });
+    expect(hour.shadow).not.toBe("none");
+
+    await pm.click();
+    await page.mouse.move(0, 0);
+    await expect(pm).toHaveClass(/v-btn--active/);
+    await expectPeriods(pm, am);
+
+    // Focusing the minute field makes it the card, with the text input's focus line and halo.
+    await fields.nth(1).locator("input").focus();
+    await expect(fields.nth(1)).toHaveClass(/__field--active/);
+    await settle(picker);
+    expect((await colors(fields.nth(1).locator("input"))).fg).toBe(c.fieldInk);
+    expect((await colors(fields.nth(0).locator("input"))).fg).toBe(c.muted);
+    expect(await style(fields.nth(1).locator(".v-field"), ["box-shadow"])).toEqual({
+      "box-shadow": expect.stringContaining("inset"),
+    });
+
+    // Keyboard focus on the chosen period: the button ring replaces the card shadow.
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await expect(pm).toBeFocused();
+    await settle(track);
+    expect((await style(pm, ["box-shadow"]))["box-shadow"]).toMatch(/0px 0px 0px 2px, .* 0px 0px 0px 3px$/);
+  });
+}
+
+test("time picker input variant: each field takes typing, incl. seconds", async ({ page }) => {
+  await gotoScheme(page, "/c-style", "light");
+  const picker = page.locator('[data-picker="time-input"]');
+  await expect(picker).toHaveAttribute("data-value", "09:30:15");
+  const inputs = picker.locator(".v-time-picker-controls__time__field input");
+  await expect(inputs).toHaveCount(3);
+
+  for (const [i, typed, model] of [
+    [0, "11", "11:30:15"],
+    [1, "45", "11:45:15"],
+    [2, "07", "11:45:07"],
+  ] as const) {
+    await inputs.nth(i).fill("");
+    await inputs.nth(i).pressSequentially(typed);
+    await inputs.nth(i).press("Tab");
+    await expect(inputs.nth(i)).toHaveValue(typed);
+    await expect(picker).toHaveAttribute("data-value", model);
+  }
+});

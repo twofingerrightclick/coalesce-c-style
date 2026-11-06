@@ -203,6 +203,10 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
   $breadcrumbs-item-disabled-opacity: 1 !default,
   $color-input-pip-density: sizes.$flat-density !default,
   $time-picker-controls-field-density: sizes.$flat-density !default,
+  // AM / PM is a segmented track as tall as the fields (80 / 72): two
+  // options 2 apart inside a 3px inset.
+  $time-picker-controls-ampm-height: 36px !default,
+  $time-picker-controls-input-ampm-height: 32px !default,
 
   // ── Tables (density kept: 56 / 48 / 40 rows, decision 4) ─────────────────
   $table-header-height: 40px !default,
