@@ -7,34 +7,38 @@ test.describe("M4 typography (canon §2.9)", () => {
     await page.evaluate(() => document.fonts.ready);
   });
 
-  test("Inter is the body font and is loaded", async ({ page }) => {
+  test("Public Sans, bundled by c-style, is the body font and is loaded", async ({ page }) => {
     const family = await page.locator(".v-application").evaluate((el) => getComputedStyle(el).fontFamily);
-    expect(family).toMatch(/^InterVariable\b/);
-    expect(await page.evaluate(() => document.fonts.check("500 14px InterVariable"))).toBe(true);
+    expect(family).toMatch(/^"Public Sans Variable"/);
+    for (const weight of [400, 500, 600]) {
+      expect(await page.evaluate((w) => document.fonts.check(`${w} 14px "Public Sans Variable"`), weight)).toBe(true);
+    }
+    const loaded = await page.evaluate(() =>
+      [...document.fonts].filter((f) => f.status == "loaded").map((f) => f.family.replace(/"/g, "")),
+    );
+    expect(loaded).toContain("Public Sans Variable");
   });
 
-  test("stylistic alternates are on and live", async ({ page }) => {
+  test("Inter's alternates are off for Public Sans", async ({ page }) => {
     const features = await page.locator(".v-application").evaluate((el) => getComputedStyle(el).fontFeatureSettings);
-    expect(features).toContain('"ss01"');
-    // cv11 swaps Inter's double-storey a for the single-storey one, which is narrower.
-    const widths = await page.evaluate(() =>
-      ["normal", '"cv11"'].map((features) => {
-        const span = document.createElement("span");
-        span.style.cssText = `font: 400 64px InterVariable; font-feature-settings: ${features}; position: absolute`;
-        span.textContent = "aaaa";
-        document.body.append(span);
-        const width = span.getBoundingClientRect().width;
-        span.remove();
-        return width;
-      }),
-    );
-    expect(widths[0]).not.toBe(widths[1]);
+    expect(features).toBe("normal");
+  });
+
+  test("no font comes from a CDN at run time", async ({ page }) => {
+    const external: string[] = [];
+    page.on("request", (r) => {
+      if (/fonts\.googleapis|fonts\.gstatic|fontshare|rsms\.me/.test(r.url())) external.push(r.url());
+    });
+    await page.goto("/admin/audit", { waitUntil: "networkidle" });
+    await page.evaluate(() => document.fonts.ready);
+    expect(external).toEqual([]);
   });
 
   test("type roles follow Canon's ramp", async ({ page }) => {
     const props = ["font-size", "line-height", "letter-spacing", "font-weight"];
     expect(await probeClass(page, "text-body-medium", props)).toEqual({
-      "font-size": "14px", "line-height": "20px", "letter-spacing": "-0.084px", "font-weight": "400",
+      "font-size": "14px", "line-height": "20px", // Canon's −0.006em at Public Sans' 0.5 tracking scale.
+      "letter-spacing": "-0.042px", "font-weight": "400",
     });
     expect(await probeClass(page, "text-headline-medium", props)).toMatchObject({
       "font-size": "24px", "line-height": "32px", "font-weight": "600",

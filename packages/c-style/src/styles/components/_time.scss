@@ -1,0 +1,304 @@
+// Canon Time (canon §4 C "Time", docs/research/canon-time.md) for c-style's
+// own CsTimeInput / CsTimeField / CsTimeRangeField. A row of framed cells,
+// each a control-height square; the focused cell grows over its neighbours
+// (never moving them) and opens its tabs into step arrows. Layered with
+// Vuetify's components, so utility classes still win.
+
+$chevron: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+$arrow: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12h14'/><path d='m12 5 7 7-7 7'/></svg>");
+
+@layer vuetify-components {
+  .cs-time {
+    // Canon md; the size modifiers below swap the set.
+    --cs-time-b: var(--cs-control-height);
+    --cs-time-radius: var(--cs-radius);
+    --cs-time-gap: 4px;
+    --cs-time-arrow-gap: 8px;
+    --cs-time-pad: var(--cs-control-pad);
+    --cs-time-font: var(--cs-control-font);
+    --cs-time-lh: var(--cs-control-lh);
+    --cs-time-icon: var(--cs-icon);
+    --cs-time-press: var(--v-neutral-300);
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cs-time-arrow-gap);
+    max-inline-size: 100%;
+    vertical-align: middle;
+    font-size: var(--cs-time-font);
+    // Canon's box sets no line height; the cells set the input's.
+    line-height: normal;
+  }
+
+  .cs-time--dark {
+    --cs-time-press: var(--v-neutral-600);
+  }
+
+  .cs-time--size-small {
+    --cs-time-b: 32px;
+    --cs-time-radius: 4px;
+    --cs-time-pad: 8px;
+    --cs-time-font: 12px;
+    --cs-time-lh: 16px;
+    --cs-time-icon: 16px;
+  }
+
+  .cs-time--size-large {
+    --cs-time-b: 48px;
+    --cs-time-radius: 12px;
+    --cs-time-gap: 6px;
+    --cs-time-arrow-gap: 12px;
+    --cs-time-pad: 12px;
+    --cs-time-font: 16px;
+    --cs-time-lh: 24px;
+    --cs-time-icon: 24px;
+  }
+
+  .cs-time-segments {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cs-time-gap);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cs-time-literal,
+  .cs-time-arrow {
+    flex: none;
+    color: rgb(var(--v-quiet));
+  }
+
+  .cs-time-arrow {
+    inline-size: var(--cs-time-icon);
+    block-size: var(--cs-time-icon);
+    background-color: currentColor;
+    mask: $arrow center / var(--cs-time-icon) no-repeat;
+
+    &:dir(rtl) {
+      scale: -1 1;
+    }
+  }
+
+  .cs-time-cell {
+    --cs-time-border: rgb(var(--v-frame));
+    --cs-time-tab: rgb(var(--v-fill));
+    --cs-time-tab-hover: rgb(var(--v-fill-strong));
+    --cs-time-grow: calc((var(--cs-time-b) + 8px) / 4);
+    --cs-time-inner: max(0px, calc(var(--cs-time-radius) - 1px));
+
+    position: relative;
+    box-sizing: border-box;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    inline-size: var(--cs-time-b);
+    block-size: var(--cs-time-b);
+    border: 1px solid var(--cs-time-border);
+    border-radius: var(--cs-time-radius);
+    background-color: rgb(var(--v-theme-surface));
+    box-shadow: var(--v-shadow-control);
+    color: rgb(var(--v-theme-on-surface));
+    line-height: var(--cs-time-lh);
+    letter-spacing: var(--cs-tracking);
+    cursor: text;
+    transition:
+      block-size 0.1s ease-out,
+      margin-block 0.1s ease-out,
+      border-color 0.12s,
+      box-shadow 0.12s;
+
+    &[data-type='period'] {
+      inline-size: auto;
+      min-inline-size: var(--cs-time-b);
+      padding-inline: calc(var(--cs-time-pad) / 2);
+    }
+
+    &[data-empty] > .cs-time-value {
+      color: rgb(var(--v-quiet));
+    }
+  }
+
+  .cs-time-value {
+    outline: none;
+    caret-color: transparent;
+  }
+
+  // The tabs (at rest) and the step arrows (active).
+  .cs-time-step {
+    position: absolute;
+    inset-inline: 2px;
+    block-size: 4px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: var(--cs-time-tab);
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    pointer-events: none;
+    transition:
+      block-size 0.1s ease-out,
+      background-color 0.12s;
+
+    &[data-direction='up'] {
+      inset-block-start: 0;
+      border-radius: var(--cs-time-inner) var(--cs-time-inner) 2px 2px;
+    }
+
+    &[data-direction='down'] {
+      inset-block-end: 0;
+      border-radius: 2px 2px var(--cs-time-inner) var(--cs-time-inner);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgb(var(--v-muted));
+      mask: $chevron center / var(--cs-time-icon) no-repeat;
+      opacity: 0;
+    }
+
+    &[data-direction='up']::after {
+      rotate: 180deg;
+    }
+  }
+
+  @media (hover: hover) {
+    .cs-time-cell:hover:not([data-active]) {
+      --cs-time-border: rgb(var(--v-frame-hover));
+      --cs-time-tab: var(--cs-time-tab-hover);
+    }
+  }
+
+  // Active: grown from the middle over its neighbours, raised.
+  .cs-time-cell[data-active] {
+    --cs-time-border: rgb(var(--v-focus));
+
+    z-index: 2;
+    block-size: calc(var(--cs-time-b) + 2 * var(--cs-time-grow));
+    margin-block: calc(-1 * var(--cs-time-grow));
+    outline: 2px solid transparent; // forced colours, where shadows don't show
+    box-shadow: 0 0 0 3px rgb(var(--v-primary-halo));
+    transition-duration: 0.15s;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+    > .cs-time-step {
+      inset-inline: 3px;
+      block-size: var(--cs-time-grow);
+      pointer-events: auto;
+      transition-duration: 0.15s;
+      transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+      &::after {
+        opacity: 1;
+        transition: opacity 0.12s 0.05s;
+      }
+
+      // Each arrow's target reaches 12px past the cell, outward.
+      &::before {
+        content: '';
+        position: absolute;
+        inset-inline: -3px;
+      }
+
+      &:active {
+        background-color: rgb(var(--cs-time-press));
+      }
+    }
+
+    > .cs-time-step[data-direction='up'] {
+      inset-block-start: 3px;
+      border-radius: max(0px, calc(var(--cs-time-inner) - 2px)) max(0px, calc(var(--cs-time-inner) - 2px)) 2px 2px;
+
+      &::before {
+        inset-block: -15px 0;
+      }
+    }
+
+    > .cs-time-step[data-direction='down'] {
+      inset-block-end: 3px;
+      border-radius: 2px 2px max(0px, calc(var(--cs-time-inner) - 2px)) max(0px, calc(var(--cs-time-inner) - 2px));
+
+      &::before {
+        inset-block: 0 -15px;
+      }
+    }
+  }
+
+  @media (hover: hover) {
+    .cs-time-cell[data-active] > .cs-time-step:hover:not(:active) {
+      background-color: var(--cs-time-tab-hover);
+    }
+  }
+
+  // States, on every cell at once.
+  .cs-time--error .cs-time-cell {
+    --cs-time-border: rgb(var(--v-error-line));
+
+    &[data-active] {
+      --cs-time-border: rgb(var(--v-error-line-hover));
+
+      box-shadow: 0 0 0 3px rgb(var(--v-error-halo));
+    }
+  }
+
+  .cs-time--disabled .cs-time-cell {
+    --cs-time-border: rgb(var(--v-frame));
+
+    background-color: rgb(var(--v-disabled-bg));
+    box-shadow: none;
+    color: rgb(var(--v-disabled-fg));
+    cursor: not-allowed;
+  }
+
+  .cs-time--readonly .cs-time-cell {
+    border-style: dashed;
+
+    &[data-active] {
+      block-size: var(--cs-time-b);
+      margin-block: 0;
+    }
+  }
+
+  :is(.cs-time--disabled, .cs-time--readonly) .cs-time-step {
+    display: none;
+  }
+
+  // Field: Canon's label 6px above the cells, at control type.
+  .cs-time-field__label {
+    display: block;
+    margin-block-end: 6px;
+    color: rgb(var(--v-theme-on-surface));
+    font-size: var(--cs-control-font);
+    line-height: var(--cs-control-lh);
+    letter-spacing: var(--cs-tracking);
+    font-weight: 500;
+    cursor: default;
+  }
+
+  .cs-time-field > .v-input__control {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  @media (forced-colors: active) {
+    .cs-time-step::after,
+    .cs-time-arrow {
+      forced-color-adjust: none;
+      background-color: ButtonText;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cs-time-cell,
+    .cs-time-step,
+    .cs-time-step::after,
+    .cs-time-cell[data-active],
+    .cs-time-cell[data-active] > .cs-time-step,
+    .cs-time-cell[data-active] > .cs-time-step::after {
+      transition: none;
+    }
+  }
+}

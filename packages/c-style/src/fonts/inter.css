@@ -1,0 +1,4 @@
+/* Canon's own font, opt-in: import after `c-style/styles` and pass
+   `font: "Inter"` to `cStyleBlueprint`. rsms's build keeps the alternates
+   Canon turns on; Google-derived builds strip them. */
+@import "inter-ui/inter-variable.css";

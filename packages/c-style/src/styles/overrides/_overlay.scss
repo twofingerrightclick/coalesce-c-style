@@ -12,7 +12,7 @@
   .v-tooltip > .v-overlay__content {
     border: 1px solid rgb(var(--v-frame));
     box-shadow: var(--v-shadow-raised);
-    letter-spacing: -0.007em;
+    letter-spacing: calc(-0.007em * var(--v-font-tracking, 1));
   }
 
   // List subheaders are menu headings: caps at +0.01em (no variable).

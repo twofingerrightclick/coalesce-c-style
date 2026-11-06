@@ -132,6 +132,25 @@ test.describe("showcase fixes", () => {
     });
   }
 
+  for (const scheme of ["light", "dark"] as const) {
+    test(`${scheme}: dashboard "Modified" initials are Canon's 24px avatar type, inside the circle`, async ({ page }) => {
+      await gotoScheme(page, "/dashboard", scheme);
+      const avatar = page.locator(".v-data-table tbody .v-avatar").first();
+      await avatar.waitFor();
+      const initials = avatar.locator("> span:not([class])");
+      const [a, t] = [await box(avatar), await box(initials)];
+      expect([a.width, a.height]).toEqual([24, 24]);
+      expect(await style(initials, ["font-size", "line-height", "font-weight"])).toEqual({
+        "font-size": "10px",
+        "line-height": "12px",
+        "font-weight": "400",
+      });
+      expect(t.width).toBeLessThan(a.width - 4);
+      expect(Math.abs(t.x + t.width / 2 - (a.x + a.width / 2))).toBeLessThan(1);
+      expect(Math.abs(t.y + t.height / 2 - (a.y + a.height / 2))).toBeLessThan(1);
+    });
+  }
+
   test("tabs heading a card sit at the card padding, 16 above the body", async ({ page }) => {
     await gotoScheme(page, "/dashboard", "light");
     const tabs = page.locator(".v-card > .v-tabs").first();

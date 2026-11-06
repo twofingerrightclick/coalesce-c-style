@@ -106,7 +106,7 @@
                   <template #[`item.modifiedOn`]="{ item }">
                     <div class="d-flex align-center ga-2">
                       <v-avatar size="24" color="primary" variant="tonal">
-                        <span class="text-caption">DU</span>
+                        <span>DU</span>
                       </v-avatar>
                       {{ relative(item.modifiedOn) }}
                     </div>

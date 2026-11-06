@@ -74,7 +74,7 @@ const link = (id: string) => `/?path=/story/${id}`;
   <div class="sb-all">
     <h1 class="text-headline-medium mb-1">c-style Storybook</h1>
     <p class="text-medium-emphasis mb-6" style="max-width: 72ch">
-      Vuetify 4 and Coalesce restyled by c-style. Use the toolbar for theme and accent. Live counts come from this
+      Vuetify 4 and Coalesce restyled by c-style. Use the toolbar for theme, accent and font (any Google Fonts family through the URL: <code>&amp;globals=font:Space+Grotesk</code>; Fontshare: <code>font:fontshare+satoshi</code>; see Foundations/Typography). Live counts come from this
       Storybook's index; coverage comes from each story's <code>vuetify:</code>/<code>coalesce:</code> tags.
     </p>
     <v-alert v-if="failed" type="error" :text="failed" class="mb-4" />

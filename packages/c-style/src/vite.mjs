@@ -9,9 +9,14 @@ export { layerOrderCss, layerOrderStyle } from "./layer-order.mjs";
 
 const packageRoot = fileURLToPath(new URL("..", import.meta.url));
 
-// `c-style/styles` imports Inter's CSS, whose woff2 files the browser then
-// fetches from wherever `inter-ui` is installed (often pnpm's global store).
-const interRoot = path.dirname(createRequire(import.meta.url).resolve("inter-ui/package.json"));
+// The font CSS c-style imports (Public Sans by default, `c-style/fonts/inter`
+// on request) makes the browser fetch woff2 files from wherever those packages
+// are installed, often pnpm's global store.
+const require = createRequire(import.meta.url);
+const fontRoots = [
+  path.dirname(require.resolve("@fontsource-variable/public-sans/wght.css")),
+  path.dirname(require.resolve("inter-ui/package.json")),
+];
 
 export const settingsFile = fileURLToPath(new URL("./styles/settings.scss", import.meta.url));
 
@@ -38,7 +43,7 @@ export function cStyleHtml() {
 }
 
 /**
- * Lets the dev server read this package and its Inter font files when they
+ * Lets the dev server read this package and its font files when they
  * sit outside the app's `server.fs.allow` (a workspace link, or pnpm's global
  * virtual store).
  */
@@ -51,7 +56,7 @@ function cStyleServe() {
       // plugin config is concatenated onto the user's, so restore that fallback.
       const fallback = config.server?.fs?.allow ? [] : [searchForWorkspaceRoot(root)];
       return {
-        server: { fs: { allow: [...fallback, packageRoot, interRoot] } },
+        server: { fs: { allow: [...fallback, packageRoot, ...fontRoots] } },
         optimizeDeps: { include: ["c-style > @lucide/vue"] },
       };
     },

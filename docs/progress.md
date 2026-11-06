@@ -118,6 +118,10 @@ Since M1 (all additive except the blueprint signature, which only gained an opti
 | CSS classes: `cs-label-above` / `cs-label-inside` (on `.v-field`), transition name `cs-popup`. Cascade sublayer `vuetify-utilities.c-style` (custom-property re-points only). | `c-style/styles` |
 | `cStyle()` dev server also allows `inter-ui`'s directory. | `c-style/vite` |
 
+| New: `cStyleBlueprint({ font })`, `cStyleThemes(colors?, font?)`, `applyCStyleFont(useTheme(), font?)`, type `CStyleFont` (`string` family or `{ family, features?, tracking? }`). Theme variables `--v-font-body`/`--v-font-heading` get the family + system fallbacks; new `--v-font-features` (Inter's alternates for Inter, `normal` otherwise) feeds `:root { font-feature-settings }` in `overrides/_type.scss`; new `--v-font-tracking` multiplies every negative letter-spacing c-style sets (`$typography` roles, button named sizes, `--cs-tracking`, the field/label/details/list-item settings, tooltip, Coalesce list title): 1 Inter, 0.5 Public Sans, 0 others. `applyCStyleColors` no longer resets the font variables. | `c-style` |
+| **Default font is Public Sans** (`@fontsource-variable/public-sans` 5.3.0, OFL-1.1, variable upright + italic, latin/latin-ext/vietnamese, `font-display: swap`), imported by `c-style/styles` and bundled by the app's Vite. Inter moved to the opt-in export `c-style/fonts/inter` (`inter-ui` kept as a dependency). `cStyle()`'s `c-style:serve` allows both font package directories. | `c-style`, `c-style/styles`, `c-style/fonts/inter` |
+| New components (Canon Time): `CsTimeField`, `CsTimeRangeField`, `CsTimeInput`, plus `timeProblem`, `parseTime`, `formatTime`, `clockOf`, types `CsTimeFormat`, `CsTimeRange`, `CsTimeSize`, `CsTime`, `CsTimeAllow`. Exported from `c-style` (no new entry, so no Vite restart). CSS classes `cs-time*` in `@layer vuetify-components` (`styles/components/_time.scss`). Package `vitest.config.ts` inlines `vuetify` (the entry now imports `vuetify/components/VInput`, whose module imports CSS). | `c-style`, `c-style/styles` |
+
 For Storybook: the accent global can call `applyCStyleColors(useTheme(), { primary: hex })`; the theme global `useTheme().change('light'|'dark')`; the size global puts `.cs-size-*` on the wrapper (icons follow; controls follow after M14b).
 
 ## M3 — Colour foundation (done)
@@ -583,3 +587,58 @@ Fixture: `/c-style` gets a second time picker, `variant="input" use-seconds`, wi
 Tests (`verify/app/pickers.spec.ts`, +3): light and dark, AM then PM chosen: track = `fill` and as tall as a field; chosen period = card bg + ink + shadow, unchosen = transparent + muted, chosen contrast at least 3 above unchosen; hour field card + ink, minute `fill` + muted; focusing the minute field moves the card and adds the inset focus line; keyboard focus on PM shows the 2 + 3px ring. Input variant: typing into hour, minute and second each updates the model (`09:30:15` → `11:45:07`). The input-variant "second field didn't work" report was the story sharing one `HH:mm` model (19e3d00).
 
 Suites: app 124/124, unit 38/38, Storybook 377/377 (one Data Table parity timeout under 6 workers, passes alone).
+
+## Storybook: Font global (done)
+
+- Toolbar **Font** (`storybook/src/fonts.ts`, applied in the preview decorator with `applyCStyleFont` after `applyCStyleColors`): Inter (c-style), Geist, IBM Plex Sans, Source Sans 3, Roboto (Google Fonts), Satoshi, General Sans, Work Sans, Public Sans (Fontshare), system-ui. Stylesheets are injected once, on first selection. Google requests ask for `wght@400;500;600;700` and fall back to the bare family; Fontshare requests ask for `@1` (variable upright; Satoshi has no static 600) plus `400,500,600,700`.
+- Any font from the URL: `&globals=font:Space+Grotesk` (Google Fonts family) or `&globals=font:fontshare+cabinet-grotesk` (Fontshare slug; family name derived from the slug). Storybook's URL globals only allow letters, digits, spaces, `-` and `_`, hence `+` instead of `:`.
+- Features check (glyph width with each Inter tag on vs off, 64px): `ss01` changes Satoshi (+4.6px), General Sans (+3.8), Work Sans (+6.3), Public Sans (−3.4); Google-served Geist, Plex, Source Sans 3 and Roboto ship without these features (subset). So features now follow the font (`--v-font-features`). Tracking kept: −0.006em at 14px is 0.08px per glyph; display roles (−0.02em) read fine in the presets (checked Satoshi's ramp by screenshot).
+- Docs: Foundations/Typography (Ramp) has a Font section (presets, URL syntax, features); the Overview intro mentions it; README "Font".
+- Tests: `packages/c-style/test/font.spec.ts` (defaults, quoting, explicit features, `applyCStyleFont` + `applyCStyleColors` independence). `verify/parity/font.spec.ts`: Inter default with alternates; each of plex, satoshi, general-sans, work-sans, public-sans, a URL Google family and a URL Fontshare slug loads 400/500/600 with `normal` features; the choice persists after navigating to another story through the sidebar.
+
+## Fixes: avatar initials size
+
+Report: `/dashboard` "Modified" column, a 24px tonal avatar with `<span class="text-caption">DU</span>`: initials too big for the circle.
+
+Causes: (a) library: Vuetify's named avatar sizes set only `--v-avatar-height` and a numeric `size` only inline width/height, so initials inherited the parent's type (14px at 24); (b) page: `text-caption` on the initials.
+
+Lever: no SASS setting (Vuetify's `avatar-sizes` mixin reads only `height` from `$avatar-sizes`); `_data.scss` sets Canon's per-size type (canon §4 Avatar: 24 10/12, 32 12/16, 40 14/20, 48/56 16/24, 64 24/32, tracking per step, weight 400) on `.v-avatar--size-*` (24 … 56) and on `.v-avatar[style*=" height: Npx"]` for 12–96px, nearest step. Bare text needs the avatar itself sized (no wrapper to take container units). Chip avatars keep their 0.4 initials (higher specificity). Dashboard drops `text-caption`. +60 lines SCSS (≈45 non-comment).
+
+Tests: `data.spec.ts` light/dark: `/c-style` kitchen avatars at numeric 24–64 (bare) and named x-small … x-large (span): size, font/line-height/400, glyph box inside the circle. `showcase.spec.ts` light/dark: dashboard initials 24px avatar, 10/12/400, centred, narrower than the circle.
+
+## Default font: Public Sans (done)
+
+- User decision: Public Sans is c-style's default, bundled with the package (no runtime font URL); Inter stays opt-in (`import "c-style/fonts/inter"` + `font: "Inter"`), so apps don't ship two default `@font-face` sets.
+- Tracking now follows the font via `--v-font-tracking` (Sass emits `calc(<canon em> * var(--v-font-tracking, 1))`; positive caps tracking unchanged). Public Sans at 0.5: it is set wider than Inter; full tracking crowded body text slightly, none left titles loose. Features: `normal` for Public Sans (its `ss01` swaps glyphs).
+- Storybook: Font preset `public-sans` (default, from the package), `inter` (dynamic `import("c-style/fonts/inter")`), Geist / IBM Plex Sans / Source Sans 3 / Roboto (Google Fonts), Satoshi / General Sans / Work Sans (Fontshare), system-ui; `public-sans` from Fontshare was dropped. Parity comparisons (`verify/lib/measure.ts`) run with `font: "inter"`, Canon's own font, and wait for Inter to load.
+- Tests: `verify/app/type.spec.ts` now expects Public Sans (family, 400/500/600 loaded), `normal` features, no request to Google Fonts / gstatic / Fontshare / rsms, body-medium −0.042px; `verify/app/button.spec.ts` size tracking × 0.5; `packages/c-style/test/font.spec.ts` covers defaults, Inter, other fonts, explicit features/tracking, `applyCStyleFont`/`applyCStyleColors` independence; `verify/parity/font.spec.ts` asserts the Storybook default is Public Sans with no CDN request.
+- Install note: adding the font package relinked Vuetify in the global store again (all three projects now share one new hash). Storybook also needed its Vite deps cache cleared (`rm -rf storybook/node_modules/.cache/storybook`): the pre-bundle still imported component CSS from the old Vuetify path, so c-style's settings silently didn't apply (stock 36px buttons) even though `main.ts`'s realpath check passed. The demo's Vite kept serving correctly (fonts, 8px radius checked); if it ever 404s `vuetify/styles`, kill only the Vite child per Working notes.
+
+## Canon time components (done)
+
+Inventory: `docs/research/canon-time.md`. Canon has one time component, `.canon-time` (no dial, no popover picker); its variants are attributes: value / empty, `step` (15-minute steps; under 60 adds seconds), 12 / 24 hours (from `lang`), range, overnight range (`data-overnight`), sizes sm / md / lg, error, disabled, read-only, RTL.
+
+Components (`packages/c-style/src/components/time/`, render-function TS, no SFC build step):
+- `model.ts`: framework-free value and keyboard model (parse, format, split/join 12-hour cells, step with wrap / snap / skip-disallowed, Home / End, PageUp / PageDown size, typing buffer, erase, paste, validity messages, `clockOf(locale)`).
+- `CsTimeSegments` (internal): one time's cells, Canon's markup with `cs-` classes, spinbutton ARIA, keyboard, pointer (press-to-focus, hold-to-repeat arrows, assistive click), wheel, paste, `contenteditable` only while focused.
+- `CsTimeInput`: the box (single or `range`), size class, error / disabled / readonly, its own Canon validity.
+- `CsTimeField` / `CsTimeRangeField`: `VInput` + label above (14/20/500, 6 above, click focuses the first empty cell) + VInput messages; Canon's validity runs as the first rule (computed from the field's props, since VInput validates before its child re-renders) so VForm counts it; `isDisabled` / `isReadonly` from a VForm reach the cells; `useDefaults` names `CsTimeField`, `CsTimeRangeField`, `CsTimeInput`.
+
+v-model: `HH:mm`, `HH:mm:ss` when `use-seconds` or `step < 60`; null while empty or incomplete (Canon). Range: `[start, end]`. Values are always 24-hour. Accepted input values also include `h:mm am` and `Date` (parsed; emitted back as `HH:mm`).
+
+Keyboard (Canon unless marked): Tab / Shift+Tab per cell; Left / Right (RTL-aware, no crossing between a range's times); Up / Down step by `step`, wrap, snap off-step values, start from now when empty, skip `allowed-*` values (c-style); digits with auto-advance and overflow restart; `:` `.` space move on; A / P; Backspace (digit, cell, back) / Delete; paste; Enter submits the enclosing form; wheel on the active cell; Home / End and PageUp / PageDown (c-style, WAI-ARIA spinbutton keys Canon lacks). Escape is not handled (a hosting VMenu closes on it).
+
+Styling: `src/styles/components/_time.scss` (304 lines, 248 non-comment), `@layer vuetify-components`, tokens only: `frame`, `frame-hover`, `fill`, `fill-strong`, `muted`, `quiet`, `focus`, `primary-halo`, `error-line`, `error-line-hover`, `error-halo`, `disabled-bg/-fg`, `shadow-control`, `neutral-300/600` (pressed arrow; dark picked by `.cs-time--dark` from `useTheme()`).
+
+Demo: `/c-style` "Time (Canon)" section (appended; every variant plus a VForm), `/settings` Notifications card: "Digest arrives at" (`step` 900, required, disabled with the digest switch) and "Quiet hours" (overnight range). The demo's `en` locale gives 12-hour cells where `format` is unset. Existing `<v-time-picker>` usages untouched (no replacement, per the user's scope change).
+
+Storybook: `c-style/Time` (Basics, Step, Clock, Range, Sizes, States, Active, Form, Bare); `Parity/Time` (14 pairs: label, rest cell, value text, empty text, tab, literal, row, period cell, range arrow, sm, lg, error, disabled, read-only), in the parity gate with no new allowance.
+
+Tests:
+- Unit `test/time-model.spec.ts` (44): parse / format / 12-hour split-join, wrap, carry, start-from-now, step snap, skip disallowed, PageUp/Down, Home/End, typing (advance, overflow, 12-hour `0`, A/P, separators), erase, paste, min / max / step / allowed messages, reversed range, `clockOf`.
+- App `verify/app/time.spec.ts` (26): keyboard flows (typing, wrap, Home/End/PageUp/PageDown, Left/Right/Tab, Backspace/Delete + incomplete error, A/P, step 900 + off-step error, seconds, reversed range vs overnight, pointer arrows keep focus, label press, paste, disabled/readonly), VForm rule + Enter submit, ARIA, measurements light + dark (cells 40, gap 4, radius 8, lines/fills/ink, tabs 4 tall 34 wide, label 6 above, active 64 / −12 / focus + halo, arrows 12 tall 4 in, pressed 300 / 600, hover, error, disabled, dashed readonly, sizes 32/40/48, arrow 20 at 8, period padding 5), `/settings`.
+- Storybook `verify/parity/time.spec.ts` (6): focused cell (growth, line, halo, z-index, arrows, chevron mask), hovered cell, focused error cell, equal to Canon's frame, light + dark.
+
+Suites: unit 87/87; app 151/151; Storybook 405/406 on the full run, the one failure being `c-style/Time / Active`'s play function (fixed with `waitFor`; c-style stories 9/9 light and dark after). Package `tsc`, verify `tsc`, demo `vue-tsc` clean. (Storybook `vue-tsc` reports `src/fonts.ts`, from the concurrent font work.)
+
+Not done: Canon's i18n strings (labels are English: "Hours", "Later hour", "Enter a complete time.", …); a form reset to null after a partial clear doesn't clear the cells (the model doesn't change, so nothing to watch); no VTimePicker replacement (dropped by the user).

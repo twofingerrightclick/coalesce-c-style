@@ -128,7 +128,9 @@ export async function compareParity(
   props: readonly string[] = parityProps,
   globals: StoryGlobals = {},
 ): Promise<ParityDiff[]> {
-  await openStory(page, storyId, globals);
+  // Canon's reference is set in Inter, so text metrics only compare in the same font.
+  await openStory(page, storyId, { font: "inter", ...globals });
+  await page.waitForFunction(() => document.fonts.check("500 14px InterVariable") && document.fonts.status == "loaded");
   const frames = await canonFrames(page);
   const diffs: ParityDiff[] = [];
   for (const id of ids) {

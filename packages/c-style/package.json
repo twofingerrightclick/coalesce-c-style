@@ -21,6 +21,10 @@
       "types": "./src/vite.d.mts",
       "default": "./src/vite.mjs"
     },
+    "./fonts/inter": {
+      "types": "./src/styles/styles.d.ts",
+      "default": "./src/fonts/inter.css"
+    },
     "./settings": {
       "types": "./src/styles/styles.d.ts",
       "sass": "./src/styles/settings.scss",
@@ -37,6 +41,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource-variable/public-sans": "5.3.0",
     "@lucide/vue": "^1.68.0",
     "culori": "^4.0.2",
     "inter-ui": "^4.1.1"

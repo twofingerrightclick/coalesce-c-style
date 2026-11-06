@@ -7,7 +7,7 @@ import * as vuetifyDirectives from "vuetify/directives";
 import * as coalesceVuetify3 from "coalesce-vue-vuetify3";
 import { createCoalesceVuetify, CAdminAuditLogPage, CAdminEditorPage, CAdminTablePage } from "coalesce-vue-vuetify3";
 import { AxiosClient } from "coalesce-vue";
-import { applyCStyleColors, cStyleBlueprint } from "c-style";
+import { applyCStyleColors, applyCStyleFont, cStyleBlueprint } from "c-style";
 
 // CSS in the order c-style requires (plan §2.3).
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -21,6 +21,7 @@ import $metadata from "@/domain/metadata.g";
 import "@/domain/viewmodels.g";
 import { mockDomain, mockFallback } from "@/mocks";
 import { accents, globalsKey, type StoryGlobals } from "@/globals";
+import { fontPresets, loadFont, resolveFont } from "@/fonts";
 import SbSection from "@/components/SbSection.vue";
 import SbRow from "@/components/SbRow.vue";
 import Parity from "@/components/Parity.vue";
@@ -75,6 +76,9 @@ const StoryShell = defineComponent({
       theme.change(props.globals.theme);
       const accent = props.globals.accent;
       applyCStyleColors(theme, accent in accents && accent != "canon" ? { primary: accents[accent] } : {});
+      const font = resolveFont(props.globals.font);
+      loadFont(font);
+      applyCStyleFont(theme, font.family);
     });
     return () =>
       h(vuetifyComponents.VApp, { class: "sb-app" }, () =>
@@ -128,8 +132,17 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    font: {
+      description: "Body and heading font, applied with applyCStyleFont. URL: &globals=font:Any+Google+Family or font:fontshare+slug",
+      toolbar: {
+        title: "Font",
+        icon: "paragraph",
+        items: Object.entries(fontPresets).map(([value, { title }]) => ({ value, title })),
+        dynamicTitle: true,
+      },
+    },
   },
-  initialGlobals: { theme: "light", accent: "canon" },
+  initialGlobals: { theme: "light", accent: "canon", font: "public-sans" },
   parameters: {
     layout: "fullscreen",
     controls: { expanded: true },

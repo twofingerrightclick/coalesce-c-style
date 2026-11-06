@@ -2,7 +2,7 @@
 
 Canon's look for Vuetify 4 and Coalesce (`coalesce-vue-vuetify3`). c-style restyles stock Vuetify components and Coalesce's `c-*` components through Vuetify's own channels: SASS settings, a blueprint of component defaults, and a theme. A small amount of layered CSS covers what those channels can't express. Apps keep writing plain `<v-btn>`, `<v-text-field>` and `<c-admin-table-page>`; nothing in app templates changes.
 
-What you get, at Canon's md size: Inter with Canon's alternates; 32/40/48px controls (40 by default) with 20px Lucide icons at a 1.5px stroke; 4/8/12px radii; zinc neutrals with a blue accent, both generated as full 50–950 ladders from any brand hex; hairline rules, edge-and-shadow depth, a 2px+1px focus ring, and 0.12s motion with a 0.98 press. Light and dark follow the OS (`defaultTheme: 'system'`).
+What you get, at Canon's md size: Public Sans, bundled (Canon's own Inter is an opt-in import); 32/40/48px controls (40 by default) with 20px Lucide icons at a 1.5px stroke; 4/8/12px radii; zinc neutrals with a blue accent, both generated as full 50–950 ladders from any brand hex; hairline rules, edge-and-shadow depth, a 2px+1px focus ring, and 0.12s motion with a 0.98 press. Light and dark follow the OS (`defaultTheme: 'system'`).
 
 ## Why it ships this way
 
@@ -11,10 +11,10 @@ c-style is one Vite-first package with five entry points. Vuetify's SASS variabl
 | Entry | Contents | Runs in |
 |---|---|---|
 | `c-style/vite` | `cStyle(options)`: `vite-plugin-vuetify` with c-style's settings, plus Vuetify's layer-order `<style>` in `index.html` and dev-server file access for the package and its font | `vite.config.ts` |
-| `c-style` | `cStyleBlueprint`, `cStyleThemes`, `applyCStyleColors`, `generateLadder`, `palettes`, icons (`cs`, `csAliases`, `csIcon`, `csIconOptions`), `layerOrderCss` / `layerOrderStyle`, types | browser |
+| `c-style` | `cStyleBlueprint`, `cStyleThemes`, `applyCStyleColors`, `generateLadder`, `palettes`, icons (`cs`, `csAliases`, `csIcon`, `csIconOptions`), `layerOrderCss` / `layerOrderStyle`, Canon Time components (`CsTimeField`, `CsTimeRangeField`, `CsTimeInput`), types | browser |
 | `c-style/icons` | every `@lucide/vue` icon, re-exported, plus `csIcon` | browser |
 | `c-style/settings` | Vuetify SASS settings (`@forward 'vuetify/settings' with (… !default)`); emits no CSS | Sass |
-| `c-style/styles` | layer order, Inter, `--cs-*` tokens, layered overrides, unlayered Coalesce rules | browser, via Vite |
+| `c-style/styles` | layer order, Public Sans, `--cs-*` tokens, layered overrides, unlayered Coalesce rules | browser, via Vite |
 
 The package ships TypeScript and SCSS source; the consuming app's Vite compiles them. That works inside this pnpm workspace. A prebuilt `dist` for npm is not done yet (plan M19).
 
@@ -31,7 +31,7 @@ In a pnpm workspace:
 }
 ```
 
-Then `pnpm install`. c-style brings `@lucide/vue`, `inter-ui` and `culori`.
+Then `pnpm install`. c-style brings `@lucide/vue`, `@fontsource-variable/public-sans`, `inter-ui` and `culori`.
 
 ## Adopting it in a Coalesce app
 
@@ -119,6 +119,24 @@ From the ladders the theme derives Canon's roles in both modes: solids at step 6
 
 Contrast: white on the success solid (green-600) is 3.3:1, Canon's own choice. The emerald and orange presets give 3.8 and 3.6. For AA body text on those, pass a darker hex or a full ladder.
 
+## Font
+
+The default is **Public Sans** (variable, upright and italic, latin + latin-ext + vietnamese), shipped with the package through `@fontsource-variable/public-sans` and bundled by Vite with the app: no font request leaves the app at run time.
+
+Another body and heading font is a theme setting:
+
+```ts
+cStyleBlueprint({ font: "IBM Plex Sans" });  // or { family, features, tracking }
+applyCStyleFont(useTheme(), "Geist");         // switch at run time, no reload; no argument restores Public Sans
+```
+
+c-style only sets theme variables (`--v-font-body`, `--v-font-heading`, `--v-font-features`, `--v-font-tracking`); the app ships the font files. Self-host them the same way c-style does: an `@fontsource` package or your own `@font-face` with woff2 files in the app, imported after `c-style/styles`. Avoid a CDN `<link>` in production; the Google Fonts and Fontshare presets in the Storybook are for preview only.
+
+- **Inter (Canon's font):** `import "c-style/fonts/inter"` after `c-style/styles`, and `cStyleBlueprint({ font: "Inter" })`. It is rsms's build (`inter-ui`), which keeps the alternates Canon turns on.
+- **Features:** Canon's Inter alternates (`ss01 cv11 cv04 cv03 cv02`) apply only to Inter. Every other font gets `font-feature-settings: normal`, because the same tags select unrelated glyphs elsewhere (`ss01` swaps glyphs in Satoshi, General Sans, Work Sans and Public Sans). Pass `features` to choose a font's own.
+- **Tracking:** Canon's negative letter-spacing (−0.006em at 14px, to −0.02em on display roles) is tuned for Inter. `--v-font-tracking` scales it: 1 for Inter, 0.5 for Public Sans (wider-set; half keeps titles compact without crowding body text), 0 for any other font unless you pass `tracking`. Positive caps tracking is unchanged.
+- `applyCStyleColors` leaves the font alone, and `applyCStyleFont` leaves colours alone.
+
 ## Overriding SASS settings
 
 Every value in `c-style/settings` is `!default`. To change one, write an app settings file and point `cStyle` at it:
@@ -149,6 +167,8 @@ Canon's md is the default everywhere. Smaller and larger controls are per instan
 
 Tags (`v-chip`) follow Canon's tag sizes: `x-small`, `small` and default are sm (24, 12/16 type; Canon has nothing smaller), `large` md (32, 14px), `x-large` lg (40, 16px), radius 2 / 4 / 8 (`label`; the blueprint default). Icons, avatars and the remove icon are the line height (16 / 20 / 24), 4 / 6 / 8 from the edge and 4 / 8 / 12 from the text; avatar initials are 0.4 of the avatar at weight 400. Pill chips keep the same avatar (Vuetify's full-height pill avatar is not Canon).
 
+Avatar initials take Canon's type for the avatar's size at weight 400: 24 → 10/12, 32 → 12/16, 40 → 14/20, 48 and 56 → 16/24, 64 → 24/32. Named sizes `x-small` … `x-large` are 24 … 56; a numeric `size` takes the nearest step (12–96px). Leave the text bare or in a plain `<span>`; a type class such as `text-caption` overrides it.
+
 Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`); density never changes a control's size. Tables keep Vuetify's density rows (56 / 48 / 40), Canon's default being 56; `density="compact"` gives Canon's compact 40. The `--cs-*` custom properties (`--cs-control-height`, `--cs-icon`, `--cs-radius`, `--cs-form-gap`, `--cs-hairline`, …) are Canon's md values for c-style's own rules. There is no inherited size context.
 
 ## Icons
@@ -163,6 +183,35 @@ Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`)
 - Coalesce's raw `<i class="fa fa-*">` glyphs (row actions, info and asterisk marks, the password eye) are masked with the matching Lucide shape (`scripts/fa-masks.mjs` regenerates the masks).
 - Default icon size is 20 (16 in tags and small buttons, 24 in large buttons).
 
+## Components: Canon Time
+
+Canon's time field is far better than Vuetify's `v-time-picker` for typing: a row of framed cells (hour, minute, optional second, AM/PM), each typed into or stepped from the keyboard. c-style ships it as three Vue components (inventory and keyboard model: `docs/research/canon-time.md`).
+
+```ts
+import { CsTimeField, CsTimeRangeField } from "c-style";
+```
+
+```vue
+<cs-time-field v-model="opens" label="Opens" :step="900" :rules="[required]" />
+<cs-time-range-field v-model="shift" label="Shift" overnight hint="May end the next day." persistent-hint />
+```
+
+| Component | v-model | Use |
+|---|---|---|
+| `CsTimeField` | `"HH:mm"`, or `"HH:mm:ss"` with seconds; `null` while empty or incomplete | a time in a form: label above, hint / messages below, `rules`, VForm |
+| `CsTimeRangeField` | `[start, end]`, each as above | a time window; an end before the start is invalid unless `overnight` |
+| `CsTimeInput` | either (with `range`) | the bare box, no label or messages; name it with `aria-label` |
+
+Values are always 24-hour; the cells show 12 or 24 hours. Inputs also accept `"h:mm pm"` and `Date`.
+
+Props (all three): `format` (`'ampm'` / `'24hr'`; unset follows Vuetify's locale), `step` (seconds per step, as `<input type="time" step>`: `900` moves minutes by 15; under 60 adds a seconds cell), `use-seconds`, `min` / `max` (out of range is invalid, not prevented), `allowed-hours` / `allowed-minutes` / `allowed-seconds` (arrays or functions; Up / Down skip the rest, typed ones are invalid), `size` (`small` / `default` / `large`: cells 32 / 40 / 48), `disabled`, `readonly`, `required`. Fields add VInput's `label`, `hint`, `persistent-hint`, `messages`, `rules`, `error`, `error-messages`, `max-errors`, `hide-details` (default `auto`), `validate-on`, `id`, `name`; ranges add `overnight`, `start-label` / `end-label` (accessible names, default "Start" / "End"). App defaults reach them by name (`defaults: { CsTimeField: { … } }`). Exposed: `focus()`, and on fields `validate()`, `reset()`, `resetValidation()`.
+
+Keys: Tab / Shift+Tab per cell; Left / Right between cells; Up / Down step and wrap (59 → 00, PM ↔ AM; empty starts from now); digits fill a cell and move on (`7` is `07`); `:`, `.` or space move on; A / P set the period; Backspace clears (then goes back), Delete clears in place; Home / End and PageUp / PageDown (hours by 6, minutes by 10 or the step); paste fills every cell; Enter submits the form; the mouse wheel steps the focused cell. The focused cell grows and shows step arrows (hold to repeat).
+
+Canon's own checks become the field's first rule: "Enter a complete time." (left incomplete), `min` / `max` / `step` in the browser's words, "Choose an allowed time.", "The end time is before the start time.".
+
+Not covered: localised strings (labels and messages are English); no clock dial or popover (Canon has none). `v-time-picker` is unchanged and still restyled by c-style.
+
 ## What is styled where
 
 In order of preference; a change uses the first channel that can express it.
@@ -173,6 +222,7 @@ In order of preference; a change uses the first channel that can express it.
 4. **`@layer vuetify-overrides`** (`src/styles/overrides/`, one partial per family): what no variable, default or theme key reaches, for example the button tint rungs, the field frame and halo, the label above, choice lines, the segmented track, the menu tick. Rules read tokens and theme variables only: no hex, no `!important`, specificity ≤ (0,3,0).
 5. **Sublayer `vuetify-utilities.c-style`** (`tone.repoint`): custom-property re-points that have to beat Vuetify's theme classes on the same element (button labels at the tone's text step, hover and press solids, disabled greys, admin toolbars' `bg-primary`). Custom properties only.
 6. **Unlayered `.c-*` rules** (`src/styles/coalesce/`): Coalesce's own unlayered CSS and inline styles. Every selector starts with a `.c-` class; `!important` only against Coalesce's inline styles.
+7. **c-style components** (`src/components/`, CSS in `src/styles/components/`, `@layer vuetify-components`): Canon components Vuetify lacks (Time). Same token-only rule as the overrides.
 
 ### Coalesce
 
@@ -188,6 +238,8 @@ In order of preference; a change uses the first channel that can express it.
 ## Known deviations from Canon
 
 Kept on purpose or not reachable through Vuetify; the parity gate (`verify/parity/parity.spec.ts`) lists each one it allows.
+
+- **Font:** Canon specifies Inter; c-style defaults to Public Sans (bundled, no CDN), with Inter's alternates off and half Canon's tracking. Inter stays one import away (see Font). The parity gate measures in Inter, Canon's own font.
 
 - **Field height** comes from a −3 density on a 52px base (Vuetify hard-codes field padding as `16px + density/2`). A spec pins every field at 40.
 - **Neutral ink** labels sit one step off Canon in places (zinc-950 vs 900 for the page's labels, zinc-100 vs white for dark neutral button labels).
@@ -221,6 +273,7 @@ c-style relies on some Vuetify and Coalesce internals. After an upgrade, run all
 - **Tonal recipe:** the shared tonal underlay matches `[class*='--variant-tonal'] > [class*='__underlay']` and the text-step re-point `.text-<intent>` with `--variant-tonal|text|plain` classes; a renamed variant or underlay class drops it (`showcase.spec.ts` avatar/alert checks).
 - **Popup motion:** `cs-popup` scales with `transform`, which Vuetify's `nullifyTransforms` undoes when it places an overlay. If Vuetify stops undoing transforms, menus near the viewport's bottom open the wrong way (`showcase.spec.ts` datetime check).
 - **Chip sizes:** the per-size re-points override the literal values Vuetify's `chip-sizes` mixin emits (`--v-chip-height`, padding, font size, avatar height, media margins) and `.v-chip__close`'s `max-width`/`max-height` (`$chip-close-size`).
+- **Avatar initials:** a numeric `size` only reaches the DOM as inline `width`/`height`, so the type rule matches `[style*=" height: Npx"]` for whole pixels 12–96 (`verify/app/data.spec.ts`); another unit or a fraction keeps the inherited type.
 - **`__element` selectors** (`.v-selection-control__input`, `.v-field__outline`, `.v-overlay__content`, `.v-snackbar__content`, about 25 in all) assume Vuetify's internal markup.
 - **Coalesce** (styled against `coalesce-vue-vuetify3@6.5.1`'s `dist`): toolbar class names and inline heights, `.c-admin-table-toolbar--range`, the pinned `.fixed-column-right`, `c-select`'s `filled` menu search, the raw FontAwesome sites (re-grep `dist` for `fa-` names; `test/coalesce-fa.spec.ts` fails on an unmapped one), the audit filters' markup, the `hidden-xs-only` toolbar classes, `.c-table--editable`'s cell padding rules (`verify/app/coalesce.spec.ts` checks the toolbar insets and edit cells), `c-list-page`'s direct child prev/next buttons and `c-list-filters`' badge (`verify/app/showcase.spec.ts`).
 - **Parity gate:** `verify/parity/parity.spec.ts` (with Storybook running) compares every Parity story with Canon in light and dark. A failure lists the property that moved.
@@ -229,7 +282,7 @@ c-style relies on some Vuetify and Coalesce internals. After an upgrade, run all
 
 - **Nothing from the settings applies** (buttons round at 4px, Roboto-sized controls): two copies of Vuetify. `node -p "require.resolve('vuetify/package.json')"` from the app and from `packages/c-style` must print the same real path.
 - **`vuetify/styles` 404s after a `pnpm install`:** `vite-plugin-vuetify` caches Vuetify's path for the life of the Vite process; restart Vite.
-- **Inter 403s in dev:** the app sets `server.fs.allow`; `cStyle()` adds the package and `inter-ui`'s directory, so keep `cStyle()` in the plugin list rather than calling `vite-plugin-vuetify` yourself.
+- **Font 403s in dev:** the app sets `server.fs.allow`; `cStyle()` adds the package and the Public Sans and `inter-ui` directories, so keep `cStyle()` in the plugin list rather than calling `vite-plugin-vuetify` yourself.
 
 ## Credits
 

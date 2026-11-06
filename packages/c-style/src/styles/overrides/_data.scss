@@ -1,5 +1,7 @@
 @use 'sass:math';
 @use 'sass:list';
+@use 'sass:map';
+@use '../sizes';
 
 // Canon tag metrics (canon §4 Tag) per Vuetify size name: padding, gap,
 // label inset, line height (= icon and avatar size), font size, radius.
@@ -13,6 +15,44 @@ $tag-sizes: (
   'large': $tag-md,
   'x-large': $tag-lg,
 );
+
+// Canon avatar initials per size (canon §4 Avatar, 24 … 64), and Vuetify's
+// named sizes (24 … 56) on them.
+$avatar-type: (
+  24px: sizes.text(10, 12, -0.0025em),
+  32px: sizes.text(12, 16, -0.007em),
+  40px: sizes.text(14, 20, -0.006em),
+  48px: sizes.text(16, 24, -0.004em),
+  56px: sizes.text(16, 24, -0.004em),
+  64px: sizes.text(24, 32, 0),
+);
+$avatar-named-sizes: ('x-small': 24px, 'small': 32px, 'default': 40px, 'large': 48px, 'x-large': 56px);
+
+@mixin avatar-type($size) {
+  $type: map.get($avatar-type, $size);
+  font-size: map.get($type, 'size');
+  line-height: map.get($type, 'line-height');
+  letter-spacing: map.get($type, 'letter-spacing');
+}
+
+// A numeric `size` reaches the DOM only as inline width and height, so the
+// rule matches the inline height (Vuetify writes width first, hence the
+// leading space) and takes the nearest Canon step.
+@function avatar-numeric-selector($size) {
+  $selectors: ();
+  @for $px from 12 through 96 {
+    $nearest: 24px;
+    @each $step, $type in $avatar-type {
+      @if math.abs($step - $px * 1px) < math.abs($nearest - $px * 1px) {
+        $nearest: $step;
+      }
+    }
+    @if $nearest == $size {
+      $selectors: list.append($selectors, '.v-avatar[style*=" height: #{$px}px"]', $separator: comma);
+    }
+  }
+  @return $selectors;
+}
 
 // Data display (canon §4 D Table, Data Table, Pagination; §4 A Tag, Kbd).
 // Row heights, cell padding, line colours, the count, avatar and kbd boxes
@@ -114,6 +154,22 @@ $tag-sizes: (
   // the shared tonal recipe, _tone.scss).
   .v-chip--variant-outlined {
     border-color: rgb(var(--cs-tone-border-low));
+  }
+
+  .v-avatar {
+    font-weight: 400;
+  }
+
+  @each $name, $size in $avatar-named-sizes {
+    .v-avatar--size-#{$name} {
+      @include avatar-type($size);
+    }
+  }
+
+  @each $size, $type in $avatar-type {
+    #{avatar-numeric-selector($size)} {
+      @include avatar-type($size);
+    }
   }
 
   .v-kbd {

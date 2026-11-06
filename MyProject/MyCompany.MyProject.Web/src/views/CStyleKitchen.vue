@@ -234,6 +234,19 @@
         <v-code data-data="code">code</v-code>
         <v-icon :icon="csIcon(House)" data-data="cs-icon" />
       </div>
+      <div class="d-flex flex-wrap ga-2 mt-4 align-center">
+        <v-avatar v-for="s in [24, 32, 40, 48, 56, 64]" :key="s" :size="s" :data-avatar="s">MW</v-avatar>
+        <v-avatar
+          v-for="s in ['x-small', 'small', 'default', 'large', 'x-large']"
+          :key="s"
+          :size="s"
+          color="primary"
+          variant="tonal"
+          :data-avatar="s"
+        >
+          <span>MW</span>
+        </v-avatar>
+      </div>
     </section>
 
     <section data-kitchen="nav" class="mt-8">
@@ -259,11 +272,46 @@
         <v-time-picker v-model="timeInput" variant="input" use-seconds :data-value="timeInput" data-picker="time-input" />
       </div>
     </section>
+
+    <section data-kitchen="time" class="mt-8">
+      <h2 class="text-title-medium mb-4">Time (Canon)</h2>
+      <div class="d-flex flex-wrap ga-8 align-start">
+        <cs-time-field v-model="times.basic" label="Starts at" format="24hr" data-time="basic" :data-value="times.basic" />
+        <cs-time-field v-model="times.empty" label="Daily reminder" format="24hr" data-time="empty" :data-value="times.empty" />
+        <cs-time-field v-model="times.step" label="Slot (15 minutes)" format="24hr" :step="900" data-time="step" :data-value="times.step" />
+        <cs-time-field v-model="times.seconds" label="Lap time" format="24hr" :step="1" data-time="seconds" :data-value="times.seconds" />
+        <cs-time-field v-model="times.ampm" label="Pickup" format="ampm" data-time="ampm" :data-value="times.ampm" />
+        <cs-time-range-field v-model="times.range" label="Shift" format="24hr" data-time="range" :data-value="times.range.join('-')" />
+        <cs-time-range-field v-model="times.night" label="Night shift" format="24hr" overnight data-time="overnight" :data-value="times.night.join('-')" />
+      </div>
+      <div class="d-flex flex-wrap ga-8 align-start mt-6">
+        <cs-time-field v-for="s in sizes" :key="s" v-model="times.size" :label="s" :size="s" format="24hr" :data-time="`size-${s}`" />
+      </div>
+      <div class="d-flex flex-wrap ga-8 align-start mt-6">
+        <cs-time-field v-model="times.error" label="Departure" format="24hr" min="05:00" :error-messages="['Departures run from 05:00.']" data-time="error" />
+        <cs-time-field model-value="08:00" label="Disabled" format="24hr" disabled data-time="disabled" />
+        <cs-time-field model-value="08:00" label="Read-only" format="24hr" readonly data-time="readonly" />
+        <cs-time-input v-model="times.bare" aria-label="Bare time" format="24hr" data-time="bare" />
+      </div>
+      <v-form class="mt-6" data-time="form" @submit.prevent="timeSubmitted = true">
+        <cs-time-field
+          v-model="times.form"
+          label="Opens"
+          format="24hr"
+          :rules="[(v: string | null) => !!v || 'Required']"
+          data-time="required"
+          :data-value="times.form"
+        />
+        <v-btn type="submit" class="mt-4" data-time="submit">Save</v-btn>
+        <span v-if="timeSubmitted" class="ms-4" data-time="submitted">Submitted</span>
+      </v-form>
+    </section>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { csIcon, House } from "c-style/icons";
+import { CsTimeField, CsTimeInput, CsTimeRangeField, type CsTimeRange } from "c-style";
 
 const sizes = ["small", "default", "large"] as const;
 const intents = [undefined, "neutral", "error"];
@@ -288,4 +336,19 @@ const headers = [
   { title: "Category", key: "category" },
   { title: "Count", key: "count", align: "end" as const },
 ];
+
+const times = ref({
+  basic: "08:00" as string | null,
+  empty: null as string | null,
+  step: "09:30" as string | null,
+  seconds: "00:04:37" as string | null,
+  ampm: "14:30" as string | null,
+  range: ["08:00", "16:30"] as CsTimeRange,
+  night: ["22:00", "06:00"] as CsTimeRange,
+  size: "08:00" as string | null,
+  error: "03:15" as string | null,
+  bare: "12:45" as string | null,
+  form: null as string | null,
+});
+const timeSubmitted = ref(false);
 </script>

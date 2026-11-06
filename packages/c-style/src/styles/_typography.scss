@@ -2,8 +2,14 @@
 @use 'sass:math';
 
 // Font families are inherited from Vuetify's map (`--v-font-body/heading`).
+// Canon's negative tracking is tuned for Inter; `--v-font-tracking` (theme,
+// see `fontVariables`) scales it for the active font. Positive (caps) tracking
+// is font-independent.
 
 @function role($size, $line, $weight, $tracking) {
+  @if $tracking < 0 {
+    $tracking: calc(#{$tracking} * var(--v-font-tracking, 1));
+  }
   @return (
     'size': math.div($size, 16) * 1rem,
     'line-height': math.div($line, $size),

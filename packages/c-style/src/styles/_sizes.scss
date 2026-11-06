@@ -8,7 +8,7 @@
     'size': math.div($size, 16) * 1rem,
     'line-height': math.div($line, $size),
     'weight': 500,
-    'letter-spacing': $tracking,
+    'letter-spacing': calc(#{$tracking} * var(--v-font-tracking, 1)),
   );
 }
 

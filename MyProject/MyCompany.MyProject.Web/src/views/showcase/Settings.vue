@@ -251,6 +251,31 @@
                 messages="Managed by your organisation."
               />
 
+              <v-row class="mt-2" data-settings="times">
+                <v-col cols="12" sm="6">
+                  <cs-time-field
+                    v-model="workspace.digestTime"
+                    label="Digest arrives at"
+                    :step="900"
+                    hint="Monday morning, in 15-minute slots."
+                    persistent-hint
+                    :disabled="!workspace.notify.digest"
+                    :rules="[required]"
+                    data-settings="digest-time"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <cs-time-range-field
+                    v-model="workspace.quietHours"
+                    label="Quiet hours"
+                    overnight
+                    hint="No notifications in this window."
+                    persistent-hint
+                    data-settings="quiet-hours"
+                  />
+                </v-col>
+              </v-row>
+
               <v-divider class="my-4" />
               <v-radio-group v-model="workspace.channel" label="Deliver to">
                 <v-radio label="Email" value="email" />
@@ -385,6 +410,8 @@
 </template>
 
 <script setup lang="ts">
+import { CsTimeField, CsTimeRangeField, type CsTimeRange } from "c-style";
+
 useTitle("Settings");
 
 const sections = [
@@ -416,6 +443,8 @@ const initial = () => ({
   threshold: 25,
   priceRange: [120, 640],
   notify: { digest: true, mentions: true, lowStock: false },
+  digestTime: "08:00" as string | null,
+  quietHours: ["22:00", "07:00"] as CsTimeRange,
   channel: "email",
   topics: ["New widgets", "Deletions"],
   terms: false,

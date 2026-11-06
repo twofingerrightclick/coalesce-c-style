@@ -5,6 +5,8 @@ export type ThemeName = "light" | "dark";
 export interface StoryGlobals {
   theme: ThemeName;
   accent: string;
+  /** A `fontPresets` key, `fontshare <slug>`, or a Google Fonts family (see src/fonts.ts). */
+  font?: string;
 }
 
 export const globalsKey: InjectionKey<StoryGlobals> = Symbol("storyGlobals");

@@ -8,7 +8,7 @@
   --cs-control-pad: 10px;
   --cs-control-font: 14px;
   --cs-control-lh: 20px;
-  --cs-tracking: -0.006em;
+  --cs-tracking: calc(-0.006em * var(--v-font-tracking, 1));
   --cs-icon: 20px;
   --cs-gap: 8px;
   --cs-radius: 8px;

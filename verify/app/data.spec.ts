@@ -133,4 +133,45 @@ test.describe("M12 data display", () => {
     const k = await style(kbd, ["font-size", "font-weight", "text-transform", "padding-left", "border-top-left-radius"]);
     expect(k).toEqual({ "font-size": "10px", "font-weight": "600", "text-transform": "uppercase", "padding-left": "6px", "border-top-left-radius": "4px" });
   });
+
+  // Canon avatar initials (canon §4 Avatar): 24 10/12, 32 12/16, 40 14/20,
+  // 48 16/24, 56 16/24, 64 24/32, regular. Numeric sizes bare text; named
+  // sizes (x-small … x-large = 24 … 56) through a span.
+  const avatarType = [
+    ["24", "x-small", 24, "10px", "12px"],
+    ["32", "small", 32, "12px", "16px"],
+    ["40", "default", 40, "14px", "20px"],
+    ["48", "large", 48, "16px", "24px"],
+    ["56", "x-large", 56, "16px", "24px"],
+    ["64", null, 64, "24px", "32px"],
+  ] as const;
+  for (const scheme of ["light", "dark"] as const) {
+    test(`${scheme}: avatar initials take Canon's type per size and sit inside the circle`, async ({ page }) => {
+      await open(page, scheme);
+      for (const [numeric, named, size, fontSize, lineHeight] of avatarType) {
+        for (const key of named ? [numeric, named] : [numeric]) {
+          const avatar = page.locator(`[data-avatar="${key}"]`);
+          const m = await avatar.evaluate((node) => {
+            const range = document.createRange();
+            range.selectNodeContents(node.querySelector(":scope > span:not([class])") ?? node);
+            const t = range.getBoundingClientRect();
+            const a = node.getBoundingClientRect();
+            const s = getComputedStyle(node.querySelector(":scope > span:not([class])") ?? node);
+            const r = a.width / 2;
+            // Glyph box: the text's width by its font size, centred on the line.
+            const [hw, hh] = [t.width / 2, parseFloat(s.fontSize) / 2];
+            const [cx, cy] = [t.left + t.width / 2 - (a.left + r), t.top + t.height / 2 - (a.top + r)];
+            return {
+              size: [a.width, a.height],
+              type: [s.fontSize, s.lineHeight, s.fontWeight],
+              corner: Math.hypot(Math.abs(cx) + hw, Math.abs(cy) + hh) / r,
+            };
+          });
+          expect(m.size, key).toEqual([size, size]);
+          expect(m.type, key).toEqual([fontSize, lineHeight, "400"]);
+          expect(m.corner, key).toBeLessThan(1);
+        }
+      }
+    });
+  }
 });

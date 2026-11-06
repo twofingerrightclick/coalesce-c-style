@@ -92,6 +92,8 @@ test.describe("M7 buttons", () => {
     }
   });
 
+  // Canon's tracking (for Inter) at the default font's scale, Public Sans 0.5 (`fontVariables`).
+  const trackingScale = 0.5;
   for (const [size, h, x, radius, font, lh, tracking] of [
     ["small", 32, 12, 4, 12, 16, -0.084],
     ["default", 40, 16, 8, 14, 20, -0.084],
@@ -109,7 +111,7 @@ test.describe("M7 buttons", () => {
           return [c.borderTopLeftRadius, c.fontSize, c.lineHeight, c.fontWeight, c.letterSpacing, c.minWidth];
         });
         expect(s.slice(0, 4), variant).toEqual([`${radius}px`, `${font}px`, `${lh}px`, "500"]);
-        expect(parseFloat(s[4])).toBeCloseTo(tracking, 2);
+        expect(parseFloat(s[4])).toBeCloseTo(tracking * trackingScale, 2);
       }
     });
   }

@@ -21,6 +21,8 @@ export async function fetchStories(): Promise<StoryEntry[]> {
 export interface StoryGlobals {
   theme?: "light" | "dark";
   accent?: string;
+  /** A Storybook font preset key or family (storybook/src/fonts.ts). */
+  font?: string;
 }
 
 export interface StoryProblems {
