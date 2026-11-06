@@ -230,3 +230,7 @@ c-style relies on some Vuetify and Coalesce internals. After an upgrade, run all
 - **Nothing from the settings applies** (buttons round at 4px, Roboto-sized controls): two copies of Vuetify. `node -p "require.resolve('vuetify/package.json')"` from the app and from `packages/c-style` must print the same real path.
 - **`vuetify/styles` 404s after a `pnpm install`:** `vite-plugin-vuetify` caches Vuetify's path for the life of the Vite process; restart Vite.
 - **Inter 403s in dev:** the app sets `server.fs.allow`; `cStyle()` adds the package and `inter-ui`'s directory, so keep `cStyle()` in the plugin list rather than calling `vite-plugin-vuetify` yourself.
+
+## Credits
+
+The design is [Canon](https://github.com/recepkutuk/canon) by Recep Kütük (MIT). c-style also includes the Tailwind v3 colour palette (MIT) and Lucide icon paths (ISC). Licenses and attribution are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
