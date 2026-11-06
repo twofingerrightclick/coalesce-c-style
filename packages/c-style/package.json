@@ -2,6 +2,7 @@
   "name": "c-style",
   "version": "0.1.0",
   "description": "Canon look for Vuetify 4 and Coalesce, through Vuetify's own SASS, defaults and theme channels.",
+  "license": "MIT",
   "type": "module",
   "sideEffects": [
     "*.scss",
