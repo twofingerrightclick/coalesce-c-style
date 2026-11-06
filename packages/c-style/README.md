@@ -62,7 +62,8 @@ The workspace uses the TypeScript and SCSS in `src/`. The published package ship
 
 1. Set `version` in `packages/c-style/package.json` (for example `6.5.1-cs.2`) and add a row to the table above.
 2. Commit, then tag it: `git tag v6.5.1-cs.2 && git push --tags`.
-3. The [publish workflow](../../.github/workflows/publish.yml) checks that the tag matches `package.json`, runs the tests and publishes to npm with provenance. It needs an `NPM_ACCESS_TOKEN` repository secret.
+3. The [publish workflow](../../.github/workflows/publish.yml) checks that the tag matches `package.json`, runs the tests and stages the package on npm with provenance. It needs an `NPM_ACCESS_TOKEN` repository secret (a granular token with read and write on all packages).
+4. npm only lets tokens stage a publish, so approve it with 2FA: `npm stage list`, then `npm stage approve <stage-id>`, or approve it at npmjs.com. It goes live after that.
 
 ## Adopting it in a Coalesce app
 
