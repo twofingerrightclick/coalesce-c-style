@@ -47,7 +47,8 @@ const config: StorybookConfig = {
       plugins: [
         vue({ template: { transformAssetUrls } }),
         components({ resolvers: [CoalesceVuetifyResolver()], dts: false }),
-        cStyle(),
+        // The icon stories intentionally demonstrate the Font Awesome fallback.
+        cStyle({ excludeStyles: { fontAwesome: false } }),
       ],
       resolve: {
         alias: [

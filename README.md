@@ -1,6 +1,4 @@
-# c-style
-
-Published on npm as **`coalesce-c-style`**.
+# coalesce-c-style
 
 [Canon](https://recepkutuk.github.io/canon/reference/introduction.html)'s look for Vuetify 4 and IntelliTect Coalesce, without rewriting a single template.
 
@@ -136,7 +134,7 @@ cd MyProject
 pnpm install
 ```
 
-- **Demo app:** start the Aspire AppHost (`MyCompany.MyProject.AppHost`); the web project serves Vite at https://localhost:48110 with hot reload.
+- **Demo app:** `dotnet run --project MyCompany.MyProject.AppHost` (from `MyProject/`); the web project serves Vite at https://localhost:48110 with hot reload. The demo uses SQLite in memory: no Docker, SQL Server, connection string, or migration command is needed. Data resets whenever the web process restarts. The SQL Server migrations project is retained from the starter template but is not part of demo startup.
 - **Storybook:** `pnpm --filter c-style-storybook storybook`, then http://localhost:6006. The toolbar switches theme, accent and font.
 
 ### Tests

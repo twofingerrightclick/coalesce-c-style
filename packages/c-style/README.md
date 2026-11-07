@@ -1,6 +1,4 @@
-# c-style
-
-Published on npm as **`coalesce-c-style`**.
+# coalesce-c-style
 
 Canon's look for Vuetify 4 and Coalesce (`coalesce-vue-vuetify3`). c-style restyles stock Vuetify components and Coalesce's `c-*` components through Vuetify's own channels: SASS settings, a blueprint of component defaults, and a theme. A small amount of layered CSS covers what those channels can't express. Apps keep writing plain `<v-btn>`, `<v-text-field>` and `<c-admin-table-page>`; nothing in app templates changes.
 
@@ -188,6 +186,51 @@ cStyle({ settings: "src/styles/settings.scss" });
 
 `cStyle({ vuetify: { … } })` passes other options to `vite-plugin-vuetify` (`autoImport` defaults to true; `styles` belongs to c-style). Settings changes recompile Vuetify's SASS (a few seconds on first load, then HMR).
 
+## Excluding replaced font styles
+
+`cStyle()` excludes `@fortawesome/fontawesome-free/css/*.css` and plain Roboto
+styles from `@fontsource/roboto`, `@fontsource-variable/roboto`, `typeface-roboto`
+and `roboto-fontface` by default. Existing app imports can stay: the plugin
+redirects them to an empty stylesheet before CSS processing, in development and
+production, including CSS `@import`s. Their font files are no longer emitted
+through those stylesheets. Public Sans, optional Inter, and Roboto Condensed
+are unaffected.
+
+Mapped Coalesce Font Awesome icons still render through c-style's Lucide icon
+set and CSS masks. Unmapped classes, raw FA icons outside c-style's supported
+Coalesce hosts, and explicit `fa:` icons need Font Awesome's stylesheet. Keep
+it for an app that uses those, or keep Roboto when selecting it as a custom font:
+
+```ts
+cStyle({ excludeStyles: { fontAwesome: false, roboto: false } });
+```
+
+These exclusions cover the package CSS paths above, not Font Awesome JavaScript
+libraries, Sass entry points, copied vendor files, or external font CDN links.
+Links emitted by a server layout must be removed there. A `font-family: Roboto`
+declaration alone does not download Roboto. The plugin does not remove arbitrary
+overridden Vuetify rules: their layout and state styles can still be required.
+
+## Trimming replaced button states
+
+`cStyle()` removes Vuetify VBtn's overlay opacity rules for hover, keyboard
+focus, active/open, disabled, and active pagination states. c-style replaces
+these with its Canon tint states and keeps the overlay at zero opacity.
+The cleanup runs on compiled CSS in development and production, only for
+the VBtn stylesheet supplied by `vite-plugin-vuetify`. It preserves base
+overlay geometry and opacity, underlays, focus rings, forced-color rules,
+other components, and app styles. It does not remove the overlay element
+or the ripple directive.
+
+To retain Vuetify's original overlay state rules:
+
+```ts
+cStyle({ excludeStyles: { buttonOverlay: false } });
+```
+
+This is a specific removal of replaced declarations, not a general purge of
+Vuetify CSS. Utility classes remain available with c-style's configured values.
+
 ## Sizes
 
 Canon's md is the default everywhere. Smaller and larger controls are per instance through Vuetify's named sizes, which c-style maps to Canon's sm / md / lg:
@@ -213,7 +256,7 @@ Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`)
   ```ts
   import { csIcon, House } from "coalesce-c-style/icons";
   ```
-- **FontAwesome strings** that Coalesce passes (`"fa fa-clock"`, `"fa-edit"`, …) are mapped to Lucide by the `cs` icon set; other classes on the string are kept. Unmapped strings render as class names, so FontAwesome or MDI classes still work. A `fa:` prefix forces Vuetify's FontAwesome set.
+- **FontAwesome strings** that Coalesce passes (`"fa fa-clock"`, `"fa-edit"`, …) are mapped to Lucide by the `cs` icon set; other classes on the string are kept. Unmapped strings render as class names; they require the corresponding icon stylesheet. A `fa:` prefix forces Vuetify's FontAwesome set. To use either Font Awesome fallback, set `excludeStyles.fontAwesome: false` (see [Excluding replaced font styles](#excluding-replaced-font-styles)).
 - Coalesce's raw `<i class="fa fa-*">` glyphs (row actions, info and asterisk marks, the password eye) are masked with the matching Lucide shape (`scripts/fa-masks.mjs` regenerates the masks).
 - Default icon size is 20 (16 in tags and small buttons, 24 in large buttons).
 

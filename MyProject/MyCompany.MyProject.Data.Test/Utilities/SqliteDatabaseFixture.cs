@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -34,7 +34,7 @@ public class SqliteDatabaseFixture : IDisposable
         dbOptionBuilder.EnableSensitiveDataLogging(true);
 
         Options = dbOptionBuilder.Options;
-        using var db = new AppDbContextForSqlite(Options);
+        using var db = new AppDbContext(Options);
 
         db.Database.EnsureCreated();
         Seed(db);

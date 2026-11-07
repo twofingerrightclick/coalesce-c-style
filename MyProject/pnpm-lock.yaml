@@ -29,6 +29,9 @@ importers:
       inter-ui:
         specifier: ^4.1.1
         version: 4.1.1
+      postcss:
+        specifier: ^8.5.32
+        version: 8.5.32
     devDependencies:
       '@types/culori':
         specifier: ^4.0.0

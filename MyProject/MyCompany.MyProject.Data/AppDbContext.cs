@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 
@@ -59,6 +60,23 @@ public class AppDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        // Store offsets as UTC timestamps so SQLite can sort and compare dates,
+        // including Coalesce's audit and tracking fields. EF handles nullable values.
+        if (Database.IsSqlite())
+        {
+            var converter = new ValueConverter<DateTimeOffset, DateTime>(
+                value => value.UtcDateTime,
+                value => new DateTimeOffset(DateTime.SpecifyKind(value, DateTimeKind.Utc)));
+
+            foreach (var property in builder.Model.GetEntityTypes().SelectMany(e => e.GetProperties()))
+            {
+                if ((Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType) == typeof(DateTimeOffset))
+                {
+                    property.SetValueConverter(converter);
+                }
+            }
+        }
 
         // Remove cascading deletes.
         HashSet<Type> allowedCascadePrincipals = [];

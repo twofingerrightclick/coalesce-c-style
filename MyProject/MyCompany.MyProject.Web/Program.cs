@@ -5,6 +5,7 @@ using IntelliTect.Coalesce;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
@@ -36,15 +37,23 @@ builder.AddServiceDefaults();
 
 var services = builder.Services;
 
-services.AddDbContext<AppDbContext>(options => options
-    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt
-        .EnableRetryOnFailure()
-        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
-        .MigrationsAssembly("MyCompany.MyProject.Migrations")
-    )
-    // Ignored because it interferes with the construction of Coalesce IncludeTrees via .Include()
-    .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.NavigationBaseIncludeIgnored))
-);
+// Each request gets its own connection. Keep one connection open for the lifetime of
+// the app so the named in-memory database survives between requests.
+var demoConnectionString = $"Data Source=Demo-{Guid.NewGuid():N};Mode=Memory;Cache=Shared";
+services.AddSingleton<SqliteConnection>(_ =>
+{
+    var connection = new SqliteConnection(demoConnectionString);
+    connection.Open();
+    return connection;
+});
+services.AddDbContext<AppDbContext>((provider, options) =>
+{
+    _ = provider.GetRequiredService<SqliteConnection>();
+    options.UseSqlite(demoConnectionString, opt => opt
+        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+        // Ignored because it interferes with Coalesce IncludeTrees via .Include().
+        .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.NavigationBaseIncludeIgnored));
+});
 
 services.AddCoalesce<AppDbContext>();
 services.AddDataProtection().PersistKeysToDbContext<AppDbContext>();
@@ -111,15 +120,13 @@ app.MapFallbackToController("Index", "Home");
 
 #region Launch
 
-// Initialize/migrate database.
+// Create a fresh demo database on every app start.
 using (var scope = app.Services.CreateScope())
 {
     var serviceScope = scope.ServiceProvider;
 
-    // Run database migrations.
     using var db = serviceScope.GetRequiredService<AppDbContext>();
-    db.Database.SetCommandTimeout(TimeSpan.FromMinutes(10));
-    db.Database.Migrate();
+    db.Database.EnsureCreated();
 
     ActivatorUtilities.GetServiceOrCreateInstance<DatabaseSeeder>(serviceScope).Seed();
 }

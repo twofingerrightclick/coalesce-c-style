@@ -1,4 +1,4 @@
-﻿using IntelliTect.Coalesce.TypeDefinition;
+using IntelliTect.Coalesce.TypeDefinition;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -81,7 +81,7 @@ public class TestBase : IDisposable
         var dbOptions = new DbContextOptionsBuilder<AppDbContext>(DbFixture.Options)
             .UseApplicationServiceProvider(mocker).Options;
 
-        var db = new AppDbContextForSqlite(dbOptions);
+        var db = new AppDbContext(dbOptions);
 
         // Expose the current user to EF extensions (if any).
         mocker.GetMock<IHttpContextAccessor>()
@@ -98,11 +98,11 @@ public class TestBase : IDisposable
 
         mocker.GetMock<IDbContextFactory<AppDbContext>>()
             .Setup(x => x.CreateDbContextAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => new AppDbContextForSqlite(dbOptions));
+            .ReturnsAsync(() => new AppDbContext(dbOptions));
 
         mocker.GetMock<IDbContextFactory<AppDbContext>>()
             .Setup(x => x.CreateDbContext())
-            .Returns(() => new AppDbContextForSqlite(dbOptions));
+            .Returns(() => new AppDbContext(dbOptions));
 
         mocker.Use<IMemoryCache>(new MemoryCache(new MemoryCacheOptions()));
 

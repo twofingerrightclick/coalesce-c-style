@@ -12,6 +12,15 @@ export interface CStyleOptions {
   settings?: string;
   /** Other `vite-plugin-vuetify` options. `autoImport` defaults to true; `styles` is owned by c-style. */
   vuetify?: Omit<NonNullable<Parameters<typeof vuetify>[0]>, "styles">;
+  /** Exclude styles replaced by c-style before bundling. All default to true. */
+  excludeStyles?: {
+    /** Exclude @fortawesome/fontawesome-free/css/*.css. Set false for unmapped or fa:-prefixed icons. */
+    fontAwesome?: boolean;
+    /** Exclude plain Roboto CSS from @fontsource, @fontsource-variable, typeface-roboto and roboto-fontface. */
+    roboto?: boolean;
+    /** Remove Vuetify button overlay state opacities superseded by c-style's tint states. */
+    buttonOverlay?: boolean;
+  };
 }
 
 /** Absolute path of `coalesce-c-style/settings`. */

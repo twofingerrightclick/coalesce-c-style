@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <DotnetCliToolTargetFramework>net10.0</DotnetCliToolTargetFramework>
@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyCompany.MyProject.Data\MyCompany.MyProject.Data.csproj" />
-    <ProjectReference Include="..\MyCompany.MyProject.Migrations\MyCompany.MyProject.Migrations.csproj" />
   </ItemGroup>
 
   <ItemGroup>
