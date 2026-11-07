@@ -36,6 +36,11 @@ const sharedTokens = [
   "gap-md",
   "gap-lg",
   "gap-xl",
+  "shell-inset",
+  "card-pad",
+  "accordion-pad",
+  "toolbar-pad",
+  "toolbar-gap",
   "hairline",
   // surfaces and neutral roles (canon §3.3, §3.4), complete colours
   "canvas",

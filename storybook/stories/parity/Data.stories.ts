@@ -39,7 +39,7 @@ export const Pagination = parity(
 );
 
 export const Tag = parity(
-  "Tag (VChip): emphasis high / medium / low / none",
+  "Tag (VChip): emphasis high / medium / low / default",
   `<div style="display:flex;gap:8px"><v-chip variant="flat" label data-parity="tag-high">Label</v-chip><v-chip variant="tonal" label data-parity="tag-medium">Label</v-chip><v-chip variant="outlined" label data-parity="tag-low">Label</v-chip><v-chip label data-parity="tag-default">Label</v-chip></div>`,
   `<div style="display:flex;gap:8px"><span class="canon-tag" data-emphasis="high" data-parity="tag-high"><span class="canon-tag-label">Label</span></span><span class="canon-tag" data-emphasis="medium" data-parity="tag-medium"><span class="canon-tag-label">Label</span></span><span class="canon-tag" data-emphasis="low" data-parity="tag-low"><span class="canon-tag-label">Label</span></span><span class="canon-tag" data-parity="tag-default"><span class="canon-tag-label">Label</span></span></div>`,
 );

@@ -3,7 +3,15 @@
 // settings.scss, checked = neutral ink from the blueprint. Left here: Vuetify
 // fades an unchecked glyph to .6 of the label ink and hovers with a round
 // currentColor wash; Canon draws the choice line and a 3px halo on the box.
+@use '../typography' as type;
+
 @layer vuetify-overrides {
+  // Canon fieldset legends use label weight. Choice labels beside the
+  // individual radio/checkbox/switch controls remain regular.
+  .v-radio-group > .v-input__control > .v-label {
+    font-weight: type.weight('label-large');
+  }
+
   .v-selection-control__input > .v-icon {
     opacity: 1;
   }

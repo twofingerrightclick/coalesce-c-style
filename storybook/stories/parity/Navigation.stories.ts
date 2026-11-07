@@ -1,4 +1,6 @@
 import type { Meta } from "@storybook/vue3-vite";
+import { Calendar, CircleCheck, Mail, Settings } from "@lucide/vue";
+import { csIcon } from "coalesce-c-style";
 import { ref } from "vue";
 import { parity } from "./_parity";
 
@@ -6,13 +8,13 @@ export default { title: "Parity/Navigation" } satisfies Meta;
 
 export const NavList = parity(
   "Nav List",
-  `<v-list nav style="max-width:264px" data-parity="nav">
-    <v-list-item prepend-icon="$info" title="Inbox" active data-parity="nav-current"><template #append><v-badge inline content="12" /></template></v-list-item>
-    <v-list-item prepend-icon="$complete" title="My issues" data-parity="nav-item" />
-    <v-list-item prepend-icon="$calendar" title="Calendar" />
+  `<nav aria-label="Workspace"><v-list nav style="max-width:264px;padding:0;overflow:visible" data-parity="nav">
+    <v-list-item :prepend-icon="navIcons.mail" title="Inbox" href="#inbox" aria-current="page" active data-parity="nav-current"><template #append><span style="color:var(--cs-muted);font-size:.75rem;font-weight:500;font-variant-numeric:tabular-nums">12</span></template></v-list-item>
+    <v-list-item :prepend-icon="navIcons.issues" title="My issues" href="#issues" data-parity="nav-item" />
+    <v-list-item :prepend-icon="navIcons.calendar" title="Calendar" href="#calendar" />
     <v-list-subheader data-parity="nav-heading">Teams</v-list-subheader>
-    <v-list-item prepend-icon="fa fa-cogs" title="Engineering" />
-  </v-list>`,
+    <v-list-item :prepend-icon="navIcons.settings" title="Engineering" href="#engineering" />
+  </v-list></nav>`,
   `<nav class="canon-nav-list" aria-label="Workspace" style="max-width:264px" data-parity="nav"><ul>
     <li><a class="canon-nav-list-item" href="#" aria-current="page" data-parity="nav-current"><span class="canon-icon" data-icon="mail" aria-hidden="true"></span><span class="canon-nav-list-label">Inbox</span><span class="canon-count">12</span></a></li>
     <li><a class="canon-nav-list-item" href="#" data-parity="nav-item"><span class="canon-icon" data-icon="circle-check" aria-hidden="true"></span><span class="canon-nav-list-label">My issues</span></a></li>
@@ -20,6 +22,10 @@ export const NavList = parity(
   </ul><p class="canon-nav-list-heading" data-parity="nav-heading">Teams</p><ul>
     <li><a class="canon-nav-list-item" href="#"><span class="canon-icon" data-icon="settings" aria-hidden="true"></span><span class="canon-nav-list-label">Engineering</span></a></li>
   </ul></nav>`,
+  "",
+  () => ({
+    navIcons: { mail: csIcon(Mail), issues: csIcon(CircleCheck), calendar: csIcon(Calendar), settings: csIcon(Settings) },
+  }),
 );
 
 export const Tabs = parity(

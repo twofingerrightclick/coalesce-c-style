@@ -20,3 +20,12 @@ export const Options = tpl(
   <sb-section title="fixed header, height 240">${table(`fixed-header height="240"`)}</sb-section>`,
   () => ({ rows: rows.slice(0, 10) }),
 );
+
+export const Semantics = tpl(
+  `<v-table>
+    <caption>Invoice totals</caption>
+    <thead><tr><th scope="col">Company</th><th scope="col">Amount</th></tr></thead>
+    <tbody><tr><th scope="row">Globex</th><td>$495.90</td></tr><tr><th scope="row" class="font-weight-medium">Acme (emphasized)</th><td>$250.00</td></tr></tbody>
+    <tfoot><tr><th scope="row">Total</th><td>$745.90</td></tr></tfoot>
+  </v-table>`,
+);

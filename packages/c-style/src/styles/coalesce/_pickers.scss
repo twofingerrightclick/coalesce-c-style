@@ -1,0 +1,16 @@
+// Coalesce stacks datetime picker sections at 600px, but also stretches the
+// absolutely positioned confirmation button across the time columns. Keep
+// that action in flow, on its own row after the full-width picker sections.
+@media screen and (max-width: 600px) {
+  .c-datetime-picker__menu > .v-card > .c-datetime-picker__close-btn {
+    // VBtn's absolute underlay/overlay must stay anchored to the button.
+    // `static` makes those layers cover the entire picker card instead.
+    position: relative;
+    inset: auto;
+    flex: 0 0 var(--cs-control-height);
+    inline-size: var(--cs-control-height);
+    block-size: var(--cs-control-height);
+    margin: var(--cs-gap-sm);
+    margin-inline-start: auto;
+  }
+}

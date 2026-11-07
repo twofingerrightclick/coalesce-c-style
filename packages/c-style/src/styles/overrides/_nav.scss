@@ -2,6 +2,204 @@
 // Bar and sidebar lines, widths, nav-list spacing, tab geometry and
 // breadcrumb spacing come from settings.scss and the blueprint.
 @layer vuetify-overrides {
+  // Canon control clusters: space belongs to the row, including its last
+  // action. Drawer headers and app bars refine these shared insets below.
+  .v-toolbar {
+    --_cs-toolbar-pad: max(var(--cs-toolbar-pad), calc(var(--cs-surface-radius) - var(--cs-radius)));
+  }
+
+  // A toolbar used as a card header aligns with the card's body and footer.
+  // Coalesce's operational toolbars retain their compact control-row recipe.
+  .v-card > .v-toolbar:where(:not(.v-app-bar, .c-admin-table-toolbar, .c-admin-editor--toolbar, .c-admin-methods--toolbar)) {
+    --_cs-toolbar-pad: max(var(--cs-card-pad), calc(var(--cs-surface-radius) - var(--cs-radius)));
+  }
+
+  :where(.v-toolbar:not(.v-app-bar)) .v-toolbar__content {
+    gap: var(--cs-toolbar-gap);
+    padding-inline: var(--_cs-toolbar-pad);
+    // Vuetify owns the row height (and gives that height to nested tabs).
+    // Center controls in it without adding a minimum or shrinking the
+    // available height with block padding, including compact/explicit rows.
+  }
+
+  .v-toolbar__content > .v-toolbar-title {
+    margin-inline-start: 0;
+  }
+
+  .v-toolbar__content > .v-btn:where(:first-child, :last-child) {
+    margin-inline: 0;
+  }
+
+  .v-toolbar__prepend {
+    margin-inline: 0 auto;
+  }
+
+  .v-toolbar__append {
+    margin-inline: auto 0;
+  }
+
+  :is(.v-toolbar__prepend, .v-toolbar__append) {
+    gap: var(--cs-toolbar-gap);
+  }
+
+  // A temporary content drawer follows Canon's Dialog header and footer:
+  // 24px at the title and footer edges, 16px by the close button. Vuetify's
+  // toolbar otherwise puts the title 20px in and its last button only 4px in.
+  :where(.v-navigation-drawer--temporary .v-navigation-drawer__content > .v-toolbar) {
+    flex: none;
+    border-block-end: var(--cs-hairline) solid var(--cs-rule);
+
+    .v-toolbar__content {
+      min-height: calc(var(--cs-control-height) + 2 * var(--cs-gap-md));
+      padding-block: var(--cs-gap-md);
+      padding-inline: var(--cs-gap-lg) var(--cs-gap-md);
+      gap: var(--cs-gap-md);
+    }
+
+    .v-toolbar-title {
+      margin-inline-start: 0;
+    }
+
+    .v-toolbar__content > .v-btn:where(:first-child, :last-child) {
+      margin-inline: 0;
+    }
+
+    .v-toolbar__prepend {
+      margin-inline-start: 0;
+    }
+
+    .v-toolbar__append {
+      margin-inline-end: 0;
+    }
+  }
+
+  // A single body wrapper keeps the footer in place while its content
+  // scrolls. Other drawer structures keep Vuetify's ordinary scrolling.
+  :where(.v-navigation-drawer--temporary .v-navigation-drawer__content:has(> .cs-drawer-body + .v-card-actions)) {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+
+    > .cs-drawer-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+  }
+
+  // Canon's footer inset is 24px on every side and its action gap is 12px
+  // (a literal in Canon rather than a named spacing token).
+  :where(.v-navigation-drawer--temporary .v-navigation-drawer__content) > .v-card-actions {
+    flex: none;
+    gap: 12px;
+    padding: calc(var(--cs-gap-lg) - var(--cs-hairline)) var(--cs-gap-lg) var(--cs-gap-lg);
+    border-block-start: var(--cs-hairline) solid var(--cs-rule);
+  }
+
+  // Canon's md rail is a 64px column of 40px square links. Center each link
+  // within the actual inner width, including when an app overrides railWidth.
+  // Keep half a small gap around it for the shared keyboard focus ring.
+  .v-navigation-drawer--rail:not(.v-navigation-drawer--expanded) .v-list--nav {
+    padding-inline: max(calc(var(--cs-gap-sm) / 2), calc((100% - var(--cs-control-height)) / 2));
+  }
+
+  .v-navigation-drawer--rail:not(.v-navigation-drawer--expanded) :where(.v-list--nav .v-list-item) {
+    inline-size: min(var(--cs-control-height), 100%);
+  }
+
+  // Canon's shell inset is 12px at md and 8px at sm. The compact bar uses
+  // the sm value; both densities derive their side room and gaps from it.
+  .v-app-bar {
+    --_cs-shell-inset: var(--cs-shell-inset);
+  }
+
+  .v-app-bar.v-toolbar--density-compact {
+    --_cs-shell-inset: calc(var(--cs-shell-inset) - var(--cs-gap-sm) / 2);
+  }
+
+  .v-app-bar .v-toolbar__content {
+    gap: calc(var(--_cs-shell-inset) + var(--cs-gap-sm) / 2);
+    padding-inline: calc(var(--_cs-shell-inset) + var(--cs-gap-sm));
+  }
+
+  .v-app-bar .v-toolbar__content > .v-toolbar-title {
+    margin-inline-start: 0;
+  }
+
+  .v-app-bar .v-toolbar__content > .v-btn:where(:first-child, :last-child) {
+    margin-inline: 0;
+  }
+
+  .v-app-bar .v-toolbar__prepend {
+    margin-inline: 0 auto;
+  }
+
+  .v-app-bar .v-toolbar__append {
+    margin-inline: auto 0;
+  }
+
+  .v-app-bar :is(.v-toolbar__prepend, .v-toolbar__append) {
+    gap: calc(var(--_cs-shell-inset) + var(--cs-gap-sm) / 2);
+  }
+
+  // Keep bottom destinations as separate control targets inside the dock.
+  .v-bottom-navigation__content {
+    gap: calc(var(--cs-gap-sm) / 2);
+    padding: calc(var(--cs-gap-sm) / 2);
+  }
+
+  .v-bottom-navigation .v-bottom-navigation__content > .v-btn {
+    border-radius: var(--cs-radius);
+  }
+
+  // The neutral icon treatment used on a white bar should inherit the
+  // button's on-color when the bar itself has an explicit theme fill.
+  .v-app-bar:where([class*='bg-']) .v-btn.text-neutral :where(.v-icon:not([class*='text-'])) {
+    color: inherit;
+  }
+
+  // Vuetify fixes the step badge at 24px and the connector at 2px. The
+  // expansion title takes its block pad from Canon's accordion token, with
+  // half the badge-versus-text-line difference removed (12 - 2 = 10px).
+  // Center the connector on that badge and leave half a small gap at its
+  // ends. Logical positioning also keeps RTL aligned.
+  .v-stepper-vertical-item {
+    --_cs-stepper-avatar: 24px;
+    --_cs-stepper-line: 2px;
+    --_cs-stepper-gap: calc(var(--cs-gap-sm) / 2);
+    --_cs-stepper-title-pad: calc(var(--cs-accordion-pad) - (var(--_cs-stepper-avatar) - var(--cs-control-lh)) / 2);
+  }
+
+  .v-stepper-vertical-item .v-expansion-panel-title {
+    padding-block: var(--_cs-stepper-title-pad);
+  }
+
+  .v-stepper-vertical-item:not(:last-child)::before {
+    left: auto;
+    inset-inline-start: calc(var(--cs-gap-md) + var(--_cs-stepper-avatar) / 2 - var(--_cs-stepper-line) / 2);
+    top: calc(var(--_cs-stepper-title-pad) + var(--_cs-stepper-avatar) + var(--_cs-stepper-gap));
+    width: var(--_cs-stepper-line);
+    height: calc(100% - var(--_cs-stepper-avatar) - 2 * var(--_cs-stepper-gap));
+  }
+
+  // Vuetify gives nav items a top margin, including after a divider.
+  // Add the same gap above horizontal dividers to balance both sides.
+  .v-list--nav > .v-divider:not(.v-divider--vertical) {
+    margin-top: var(--cs-gap-sm);
+  }
+
+  // Separate each new group from the preceding content by twice the item
+  // gap, so the label associates with the items below it.
+  .v-list--nav > .v-list-subheader:not(:first-child) {
+    margin-top: calc(2 * var(--cs-gap-sm));
+  }
+
+  // The subheader's 32px row already gives its 16px label breathing room.
+  // Canon places the first item directly after that row, without a nav gap.
+  .v-list--nav > .v-list-subheader + .v-list-item {
+    margin-top: 0;
+  }
+
   // Current list item (nav lists, and lists outside menus): the fill one step
   // up and a medium label, instead of Vuetify's activated currentColor wash
   // (canon "current item" recipe). Menus mark the chosen row with a tick.
@@ -15,6 +213,34 @@
     .v-list-item-title {
       font-weight: 500;
     }
+  }
+
+  // Drawer and standalone nav lists share the inherited control gap;
+  // a caller-supplied prependGap prop still wins through Vuetify's inline var.
+  :where(.v-list--nav:not(.v-menu *)) {
+    --v-list-prepend-gap: var(--cs-control-gap);
+  }
+
+  // Native VList's 32px icon spacer and medium-emphasis icon opacity are not
+  // Canon's 8px gap and full zinc-500 / white icon. Explicit icon colours win.
+  :where(.v-list--nav:not(.v-menu *) .v-list-item:not(.v-list-item--active)) .v-list-item__prepend > .v-icon:where(:not([class*='text-'])) {
+    color: rgb(var(--v-nav-icon));
+    opacity: 1;
+  }
+
+  // Nav hover is an opaque zinc-50 surface in light mode and zinc-800 at
+  // half opacity in dark; current stays zinc-100 / 700. Menus retain their
+  // selection and hover recipe.
+  .v-list--nav:not(:where(.v-menu *)) .v-list-item:where(:hover):not(:where(.v-list-item--disabled, [aria-disabled='true'])) {
+    background-color: rgba(var(--v-fill-hover), var(--v-nav-hover-opacity));
+  }
+
+  .v-list--nav:not(:where(.v-menu *)) .v-list-item--active {
+    background-color: rgb(var(--v-nav-current));
+  }
+
+  :where(.v-list--nav:not(.v-menu *)) .v-list-item > .v-list-item__overlay {
+    opacity: 0;
   }
 
   // Canon's segmented track (canon §4 A Segmented Control), shared by inset
@@ -78,7 +304,7 @@
   // the header gap below (canon §4 A Card). The card's loader slot may come
   // first.
   .v-card > :is(.v-tabs:first-child, .v-card__loader + .v-tabs) {
-    margin: 20px 20px 16px;
+    margin: var(--cs-card-pad) var(--cs-card-pad) var(--cs-gap-md);
   }
 
   // Canon link (canon §4 Link) for the app's own anchors (router links,
@@ -121,5 +347,16 @@
 
   :is(.v-breadcrumbs-item--disabled, .v-breadcrumbs-divider) {
     color: rgb(var(--v-quiet));
+  }
+}
+
+// A toolbar explicitly painted by an app keeps its on-color for neutral
+// actions. Re-point the theme variable read by Vuetify's text utility;
+// explicit icon colors on those buttons remain their own intent.
+@layer vuetify-utilities.c-style {
+  @each $surface in primary, secondary, neutral, success, warning, error, info, surface, surface-bright {
+    .v-app-bar:where(.bg-#{$surface}) .v-btn.text-neutral {
+      --v-theme-neutral: var(--v-theme-on-#{$surface});
+    }
   }
 }

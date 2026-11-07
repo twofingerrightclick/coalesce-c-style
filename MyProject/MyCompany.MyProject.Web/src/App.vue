@@ -61,7 +61,7 @@
       </v-list>
 
       <div
-        class="position-absolute left-0 bottom-0 px-1 text-caption text-grey text-center"
+        class="position-absolute left-0 bottom-0 px-1 text-caption text-muted text-center"
       >
         {{ buildDate }}
       </div>

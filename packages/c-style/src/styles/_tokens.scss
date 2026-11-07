@@ -35,6 +35,16 @@ $intents: primary, neutral, success, warning, error, info;
     --cs-gap-md: 16px;
     --cs-gap-lg: 24px;
     --cs-gap-xl: 32px;
+    // Canon's md shell and accordion insets. Keep them inherited so a
+    // container can adjust the whole shell or accordion subtree.
+    --cs-shell-inset: 12px;
+    // Canon card sections share the shell inset plus one small gap.
+    --cs-card-pad: calc(var(--cs-shell-inset) + var(--cs-gap-sm));
+    --cs-accordion-pad: 12px;
+    // Independent toolbar spacing roles. Corner clearance is resolved on
+    // each toolbar, where inherited surface and control radii are known.
+    --cs-toolbar-pad: 8px;
+    --cs-toolbar-gap: 8px;
     // Lines inside components and surface edges (canon §2.6).
     --cs-hairline: 1px;
   }

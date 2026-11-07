@@ -44,7 +44,7 @@ const quietButton = { VBtn: { color: "neutral", variant: "text" } };
  * - VBannerActions: small high emphasis, neutral (Canon Banner).
  * - Left as Vuetify: VEmptyState,
  *   VNumberInput (inside VField), VDatePicker/VPicker (M14), VCarousel,
- *   VSpeedDial, VFileUpload, VTreeview, VBottomNavigation.
+ *   VSpeedDial, VFileUpload, VTreeview.
  */
 export const defaults: Partial<DefaultsInstance> = {
   global: {
@@ -116,10 +116,14 @@ export const defaults: Partial<DefaultsInstance> = {
   // are; Vuetify squares them unless `rounded` is set.
   VListItem: { rounded: "md" },
   VTooltip: { openDelay: 500, closeDelay: 250, location: "top", offset: 4 },
-  // Canon shell: a flat bar over a hairline, a 264px sidebar of nav lists
-  // (icon 8px from the label, canon §4 D Nav List).
+  // Canon shell: a flat bar over a hairline and a 264px sidebar of nav lists.
+  // The icon gap comes from --cs-control-gap in _nav.scss, so it inherits.
   VAppBar: { flat: true, border: true },
-  VNavigationDrawer: { width: 264, VList: { nav: true, prependGap: 8 } },
+  // Canon md rail: 40px control + 2 × 12px shell inset. Vuetify resolves
+  // railWidth numerically for layout and touch, so it cannot read a CSS token.
+  VNavigationDrawer: { width: 264, railWidth: 64, VList: { nav: true } },
+  VBottomNavigation: { color: "neutral", border: true, elevation: 0 },
+  VFooter: { border: true },
   // Canon tabs: a segmented track whose selected tab is a raised card in
   // ink (_nav.scss paints the track and card).
   VTabs: { inset: true, color: "neutral" },

@@ -24,8 +24,10 @@ async function expectCardHeader(page: Page, toolbar: Locator) {
     line: "rgba(0, 0, 0, 0.1)",
   });
   expect(t["border-bottom-width"]).toBe("1px");
-  // Canon toolbar rows: a control 8px from the edges and 8px from the next row.
-  expect((await toolbar.locator(":scope > .v-toolbar__content").boundingBox())!.height).toBe(56);
+  // Table headers use the 20px card inset above controls and an 8px gap
+  // before the extension; editor/method toolbars retain 8px on both sides.
+  const tableHeader = await toolbar.evaluate((el) => el.classList.contains("c-admin-table-toolbar"));
+  expect((await toolbar.locator(":scope > .v-toolbar__content").boundingBox())!.height).toBe(tableHeader ? 68 : 56);
   const extension = toolbar.locator(":scope > .v-toolbar__extension");
   if (await extension.count()) expect((await extension.boundingBox())!.height).toBe(48);
   const title = toolbar.locator(".v-toolbar-title").first();
@@ -63,7 +65,10 @@ test.describe("M16 Coalesce", () => {
     const next = pag.locator(".c-list-page .v-btn").last();
     const n = await style(next, ["color", "border-top-color"]);
     // Canon pagination arrows have no frame (showcase.spec checks their size).
-    expect(await normalizeColors(page, { fg: n.color, line: n["border-top-color"] })).toEqual({ fg: "#71717a", line: "rgba(0, 0, 0, 0)" });
+    expect(await normalizeColors(page, { fg: n.color, line: n["border-top-color"] })).toEqual({
+      fg: await next.isDisabled() ? "#a1a1aa" : "#71717a",
+      line: "rgba(0, 0, 0, 0)",
+    });
   });
 
   test("editor: card-header toolbar; label column 14/20/500 ink, first line level with the field's", async ({ page }) => {

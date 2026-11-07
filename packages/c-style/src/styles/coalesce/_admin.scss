@@ -15,12 +15,48 @@ $rule: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity
   border-bottom: $rule;
 
   > .v-toolbar__content {
-    height: calc(var(--cs-control-height) + 16px) !important;
+    height: calc(var(--cs-control-height) + 2 * var(--_cs-toolbar-pad)) !important;
+  }
+
+  // The extension search icon starts 12px inside its field. Keep the
+  // title aligned with it after the shared row takes over edge padding.
+  .v-toolbar-title {
+    margin-inline-start: calc(var(--cs-gap-lg) / 2);
   }
 
   > .v-toolbar__extension {
-    height: calc(var(--cs-control-height) + 8px) !important;
+    height: calc(var(--cs-control-height) + var(--_cs-toolbar-pad)) !important;
     align-items: start;
+  }
+}
+
+// The table's main header and its body-contained pagination share Canon's
+// card inset at the outer edges. The gap before the extension stays compact.
+.c-admin-table-toolbar > .v-toolbar__content {
+  height: calc(var(--cs-control-height) + var(--cs-card-pad) + var(--_cs-toolbar-pad)) !important;
+  padding-block: var(--cs-card-pad) var(--_cs-toolbar-pad);
+  padding-inline: var(--cs-card-pad);
+}
+
+.c-admin-table-toolbar .v-toolbar-title {
+  margin-inline-start: 0;
+}
+
+// Coalesce hides these labels below md, but Reload/Edit keep `v-icon start`
+// and all three retain text-button widths. Use Canon's square icon target
+// and remove the label gap only while the labels are hidden.
+// Vuetify 4's md breakpoint is 840px (`hidden-sm-and-down`). Keep this
+// stylesheet independently compilable, without importing Vuetify settings.
+@media (max-width: 839.98px) {
+  :is(.c-admin-table-toolbar--button-create, .c-admin-table-toolbar--button-reload, .c-admin-table-toolbar--button-editable) {
+    inline-size: var(--cs-control-height);
+    min-inline-size: var(--cs-control-height);
+    padding-inline: 0;
+    flex-shrink: 0;
+
+    .v-icon {
+      margin-inline: 0;
+    }
   }
 }
 
@@ -28,7 +64,22 @@ $rule: var(--cs-hairline) solid rgba(var(--v-border-color), var(--v-rule-opacity
 // Canon's 8px edge inset matches the row's end and puts the search icon
 // under the title text.
 :is(.c-admin-table-toolbar--search, .c-audit-logs--filters) {
-  margin-inline-start: var(--cs-gap-sm);
+  margin-inline-start: var(--_cs-toolbar-pad);
+}
+
+// Coalesce supplies a physical 8px end margin. Use the same corner-aware
+// inset as the title and search, and keep the main row's own padding once.
+.c-admin-table-toolbar .c-list-page {
+  margin-right: 0;
+}
+
+.c-admin-table-toolbar .c-list-page-size {
+  margin-right: 0;
+  margin-inline-end: var(--_cs-toolbar-pad);
+}
+
+.c-audit-logs--filters {
+  margin-inline-end: var(--_cs-toolbar-pad);
 }
 
 // Coalesce hides the title and its divider with `hidden-xs-only`, which

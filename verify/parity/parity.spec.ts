@@ -96,16 +96,8 @@ const expected: { why: string; match: Match }[] = [
       (d.prop == "border-top-color" && ["btn-low-*", "group-first"].some((p) => matchId(d.id, p)) && d.vuetify == "rgb(63, 63, 70)"),
   },
   {
-    why: "Deviation: neutral high tag is Vuetify's flat chip (zinc-100 / zinc-800), Canon a 70% / 43% ink solid; the neutral low tag line is `border-low` (zinc-200 / zinc-700), Canon ink at 18.6% / 30.3%.",
-    match: (d) => (d.id == "tag-high" && d.prop == "background-color") || (d.id == "tag-low" && d.prop == "border-top-color"),
-  },
-  {
     why: "Deviation: a menu separator is the app's VDivider with its own margin (the story's `my-1`: a 9px row, Canon 16).",
     match: (d) => d.id == "menu" && d.prop == "block-size" && Math.abs(parseFloat(d.vuetify!) - parseFloat(d.canon!)) <= 8,
-  },
-  {
-    why: "Deviation: dark nav current is zinc-800 (`fill`), Canon zinc-700.",
-    match: on(["nav-current"], ["background-color"]),
   },
   {
     why: "Deviation: pagination keeps Vuetify's nav margin (48 tall row, Canon 40).",
@@ -116,7 +108,7 @@ const expected: { why: string; match: Match }[] = [
     match: on(["radio-group", "sw-hint"], ["block-size", "font-size", "line-height"]),
   },
   {
-    why: "Deviation: the nav list in Vuetify pads its list 10px block (238 vs 228), and nav titles carry the type (container pair).",
+    why: "The accepted 8px nav row spacing is 2px tighter than Canon's 10px pitch, leaving the standalone list 4px shorter.",
     match: on(["nav"], ["block-size"]),
   },
 ];

@@ -1,0 +1,7 @@
+// Coalesce still emits text-grey in its audit log and the select menu's
+// retrieval-limit hint. Keep that compatibility local to those components;
+// app code should use the semantic muted token instead of a global grey class.
+.c-admin-audit-log-page .text-grey,
+.c-select__menu-content .text-grey {
+  color: var(--cs-muted);
+}

@@ -22,9 +22,11 @@ test("compareBox measures both sides", async ({ page }) => {
 
 test("the preview declares Vuetify's layer order before any layered CSS", async ({ page }) => {
   await page.goto("/iframe.html?id=parity-smoke--smoke&viewMode=story");
-  const styles = await page.evaluate(() => [...document.querySelectorAll("style")].map((s) => s.textContent ?? ""));
+  const styles = await page.evaluate(() => [...document.querySelectorAll("style, link[rel='stylesheet']")].map((s) =>
+    s.tagName === "LINK" ? "external-css" : s.textContent ?? "",
+  ));
   const order = styles.findIndex((s) => s.includes("@layer vuetify-core{@layer reset,base;}"));
-  const firstLayered = styles.findIndex((s, i) => i != order && /@layer\s+vuetify-[a-z]+\s*\{/.test(s));
+  const firstLayered = styles.findIndex((s, i) => i != order && (s === "external-css" || /@layer\s+vuetify-[a-z]+\s*\{/.test(s)));
   expect(order).toBeGreaterThanOrEqual(0);
   expect(order).toBeLessThan(firstLayered);
 });

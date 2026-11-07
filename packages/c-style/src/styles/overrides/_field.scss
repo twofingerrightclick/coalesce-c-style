@@ -5,6 +5,21 @@
 // outline with `currentColor` (the field's text) at one opacity per state, and
 // has no surface fill, control shadow, halo or label-above variant.
 @layer vuetify-overrides {
+  // Canon combobox tags wrap with a control gap and a half-small-gap edge
+  // inset. Vuetify's autocomplete/combobox selection is fixed to the text
+  // line height (20px), which makes our 24px chips consume the row gap.
+  .v-input:where(.v-autocomplete--chips, .v-combobox--chips, .v-select--chips):where(:has(.v-chip)) {
+    .v-field__input {
+      gap: var(--cs-control-gap);
+      padding-block: calc(var(--cs-gap-sm) / 2);
+    }
+
+    :is(.v-autocomplete__selection, .v-combobox__selection, .v-select__selection) {
+      height: auto;
+      margin-inline-end: 0;
+    }
+  }
+
   .v-field--variant-outlined {
     --cs-field-line: var(--cs-tone-line);
     --cs-field-focus: var(--v-focus);

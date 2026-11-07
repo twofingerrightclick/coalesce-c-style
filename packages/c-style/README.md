@@ -20,7 +20,7 @@ c-style is one Vite-first package with seven entry points. Vuetify's SASS variab
 | `coalesce-c-style/styles` | layer order, Public Sans, `--cs-*` tokens, layered overrides, unlayered Coalesce rules | browser, via Vite |
 | `coalesce-c-style/tokens` | the public SCSS module for app components (`token()`, `surface`, `interactive`, `control-box`, `type`, …); emits no CSS | Sass |
 
-The workspace links the TypeScript and SCSS in `src/`. The published package ships a prebuilt `dist/` (TypeScript bundled with tsdown; Sass, CSS and the Vite plugin copied as they are).
+For workspace setup, implementation details, tests and releases, see the [development README](https://github.com/twofingerrightclick/coalesce-c-style/blob/main/DEVELOPMENT.md).
 
 Peer dependencies: `vue ^3.5`, `vuetify ^4.3`, `vite-plugin-vuetify ^2.1`, `vite ^7 || ^8`, `sass ^1.80`. Vuetify must resolve to one real path from both the app and c-style; with two copies, Sass silently applies none of the settings (see [Troubleshooting](#troubleshooting)).
 
@@ -39,31 +39,12 @@ A version has two parts: `<Coalesce version>-cs.<build>`. `6.5.1-cs.3` is the th
 - **Left of `-cs.`:** the Coalesce release c-style was checked against. Use the c-style build whose left side matches your Coalesce version.
 - **After `-cs.`:** c-style's own build number. It counts up within a Coalesce version and restarts at 1 for the next one.
 - **Vuetify:** the Vuetify version c-style is tested with is its `vuetify` dev dependency (currently 4.3.2). The peer range is `^4.3.0`.
-- **Pinning:** npm treats these as prereleases, so a range like `^6.5.1` won't pick them up. `pnpm add coalesce-c-style` installs the newest build, and `pnpm add coalesce-c-style@6.5.1-cs.3` pins one.
+- **Pinning:** npm treats these as prereleases, so a range like `^6.5.1` won't pick them up. `pnpm add coalesce-c-style` installs the newest build, and `pnpm add --save-exact coalesce-c-style@6.5.1-cs.2` pins one.
 
 | c-style | Coalesce | Vuetify |
 |---|---|---|
+| `6.5.1-cs.2` | 6.5.1 | 4.3.2 |
 | `6.5.1-cs.1` | 6.5.1 | 4.3.2 |
-
-### Working in this repo
-
-In a pnpm workspace, link the package instead:
-
-```jsonc
-// package.json of the app
-"dependencies": {
-  "coalesce-c-style": "workspace:*"
-}
-```
-
-The workspace uses the TypeScript and SCSS in `src/`. The published package ships the same files built to `dist/` (`pnpm --filter coalesce-c-style build`).
-
-### Releasing
-
-1. Set `version` in `packages/c-style/package.json` (for example `6.5.1-cs.2`) and add a row to the table above.
-2. Commit, then tag it: `git tag v6.5.1-cs.2 && git push --tags`.
-3. The [publish workflow](../../.github/workflows/publish.yml) checks that the tag matches `package.json`, runs the tests and stages the package on npm with provenance. It needs an `NPM_ACCESS_TOKEN` repository secret (a granular token with read and write on all packages).
-4. npm only lets tokens stage a publish, so approve it with 2FA: `npm stage list`, then `npm stage approve <stage-id>`, or approve it at npmjs.com. It goes live after that.
 
 ## Adopting it in a Coalesce app
 
@@ -105,7 +86,7 @@ The whole change for the Coalesce starter template. Routes, views and Coalesce p
  });
 ```
 
-`package.json`: add `"coalesce-c-style": "workspace:*"`; `@fontsource/roboto` can go.
+`package.json`: the install command adds `coalesce-c-style`; `@fontsource/roboto` can go.
 
 `site.scss`: the template's input-details alignment, readonly dashed outline, `--fa-display` and `a { text-decoration: none }` rules are now c-style's; delete them. (The last one is unlayered, so it would keep Canon's link line from showing on hover.)
 
@@ -122,7 +103,7 @@ Keep a single CSS chunk (the template's `codeSplitting.groups` `styles` group) s
 ### Optional cleanup
 
 - The template's `<v-app-bar color="primary">` gives an accent app bar. Drop `color` for Canon's neutral bar (white / zinc-900 over a hairline). c-style leaves explicit app colours alone.
-- Coalesce admin toolbars are neutral whatever `color` the page gets (see [Coalesce](#coalesce)); nothing to change in routes.
+- Coalesce admin toolbars are neutral whatever `color` the page gets (see the [development README](https://github.com/twofingerrightclick/coalesce-c-style/blob/main/DEVELOPMENT.md#coalesce)); nothing to change in routes.
 
 ## Colours
 
@@ -142,7 +123,7 @@ cStyleBlueprint({
 
 Each value is a hex, a Tailwind v3 palette name (`zinc slate gray neutral stone red orange amber yellow lime green emerald teal cyan sky blue indigo violet purple fuchsia pink rose`) or a full ladder object (`{ 50: "#…", …, 950: "#…" }`). Omitted intents use Canon's palette (blue accent, zinc neutral, green / amber / red).
 
-From the ladders the theme derives Canon's roles in both modes: solids at step 600 with their `on-*` colour, labels at 700 / 300, tints, lines, hover and press steps, focus and halo. Components read those roles, never hexes.
+From the ladders the theme derives Canon's roles in both modes: accent solids generally at step 600 with their `on-*` colour, labels at 700 / 300, tints, lines, hover and press steps, focus and halo. Warning's solid uses step 400; neutral and secondary use an inverse neutral solid (dark in light mode, white in dark mode). Components read those roles rather than fixed hexes.
 
 - **Runtime switch:** `applyCStyleColors(useTheme(), { primary: "#e11d48" })` regenerates the ladders and updates every registered theme in place, without a reload.
 - **Ladders on their own:** `generateLadder("#7c3aed")` returns `{ 50 … 950 }`. The input hex is pinned to its nearest step, and the rest follows the hue drift of the nearest Tailwind palette, so Tailwind inputs reproduce Tailwind.
@@ -185,6 +166,77 @@ cStyle({ settings: "src/styles/settings.scss" });
 ```
 
 `cStyle({ vuetify: { … } })` passes other options to `vite-plugin-vuetify` (`autoImport` defaults to true; `styles` belongs to c-style). Settings changes recompile Vuetify's SASS (a few seconds on first load, then HMR).
+
+## Semantic colors
+
+c-style keeps Vuetify's `color` and `variant` props, theme configuration, and
+semantic `bg-*` / `text-*` class syntax. Existing uses such as
+`color="primary"` still use the active Vuetify theme. The role values, component
+defaults, and hover, focus, pressed, and disabled appearances follow Canon, so
+the same props can look different from a default Vuetify installation.
+
+`primary` is the brand accent; `neutral` is the neutral intent. For existing
+Vuetify code, `secondary` defaults to the same neutral colors and treatment as
+`neutral`, rather than a second brand accent. c-style's palette configuration
+has no separate secondary ladder.
+
+For example:
+
+```vue
+<v-btn color="primary">Save</v-btn> <!-- default: tonal, medium emphasis -->
+<v-btn color="neutral" variant="outlined">Cancel</v-btn> <!-- low emphasis -->
+<v-btn color="primary" variant="flat">Publish</v-btn> <!-- high emphasis -->
+```
+
+Buttons default to primary and tonal; `flat` and `elevated` are high emphasis,
+`tonal` is medium, `outlined` is low, and `text` is minimal. Context can change
+defaults: for example, buttons in toolbars and tables default to neutral text,
+and selection controls default to neutral. Outlined alerts and snackbars use a
+neutral surface with the intent on the icon and bar. Explicit props and Vuetify
+defaults providers remain available when a different treatment is needed.
+
+c-style disables Vuetify's literal Material color pack at Sass compile time.
+Classes such as `text-red`, `bg-blue-lighten-2`, `text-grey`, `text-white`, and
+`bg-black` are not generated. Choose a role instead of a palette color so
+the UI follows the active theme and brand:
+
+| Purpose | Use |
+|---|---|
+| Actions and status | `color="primary"`, `color="neutral"`, `color="success"`, `color="warning"`, `color="error"`, `color="info"` |
+| Surfaces and their text | `bg-surface`, `on-surface`, or a Vuetify surface component with `color="surface"` |
+| Secondary text | `class="text-muted"`; for custom CSS use `cs.token(muted)` or `csVar('muted')` |
+| Accent text on a quiet background | `color: cs.token(primary-text)` (or the corresponding intent) |
+| Text over dark media | A dark themed surface with a transparent background and `on-surface` |
+
+Semantic `bg-*` / `text-*` helpers still come from Vuetify's theme system.
+c-style's palette ladders remain available internally to resolve tokens;
+disabling the Material color pack does not remove brand colors or change
+layout utilities. Coalesce's remaining `text-grey` uses in audit logs and
+select-menu hints are mapped locally to `--cs-muted`; there is no global
+grey compatibility class.
+
+`text-muted` reads `--cs-muted` in Vuetify's foreground utility layer and follows
+the element's theme. It is a text helper, not a `color="muted"` component role.
+`bg-transparent` remains available as a no-fill helper: Vuetify uses it internally
+for drawer and file-upload lists. Color-picker checkmarks and preview tracks,
+and video progress tracks, have scoped white/black compatibility rules to
+preserve Vuetify's internal contrast choices. Global `text-white`, `text-black`,
+and `bg-white` helpers remain absent. Recheck these dependency hooks on upgrades.
+
+If you customize a Coalesce select's menu class, retain its built-in anchor:
+`:menu-props="{ contentClass: 'c-select__menu-content my-menu' }"`. Replacing that
+anchor also removes Coalesce-specific menu styling, including the muted hint.
+
+Palette names in blueprint configuration, such as `primary: "red"`, select a
+ladder; they do not restore Material helpers. A component prop `color="red"`
+therefore needs a `red` theme role or the opt-in color pack described below.
+Vuetify accepts explicit hex, `rgb()`/`hsl()`, and `var()` colors through component
+props. Named values such as `red` or `white` require a corresponding theme role
+or palette helper; they are not treated as inline CSS colors. Custom CSS still
+accepts normal CSS color syntax. Prefer roles and tokens in app code.
+A legacy app can temporarily
+restore the old helpers in its [custom Sass settings](#overriding-sass-settings)
+with `$color-pack: true`; the package default remains `false`.
 
 ## Excluding replaced font styles
 
@@ -244,6 +296,8 @@ Canon's md is the default everywhere. Smaller and larger controls are per instan
 
 Tags (`v-chip`) follow Canon's tag sizes: `x-small`, `small` and default are sm (24, 12/16 type; Canon has nothing smaller), `large` md (32, 14px), `x-large` lg (40, 16px), radius 2 / 4 / 8 (`label`; the blueprint default). Icons, avatars and the remove icon are the line height (16 / 20 / 24), 4 / 6 / 8 from the edge and 4 / 8 / 12 from the text; avatar initials are 0.4 of the avatar at weight 400. Pill chips keep the same avatar (Vuetify's full-height pill avatar is not Canon).
 
+Tag emphasis maps to `flat` (high), `tonal` (medium and default), and `outlined` (low). Uncoloured tags derive their fill and border from inherited text, following Canon's per-theme tag opacities; high-emphasis content uses the contrasting tag text role. Explicit `color` props retain their intent colours.
+
 Avatar initials take Canon's type for the avatar's size at weight 400: 24 → 10/12, 32 → 12/16, 40 → 14/20, 48 and 56 → 16/24, 64 → 24/32. Named sizes `x-small` … `x-large` are 24 … 56; a numeric `size` takes the nearest step (12–96px). Leave the text bare or in a plain `<span>`; a type class such as `text-caption` overrides it.
 
 Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`); density never changes a control's size. Tables keep Vuetify's density rows (56 / 48 / 40), Canon's default being 56; `density="compact"` gives Canon's compact 40. The `--cs-*` custom properties (`--cs-control-height`, `--cs-icon`, `--cs-radius`, `--cs-gap-md`, `--cs-hairline`, …) are Canon's md values, public for app components (see [Styling your own components](#styling-your-own-components)). There is no inherited size context.
@@ -260,9 +314,24 @@ Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`)
 - Coalesce's raw `<i class="fa fa-*">` glyphs (row actions, info and asterisk marks, the password eye) are masked with the matching Lucide shape (`scripts/fa-masks.mjs` regenerates the masks).
 - Default icon size is 20 (16 in tags and small buttons, 24 in large buttons).
 
+## Content drawers
+
+A temporary `v-navigation-drawer` with a direct `v-toolbar` header gets Canon's Dialog header insets: 24px by the title and 16px by the close action. A direct `v-card-actions` footer gets 24px side and bottom insets. For a footer that stays at the bottom while several body elements scroll together, wrap the body in `.cs-drawer-body` directly before the actions:
+
+```vue
+<v-navigation-drawer temporary location="end">
+  <v-toolbar title="Widget details"><v-btn icon="$close" aria-label="Close" /></v-toolbar>
+  <div class="cs-drawer-body">
+    <v-text-field label="Name" />
+    <v-list><!-- details --></v-list>
+  </div>
+  <v-card-actions><v-spacer /><v-btn>Cancel</v-btn><v-btn color="primary">Save</v-btn></v-card-actions>
+</v-navigation-drawer>
+```
+
 ## Components: Canon Time
 
-Canon's time field is far better than Vuetify's `v-time-picker` for typing: a row of framed cells (hour, minute, optional second, AM/PM), each typed into or stepped from the keyboard. c-style ships it as three Vue components (inventory and keyboard model: `docs/research/canon-time.md`).
+c-style adds Canon-style segmented time inputs: a row of framed cells (hour, minute, optional second, AM/PM), each typed into or stepped from the keyboard. These complement Vuetify's existing `v-time-picker`. c-style ships them as three Vue components (inventory and keyboard model: `docs/research/canon-time.md`).
 
 ```ts
 import { CsTimeField, CsTimeRangeField } from "coalesce-c-style";
@@ -279,7 +348,7 @@ import { CsTimeField, CsTimeRangeField } from "coalesce-c-style";
 | `CsTimeRangeField` | `[start, end]`, each as above | a time window; an end before the start is invalid unless `overnight` |
 | `CsTimeInput` | either (with `range`) | the bare box, no label or messages; name it with `aria-label` |
 
-Values are always 24-hour; the cells show 12 or 24 hours. Inputs also accept `"h:mm pm"` and `Date`.
+Emitted values are always 24-hour; the cells show 12 or 24 hours. Inputs also accept strings such as `"1:30 pm"`. Convert `Date` values to time strings before binding them.
 
 Props (all three): `format` (`'ampm'` / `'24hr'`; unset follows Vuetify's locale), `step` (seconds per step, as `<input type="time" step>`: `900` moves minutes by 15; under 60 adds a seconds cell), `use-seconds`, `min` / `max` (out of range is invalid, not prevented), `allowed-hours` / `allowed-minutes` / `allowed-seconds` (arrays or functions; Up / Down skip the rest, typed ones are invalid), `size` (`small` / `default` / `large`: cells 32 / 40 / 48), `disabled`, `readonly`, `required`. Fields add VInput's `label`, `hint`, `persistent-hint`, `messages`, `rules`, `error`, `error-messages`, `max-errors`, `hide-details` (default `auto`), `validate-on`, `id`, `name`; ranges add `overnight`, `start-label` / `end-label` (accessible names, default "Start" / "End"). App defaults reach them by name (`defaults: { CsTimeField: { … } }`). Exposed: `focus()`, and on fields `validate()`, `reset()`, `resetValidation()`.
 
@@ -301,13 +370,14 @@ Take the first rung that can express the design:
 2. **Vuetify utility and type classes** for layout and one-off tweaks:
    - Spacing `pa-*`, `ma-*`, `ga-*` keep Vuetify's 4px step, which is Canon's scale (`ga-2` = `--cs-gap-sm`, `pa-4` = `--cs-gap-md`).
    - Re-pointed to Canon: `rounded-*` (`sm` 4, default and `md` 8, `lg` 12, `xl` 16, `xxl` 24), `elevation-*` (1 control shadow, 2 raised, 3 and 4 floating, 5 overlay, each with the edge hairline above 1), the type classes `text-display-*` … `text-label-*` (Canon's ramp, for example `text-title-medium`, `text-body-small`), `bg-*` and `text-*` colour classes (theme roles).
-   - Not re-pointed: `text-medium-emphasis` and `text-high-emphasis` are Vuetify's on-background ink at 60% and 100%. For Canon's secondary text use `color: cs.token(muted)`. `text-primary` outside a button, chip or tonal variant is the solid step (600); a label in the accent is `cs.token(primary-text)`.
+   - Literal Material palette helpers (`text-red`, `text-grey`, `text-white`, `bg-blue-lighten-2`, …) are not generated. See [Semantic colors](#semantic-colors) for replacements.
+   - Not re-pointed: `text-medium-emphasis` and `text-high-emphasis` are Vuetify's on-background ink at 60% and 100%. For Canon's secondary text use `text-muted` or `color: cs.token(muted)`. On ordinary markup `text-primary` uses the primary solid (step 600); for an accent label use `cs.token(primary-text)`. c-style also selects the label step for buttons, chips, and supported tonal, text, or plain component variants.
 3. **Tokens and the SCSS module** for your own markup: `@use 'coalesce-c-style/tokens' as cs` in the component's `<style lang="scss">`, then the mixins and `cs.token(...)` (below).
 4. **Plain CSS in the component** for what's left (grid templates, positioning). c-style's CSS sits in cascade layers, so unlayered app CSS wins without `!important`.
 
 ### The token contract
 
-125 custom properties, all prefixed `--cs-`, declared by `coalesce-c-style/styles` in `@layer vuetify-overrides`. The list is `cStyleTokens` (TypeScript) and `$tokens` (SCSS); a unit test keeps those and the stylesheet in step.
+127 custom properties, all prefixed `--cs-`, declared by `coalesce-c-style/styles` in `@layer vuetify-overrides`. The list is `cStyleTokens` (TypeScript) and `$tokens` (SCSS); a unit test keeps those and the stylesheet in step.
 
 - **Colour, shadow and font tokens are read-only.** They alias Vuetify's theme variables and are redeclared on `:root` and on every `.v-theme--*` element, so they follow `theme.change`, a `theme="dark"` subtree, `applyCStyleColors` and `applyCStyleFont` without a recompile. That redeclaration is also why a value you set on an ancestor stops at the first Vuetify component inside it. Change them through the theme: `cStyleBlueprint({ colors, font })`, `applyCStyleColors`, `applyCStyleFont`.
 - **Size and motion tokens may be overridden on `:root`.** An unlayered `:root { --cs-radius: 6px; }` wins in any import order. It reaches your components and the c-style rules that read the token; Vuetify's own component sizes (button, field, chip heights and the like) are compiled from SASS and don't read these tokens, so change those through [`coalesce-c-style/settings`](#overriding-sass-settings).
@@ -333,9 +403,20 @@ In the tables, `n` is the neutral ladder (zinc by default) and `i` the intent's 
 | `gap-md` | 16px | stacks, between fields; surface padding |
 | `gap-lg` | 24px | between groups |
 | `gap-xl` | 32px | between form sections |
+| `shell-inset` | 12px | md shell inset; the app bar and supporting chrome derive their spacing from it |
+| `card-pad` | shell-inset + gap-sm (20px) | shared inset for card titles, body, actions, tabs, and header toolbars; Coalesce admin search/filter rows keep their compact inset |
+| `accordion-pad` | 12px | md accordion row block inset; vertical stepper rows compensate for their taller badge |
+| `toolbar-pad` | 8px | minimum toolbar inline inset; each toolbar increases it to surface-radius − radius when needed |
+| `toolbar-gap` | 8px | space between toolbar controls |
 | `hairline` | 1px (0.5px on 2x screens) | rule and edge width |
 
 `control-gap` and `gap-sm` are both 8px but mean different things; pick by meaning.
+
+`shell-inset` inherits into the app bar, system bar, and footer. Vuetify resolves the drawer's `railWidth` in JavaScript, so its 64px default cannot follow a CSS token override; set `rail-width` as a prop when changing that width.
+
+Toolbar spacing tokens inherit independently of `gap-sm`. Corner clearance resolves on each toolbar, so a card's local `surface-radius` and `radius` overrides apply there. The default card radius also reads `surface-radius`; explicit `rounded` props or Sass radius overrides take precedence. Ordinary toolbars retain Vuetify's density and explicit heights, with controls centered vertically. Coalesce admin table headers use `card-pad` at the top and sides, matching the bottom pagination's card inset; the search/filter row keeps its compact toolbar inset and gap.
+
+Full-width table cards share `card-pad` across their toolbar, outer table cells, and direct `c-list-pagination` footer. This applies to a direct `v-table` or `c-table`, including a table inside a direct `c-loader-status` content slot. Internal column spacing stays unchanged and row dividers span the card. Tables inside `v-card-text` keep that wrapper's padding instead. Omit padding utilities such as `pa-2` on the footer so the shared inset can apply; override `--cs-card-pad` on the card to adjust the whole composition.
 
 **Surfaces and neutral roles** (read-only):
 
@@ -467,6 +548,18 @@ Every state selector is (0,2,0), so your own `.x:hover` rule after the include w
 .card__title { @include cs.type(title-medium); }
 ```
 
+`VBanner` has no separate title prop. Use its `text` slot and the existing type
+roles to distinguish a medium title from a regular description:
+
+```vue
+<v-banner>
+  <template #text>
+    <strong class="text-label-large">A new version is available.</strong>
+    <span class="text-body-medium text-muted">Refresh when you're ready.</span>
+  </template>
+</v-banner>
+```
+
 **Composition.**
 
 - Include `control-box` before `interactive`: `control-box`'s transparent border would replace the low emphasis border.
@@ -563,37 +656,9 @@ In Storybook (`c-style/Option tiles (app example)` is the model), use the toolba
 
 ### Agent skill
 
-The package ships an agent skill, `skills/c-style/SKILL.md`, that tells coding agents (Claude Code and others that read `SKILL.md`) to follow this section when they write or restyle a component. Copy it into the app:
+The repository includes an [agent skill](https://github.com/twofingerrightclick/coalesce-c-style/tree/main/packages/c-style/skills/c-style) that tells coding agents (Claude Code and others that read `SKILL.md`) to follow this section when they write or restyle a component. It is not included in the npm package. Download or copy that directory from the repository into your app as `.claude/skills/c-style/`, keeping its `SKILL.md` and supporting files together.
 
-```sh
-mkdir -p .claude/skills
-cp -r node_modules/coalesce-c-style/skills/c-style .claude/skills/
-```
-
-Re-copy it after upgrading c-style.
-
-## What is styled where
-
-In order of preference; a change uses the first channel that can express it.
-
-1. **SASS settings** (`src/styles/settings.scss`, `_sizes.scss`, `_typography.scss`): sizes, radii, type scale, density maps, paddings, shadows (`$shadow-key` → theme variables), colours that name a theme role.
-2. **Blueprint defaults** (`src/defaults.ts`): prop choices such as `VBtn { color: 'primary', variant: 'tonal' }`, neutral minimal buttons inside toolbars, tables, fields, lists, alerts and toasts; outlined text inputs with the label above; `VAlert`/`VSnackbar` outlined; inset tabs; neutral choices and pickers; ripple off.
-3. **Theme** (`src/theme/`): every colour and every light/dark difference, as Vuetify theme colours plus role variables (`--v-primary-text`, `--v-frame`, `--v-shadow-raised`, …).
-4. **`@layer vuetify-overrides`** (`src/styles/overrides/`, one partial per family): what no variable, default or theme key reaches, for example the button tint rungs, the field frame and halo, the label above, choice lines, the segmented track, the menu tick. Rules read tokens and theme variables only: no hex, no `!important`, specificity ≤ (0,3,0).
-5. **Sublayer `vuetify-utilities.c-style`** (`tone.repoint`): custom-property re-points that have to beat Vuetify's theme classes on the same element (button labels at the tone's text step, hover and press solids, disabled greys, admin toolbars' `bg-primary`). Custom properties only.
-6. **Unlayered `.c-*` rules** (`src/styles/coalesce/`): Coalesce's own unlayered CSS and inline styles. Every selector starts with a `.c-` class; `!important` only against Coalesce's inline styles.
-7. **c-style components** (`src/components/`, CSS in `src/styles/components/`, `@layer vuetify-components`): Canon components Vuetify lacks (Time). Same token-only rule as the overrides.
-
-### Coalesce
-
-- Admin table, editor, methods and audit toolbars are card headers: no shadow, a rule below, a 56px main row and a 48px filter row. Coalesce fills them with `bg-primary` when the page gets `color="primary"` (the starter template's admin routes, and the audit page's own default); c-style re-points the toolbar's primary to the surface, so they stay neutral without touching routes.
-- Pagination, the "Showing 1 - 10 of 40" range and page-size text use Canon's muted 14/20 info type; prev/next are Canon's frameless 40px arrow squares beside the 40px page field.
-- The "Columns & Filters" active-filter count shows whole (the button clipped it).
-- Row actions are neutral Lucide icons; the pinned actions column has a hairline and a flat 4px band instead of a blurred shadow.
-- Editor labels are 14/20/500 ink, rows a form gap apart.
-- The audit "Entity Type" filter keeps its label visible while it holds an empty value.
-- The filter row's first control (table search, audit filters) sits 8px from the card edge, as the row's last control does; the search icon lines up with the title text. Below 600px the title and its dividers hide (Coalesce's `hidden-xs-only`, a class Vuetify 4 dropped).
-- Editable `c-table` cells are Canon data table edit cells: the field spans the cell with no frame at rest, the field line under the pointer, the focus frame while typing (errors keep their line); values start under their header text and rows stay 56. Read-only cells in edit mode don't wrap.
+Refresh the copy from the matching c-style release after upgrading.
 
 ## Known deviations from Canon
 
@@ -607,9 +672,9 @@ Kept on purpose or not reachable through Vuetify; the parity gate (`verify/parit
 - **Messages** are ink at Vuetify's medium emphasis (≈ zinc-500); error messages use error 600 (Canon 700 / 300). Choice messages sit 8px below (Canon 6).
 - **Alerts:** a typeless alert still shows a zinc bar; the dark alert icon is error 600 (Canon 400). Banner intents are not styled, and the banner keeps Vuetify's close-less layout (no Canon close button).
 - **Toasts:** no stacking, timer line or Canon enter motion.
-- **Tags:** the neutral high-emphasis tag is Vuetify's flat chip (zinc-100), not Canon's 70% ink solid; the neutral low line is zinc-200 (Canon ≈ zinc-300). Tags inside a combobox are sm (Vuetify asks for `small`; Canon's md 32 doesn't fit the 40 field). On a hued tag the remove icon sits in the tag's tint; Canon gives it its own neutral segment (zinc-100 / zinc-700, the tag's end radii).
+- **Tags:** tags inside a combobox are sm (Vuetify asks for `small`; Canon's md 32 doesn't fit the 40 field). On a hued tag the remove icon sits in the tag's tint; Canon gives it its own neutral segment (zinc-100 / zinc-700, the tag's end radii).
 - **Segmented control (VBtnToggle) and tabs:** rest options are muted zinc-500 (Canon zinc-600); the card crossfades instead of gliding.
-- **Navigation:** the dark current nav item is zinc-800 (Canon zinc-700); sidebar items are 10px in (Canon 16); the breadcrumb separator is `/` (Canon a chevron); the demo's app bar is 48 (Canon md 64).
+- **Navigation:** sidebar items are 10px in (Canon 16); the breadcrumb separator is `/` (Canon a chevron); the demo's app bar is 48 (Canon md 64).
 - **Pagination:** Vuetify decides how many pages to show by measuring, counts a gap after the last item, and with a middle page needs five slots for `1 … 4 … 12`; below that (a card under about 336px) it shows the current page alone. Canon's own row of seven items is 328px, so it doesn't fit a 325px card body either (Canon wraps it; Vuetify's measuring can't take a wrapped row). With `total-visible` the row can overflow. The unsorted column arrow stays hidden until hover (Canon shows `arrow-down-up`).
 - **Links:** every app link is Canon's standalone link (no line until hover). Canon's in-text link, underlined at rest, isn't told apart.
 - **Stepper** (no Canon counterpart): current and completed steps get the ink badge; a step only counts as completed when the app marks it (`complete`, or `rules`), as in Vuetify.
@@ -619,25 +684,6 @@ Kept on purpose or not reachable through Vuetify; the parity gate (`verify/parit
 - **Stacked choices:** separate checkboxes and switches stack at Canon's 28 / 32px pitch only inside a `v-form` (or as a `v-radio-group`); elsewhere sibling inputs may be laid out in a row, so they keep the 40px row.
 - **Theme on the same element** (`<v-btn theme="dark">`) wins over c-style's re-points on that element; a theme on an ancestor is fine.
 
-## Upgrading Vuetify or Coalesce
-
-c-style relies on some Vuetify and Coalesce internals. After an upgrade, run all suites (below) and check these by hand if anything moved:
-
-- **Layer order:** `test/layer-order.spec.ts` fails if Vuetify's `lib/styles/layers.css` changes. Update `src/layer-order.mjs` and `_layers.scss` together, keeping `c-style` last in `vuetify-utilities`.
-- **Settings canary:** `verify/app/plumbing.spec.ts` checks the 8px button radius; if it fails, Sass loaded a second `vuetify/settings`.
-- **Field padding math:** the −3 density on a 52px base depends on Vuetify's `16px + density/2` formula; `verify/app/size.spec.ts` pins every field at 40.
-- **Button icon margins:** `$button-margin-start-multiplier: -6.67` assumes Vuetify's multiplier math; `verify/app/button.spec.ts` checks the 10px icon inset.
-- **Menu tick** draws on `.v-list-item::after`, which Vuetify uses for its focus border; c-style's focus ring is a box-shadow. If Vuetify moves focus styling back onto `::after`, the tick and focus collide.
-- **Dialog parts:** `.v-dialog > .v-overlay__content > :is(.v-card, form > .v-card) > :is(.v-card-item, .v-card-title)` breaks if the card is wrapped in anything else (`v-form`'s own wrapper, a sheet).
-- **Inset tabs:** the segmented track uses Vuetify 4's `.v-tabs--inset` and `.v-tab__slider`. Tabs heading a card match `.v-card > .v-tabs:first-child` or `.v-card__loader + .v-tabs` (`verify/app/showcase.spec.ts`).
-- **Tonal recipe:** the shared tonal underlay matches `[class*='--variant-tonal'] > [class*='__underlay']` and the text-step re-point `.text-<intent>` with `--variant-tonal|text|plain` classes; a renamed variant or underlay class drops it (`showcase.spec.ts` avatar/alert checks).
-- **Popup motion:** `cs-popup` scales with `transform`, which Vuetify's `nullifyTransforms` undoes when it places an overlay. If Vuetify stops undoing transforms, menus near the viewport's bottom open the wrong way (`showcase.spec.ts` datetime check).
-- **Chip sizes:** the per-size re-points override the literal values Vuetify's `chip-sizes` mixin emits (`--v-chip-height`, padding, font size, avatar height, media margins) and `.v-chip__close`'s `max-width`/`max-height` (`$chip-close-size`).
-- **Avatar initials:** a numeric `size` only reaches the DOM as inline `width`/`height`, so the type rule matches `[style*=" height: Npx"]` for whole pixels 12–96 (`verify/app/data.spec.ts`); another unit or a fraction keeps the inherited type.
-- **`__element` selectors** (`.v-selection-control__input`, `.v-field__outline`, `.v-overlay__content`, `.v-snackbar__content`, about 25 in all) assume Vuetify's internal markup.
-- **Coalesce** (styled against `coalesce-vue-vuetify3@6.5.1`'s `dist`): toolbar class names and inline heights, `.c-admin-table-toolbar--range`, the pinned `.fixed-column-right`, `c-select`'s `filled` menu search, the raw FontAwesome sites (re-grep `dist` for `fa-` names; `test/coalesce-fa.spec.ts` fails on an unmapped one), the audit filters' markup, the `hidden-xs-only` toolbar classes, `.c-table--editable`'s cell padding rules (`verify/app/coalesce.spec.ts` checks the toolbar insets and edit cells), `c-list-page`'s direct child prev/next buttons and `c-list-filters`' badge (`verify/app/showcase.spec.ts`).
-- **Parity gate:** `verify/parity/parity.spec.ts` (with Storybook running) compares every Parity story with Canon in light and dark. A failure lists the property that moved.
-
 ## Troubleshooting
 
 - **Nothing from the settings applies** (buttons round at 4px, Roboto-sized controls): two copies of Vuetify. `node -p "require.resolve('vuetify/package.json')"` from the app and from `packages/c-style` must print the same real path.
@@ -646,4 +692,4 @@ c-style relies on some Vuetify and Coalesce internals. After an upgrade, run all
 
 ## Credits
 
-The design is [Canon](https://github.com/recepkutuk/canon) by Recep Kütük (MIT). c-style also includes the Tailwind v3 colour palette (MIT) and Lucide icon paths (ISC). Licenses and attribution are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+The design is [Canon](https://github.com/recepkutuk/canon) by Recep Kütük (MIT). c-style also includes the Tailwind v3 colour palette (MIT) and Lucide icon paths (ISC). Licenses and attribution are in [THIRD-PARTY-NOTICES.md](https://github.com/twofingerrightclick/coalesce-c-style/blob/main/packages/c-style/THIRD-PARTY-NOTICES.md).

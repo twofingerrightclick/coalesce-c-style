@@ -43,6 +43,25 @@
     }
   }
 
+  // Canon button groups use an opaque neutral surface for hover and press;
+  // the ordinary low-emphasis tint is intentionally subtler. Intent-coloured
+  // group buttons keep the tint ladder above.
+  .v-btn-group:not(:where(.v-btn-toggle)) > .v-btn:is(.text-neutral) {
+    --cs-btn-tint: 0;
+
+    &:where(:hover, :focus-visible):not(:where(.v-btn--disabled, [disabled], [aria-disabled='true'])) {
+      background-color: var(--cs-fill-hover);
+    }
+
+    &:where(:active):not(:where(.v-btn--disabled, [disabled], [aria-disabled='true'])) {
+      background-color: rgb(var(--v-group-pressed));
+    }
+
+    &:where(.v-btn--active, [aria-pressed='true']):not(:where(.v-btn--disabled, [disabled], [aria-disabled='true'])) {
+      background-color: rgb(var(--v-group-selected));
+    }
+  }
+
   // Low emphasis: a quiet tone line and the control shadow, which drops
   // while pressed.
   .v-btn--variant-outlined {

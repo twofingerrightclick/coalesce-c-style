@@ -67,6 +67,28 @@ describe("cStyleThemes defaults", () => {
     expect(light.colors).toMatchObject({ warning: amber[400], "on-warning": amber[950] });
   });
 
+  test("nav states follow Canon's neutral ladder in both themes", () => {
+    expect(light.variables).toMatchObject({ "nav-current": zinc[100], "nav-hover-opacity": 1, "nav-icon": zinc[500] });
+    expect(dark.variables).toMatchObject({ "nav-current": zinc[700], "nav-hover-opacity": 0.5, "nav-icon": "#ffffff" });
+    const branded = cStyleThemes({ neutral: "slate" });
+    expect(branded.light.variables).toMatchObject({ "fill-hover": palettes.slate[50], "nav-current": palettes.slate[100], "nav-icon": palettes.slate[500] });
+    expect(branded.dark.variables).toMatchObject({ "fill-hover": palettes.slate[800], "nav-current": palettes.slate[700], "nav-icon": "#ffffff" });
+  });
+
+  test("button-group neutral press follows the theme's neutral ladder", () => {
+    expect(light.variables!["group-pressed"]).toBe(zinc[100]);
+    expect(dark.variables!["group-pressed"]).toBe(zinc[700]);
+    expect(light.variables!["group-selected"]).toBe(zinc[200]);
+    expect(dark.variables!["group-selected"]).toBe(zinc[600]);
+    const branded = cStyleThemes({ neutral: "slate" });
+    expect(branded.light.variables!["fill-hover"]).toBe(palettes.slate[50]);
+    expect(branded.dark.variables!["fill-hover"]).toBe(palettes.slate[800]);
+    expect(branded.light.variables!["group-pressed"]).toBe(palettes.slate[100]);
+    expect(branded.dark.variables!["group-pressed"]).toBe(palettes.slate[700]);
+    expect(branded.light.variables!["group-selected"]).toBe(palettes.slate[200]);
+    expect(branded.dark.variables!["group-selected"]).toBe(palettes.slate[600]);
+  });
+
   // Canon's success solid (white on green-600) is 3.3:1; it is kept for parity.
   test.each(["primary", "error", "info", "warning", "neutral"])("on-%s contrast ≥ 4.5", (role) => {
     for (const theme of [light, dark]) {
@@ -88,4 +110,12 @@ test("applyCStyleColors rewrites registered themes in place", () => {
   applyCStyleColors({ themes } as unknown as ThemeInstance, { primary: "violet" });
   expect(themes.value.light.colors!.primary).toBe(palettes.violet[600]);
   expect(themes.value.dark.variables!["primary-text"]).toBe(palettes.violet[300]);
+});
+
+test("nav roles follow a custom-named dark theme when its neutral palette changes", () => {
+  const base = cStyleThemes();
+  const themes = ref({ daylight: base.light, midnight: base.dark });
+  applyCStyleColors({ themes } as unknown as ThemeInstance, { neutral: "slate" });
+  expect(themes.value.daylight.variables).toMatchObject({ "nav-current": palettes.slate[100], "nav-icon": palettes.slate[500] });
+  expect(themes.value.midnight.variables).toMatchObject({ "nav-current": palettes.slate[700], "nav-icon": "#ffffff", "nav-hover-opacity": 0.5 });
 });

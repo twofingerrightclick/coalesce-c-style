@@ -30,7 +30,9 @@ export async function adminEditorURL(page: Page, type: string): Promise<string> 
 
   await page.goto(`/admin/${type}/edit`);
   await page.locator(".c-admin-editor input").first().fill("Baseline row");
-  await page.locator(".c-admin-editor--toolbar button", { hasText: "Save" }).click();
+  // The starter editor autosaves once its required category is populated.
+  await page.getByRole("combobox", { name: "Category", exact: true }).press("ArrowDown");
+  await page.getByRole("option").first().click();
   await page.waitForURL(new RegExp(`/admin/${type}/edit/.+`));
   return new URL(page.url()).pathname;
 }

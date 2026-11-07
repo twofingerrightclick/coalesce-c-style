@@ -9,6 +9,7 @@
 
 @use 'typography' as type;
 @use 'sizes';
+@use 'sass:map';
 
 $elevations: (
   0: var(--v-elevation-0),
@@ -24,6 +25,9 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
 
 @forward 'vuetify/settings' with (
   // ── Global ───────────────────────────────────────────────────────────────
+  // Theme roles supply colors. Do not emit the separate literal Material
+  // palette (text-red, bg-blue-lighten-2, text-grey, text-white, etc.).
+  $color-pack: false !default,
   // Canon radius ladder (canon §2.3, decision 8). The root radius is also the
   // canary in verify/app/plumbing.spec.ts: if `.v-btn` isn't 8px, Sass loaded
   // a second copy of `vuetify/settings` and none of this file applies.
@@ -136,6 +140,9 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
   $list-item-two-line-min-height: 56px !default,
   $list-item-two-line-padding: 8px 16px !default,
   $list-item-padding: 4px 16px !default,
+  // Icons inherit the row's foreground at full strength. Muted nav icons
+  // use the semantic nav-icon role in _nav.scss, not emphasis opacity.
+  $list-item-icon-opacity: 1 !default,
   $list-item-icon-margin-start: 10px !default,
   $list-item-icon-margin-end: 10px !default,
   $list-item-avatar-margin-start: 12px !default,
@@ -263,17 +270,17 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
   $kbd-border-width: 0 !default,
 
   // ── Surfaces and overlays (decisions 8, 10) ──────────────────────────────
-  $card-border-radius: 12px !default,
+  $card-border-radius: var(--cs-surface-radius) !default,
   $card-elevation: 2 !default,
   $card-title-font-size: 1rem !default,
   $card-title-font-weight: 600 !default,
   $card-title-line-height: 1.5rem !default,
   // Canon card: 20px padding, 16px from the header to the body, a muted
   // 14/20 description 4px under the title (canon §4 A Card).
-  $card-item-padding: 20px 20px 16px !default,
-  $card-title-padding: 20px 20px 16px !default,
-  $card-text-padding: 20px !default,
-  $card-actions-padding: 0 20px 20px !default,
+  $card-item-padding: var(--cs-card-pad) var(--cs-card-pad) var(--cs-gap-md) !default,
+  $card-title-padding: var(--cs-card-pad) var(--cs-card-pad) var(--cs-gap-md) !default,
+  $card-text-padding: var(--cs-card-pad) !default,
+  $card-actions-padding: 0 var(--cs-card-pad) var(--cs-card-pad) !default,
   $card-actions-min-height: 0 !default,
   $card-actions-gap: 8px !default,
   $card-subtitle-font-size: 0.875rem !default,
@@ -282,7 +289,7 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
   $expansion-panel-border-radius: 12px !default,
   $expansion-panel-title-min-height: 40px !default,
   $expansion-panel-active-title-min-height: 40px !default,
-  $expansion-panel-title-padding: 10px 16px !default,
+  $expansion-panel-title-padding: var(--cs-accordion-pad) var(--cs-gap-md) !default,
   $expansion-panel-title-font-size: 0.875rem !default,
   $menu-content-border-radius: 12px !default,
   $menu-elevation: 3 !default,
@@ -305,6 +312,10 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
   $snackbar-background: rgb(var(--v-theme-surface-bright)) !default,
   $snackbar-fallback-background: rgb(var(--v-theme-surface-bright)) !default,
   $snackbar-color: rgb(var(--v-theme-on-surface-bright)) !default,
+  // A short toast message is its title; a separate description is regular
+  // weight (_surface.scss), matching Canon's toast title/description roles.
+  $snackbar-font-weight: type.weight('label-large') !default,
+  $snackbar-title-font-weight: type.weight('label-large') !default,
   $snackbar-content-padding: 12px !default,
   $snackbar-wrapper-min-height: 0 !default,
   $skeleton-loader-text-background: rgb(var(--v-fill)) !default,
@@ -317,10 +328,28 @@ $rule-faint-color: rgba(var(--v-border-color), var(--v-rule-faint-opacity));
   $toolbar-border-thin-width: 0 0 var(--cs-hairline) !default,
   $navigation-drawer-border-color: $rule-faint-color !default,
   $navigation-drawer-border-thin-width: var(--cs-hairline) !default,
-  // Canon nav list: items 10px in and 10px apart, regular weight (500 when
-  // current, _nav.scss).
+  // Secondary shell chrome stays flat over the same faint rule as the app
+  // bar and sidebar; its labels are supporting information.
+  $bottom-navigation-elevation: 0 !default,
+  $bottom-navigation-border-color: $rule-faint-color !default,
+  $bottom-navigation-border-thin-width: var(--cs-hairline) 0 0 !default,
+  $bottom-navigation-content-font-size: map.get(type.$typography, 'label-medium', 'size') !default,
+  $bottom-navigation-icon-font-size: var(--cs-icon) !default,
+  // Vuetify normally computes this with Sass math.div(), which cannot
+  // divide an inherited custom property. Keep shift mode tied to icon size.
+  $bottom-navigation-shift-icon-top: calc(var(--cs-icon) / 3) !default,
+  $system-bar-color: rgb(var(--v-muted)) !default,
+  $system-bar-font-size: map.get(type.$typography, 'label-medium', 'size') !default,
+  $system-bar-letter-spacing: 0 !default,
+  $system-bar-padding-x: calc(var(--cs-shell-inset) + var(--cs-gap-sm) / 2) !default,
+  $footer-border-color: $rule-faint-color !default,
+  $footer-border-thin-width: var(--cs-hairline) 0 0 !default,
+  $footer-color: rgb(var(--v-muted)) !default,
+  $footer-padding: var(--cs-gap-sm) calc(var(--cs-shell-inset) + var(--cs-gap-sm) / 2) !default,
+  // Nav list: items 10px in, a small gap apart, regular weight (500 when
+  // current, _nav.scss). Share the spacing token with nav dividers.
   $list-nav-padding: 10px !default,
-  $list-item-nav-margin-top: 10px !default,
+  $list-item-nav-margin-top: var(--cs-gap-sm) !default,
   $list-item-nav-title-font-weight: 400 !default,
   $toolbar-background: rgb(var(--v-theme-surface)) !default,
   $toolbar-color: rgb(var(--v-theme-on-surface)) !default,

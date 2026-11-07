@@ -397,7 +397,7 @@
       </v-card>
     </div>
 
-    <v-navigation-drawer v-model="drawer" location="end" temporary width="360">
+    <v-navigation-drawer v-model="drawer" location="end" temporary width="360" rounded="xxl" class="overflow-hidden">
       <v-toolbar title="Widget details">
         <v-btn icon="$close" @click="drawer = false" />
       </v-toolbar>

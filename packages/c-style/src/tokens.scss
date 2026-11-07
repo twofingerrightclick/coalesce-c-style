@@ -35,7 +35,7 @@ $-intent-roles: solid, on-solid, solid-hover, solid-active, text, tint-1, tint-2
 /// Every public token name, without the `--cs-` prefix. The same list is
 /// `cStyleTokens` in src/tokens.ts.
 $tokens: control-height, control-pad, control-font, control-lh, control-gap, control-tracking, icon, radius,
-  surface-radius, gap-sm, gap-md, gap-lg, gap-xl, hairline, canvas, surface, surface-bright, on-surface, muted, quiet,
+  surface-radius, gap-sm, gap-md, gap-lg, gap-xl, shell-inset, card-pad, accordion-pad, toolbar-pad, toolbar-gap, hairline, canvas, surface, surface-bright, on-surface, muted, quiet,
   fill-hover, fill, fill-strong, frame, frame-hover, rule, rule-faint, link, disabled-bg, disabled-fg, scrim, focus,
   focus-ring, shadow-edge, shadow-control, shadow-raised, shadow-floating, shadow-overlay, font-body, font-heading,
   font-mono, font-tracking, duration-state, duration-press, duration-open, duration-close, press-scale;

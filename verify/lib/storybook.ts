@@ -45,6 +45,10 @@ export async function openStory(page: Page, id: string, globals: StoryGlobals = 
   page.on("response", (r) => {
     if (r.status() >= 400) problems.errors.push(`HTTP ${r.status()} ${r.url()}`);
   });
+  page.on("requestfailed", (r) => {
+    const failure = r.failure()?.errorText;
+    if (failure && failure !== "net::ERR_ABORTED") problems.errors.push(`${failure} ${r.url()}`);
+  });
 
   const g = Object.entries(globals)
     .map(([k, v]) => `${k}:${v}`)

@@ -71,8 +71,8 @@ describe("token list", () => {
   });
 
   // The size of the stability promise: changing it is a contract change.
-  test("the contract has 125 tokens", () => {
-    expect(cStyleTokens).toHaveLength(125);
+  test("the contract has 130 tokens", () => {
+    expect(cStyleTokens).toHaveLength(130);
   });
 
   test("names are unique and prefix-free", () => {
@@ -109,7 +109,7 @@ describe("coalesce-c-style/styles declares every token", () => {
     expect(block).not.toBeNull();
     const scoped = declared(block![1]);
     for (const name of cStyleTokens) {
-      if (/^(control-(height|pad|font|lh|gap)$|gap-|icon$|radius$|surface-radius$|hairline$|duration-|press-scale$)/.test(name)) continue;
+      if (/^(control-(height|pad|font|lh|gap)$|gap-|shell-inset$|card-pad$|accordion-pad$|toolbar-(pad|gap)$|icon$|radius$|surface-radius$|hairline$|duration-|press-scale$)/.test(name)) continue;
       expect(scoped.has(name), name).toBe(true);
     }
   });

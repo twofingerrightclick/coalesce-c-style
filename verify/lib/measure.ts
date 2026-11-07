@@ -96,6 +96,7 @@ async function read(side: Side, props: readonly string[]) {
 
 /** The story's Canon iframes, after each has loaded Canon's stylesheet. */
 async function canonFrames(page: Page) {
+  await page.locator("iframe.canon-frame").first().waitFor();
   const handles = await page.locator("iframe.canon-frame").elementHandles();
   const frames = await Promise.all(handles.map((h) => h.contentFrame()));
   for (const f of frames) {

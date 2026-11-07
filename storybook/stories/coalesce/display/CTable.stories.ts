@@ -26,3 +26,26 @@ export const WideWithFixedActions = tpl(
 );
 
 export const Empty = tpl(`<c-table :list="list" :props="props" />`, () => ({ list: people({ search: "zzz-no-match" }), props }));
+
+export const CardComposition = tpl(
+  `<div class="d-flex flex-column ga-4">
+    <v-card data-composition="direct">
+      <v-toolbar><v-toolbar-title>Direct table</v-toolbar-title></v-toolbar>
+      <c-table :list="list" :props="columns" />
+      <v-divider /><c-list-pagination :list="list" />
+    </v-card>
+    <v-card data-composition="loader">
+      <v-toolbar><v-toolbar-title>Table with loader</v-toolbar-title></v-toolbar>
+      <c-loader-status :loaders="list.$load"><c-table :list="list" :props="columns" /></c-loader-status>
+      <v-divider /><c-list-pagination :list="list" />
+    </v-card>
+    <v-card data-composition="native">
+      <v-toolbar><v-toolbar-title>Vuetify table</v-toolbar-title></v-toolbar>
+      <v-table><thead><tr><th>Name</th><th>Email</th></tr></thead><tbody><tr><td>Ada Lovelace</td><td>ada@example.com</td></tr></tbody></v-table>
+      <v-divider /><c-list-pagination :list="list" />
+    </v-card>
+    <v-card data-composition="padded"><v-card-text><c-table :list="list" :props="columns" /></v-card-text></v-card>
+    <div data-composition="standalone"><c-table :list="list" :props="columns" /></div>
+  </div>`,
+  () => ({ list: people({ pageSize: 2 }), columns: ["name", "email"] }),
+);

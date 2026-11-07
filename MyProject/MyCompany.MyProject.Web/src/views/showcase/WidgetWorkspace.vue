@@ -29,7 +29,6 @@
               placeholder="Search widgets"
               prepend-inner-icon="$search"
               clearable
-              class="mx-3"
               style="max-width: 320px"
             />
             <c-list-filters :list="list" />
@@ -63,7 +62,7 @@
           </c-loader-status>
 
           <v-divider />
-          <c-list-pagination :list="list" class="pa-2" />
+          <c-list-pagination :list="list" />
         </v-card>
       </v-col>
 

@@ -62,8 +62,14 @@
   color: rgb(var(--v-muted));
 }
 
+// `Page` is a bare text node (an anonymous flex item), so child margins
+// give it only half a gap. Flex gap spaces labels and controls uniformly.
+:is(.c-list-page, .c-list-page-size) {
+  gap: var(--cs-control-gap);
+}
+
 :is(.c-list-page, .c-list-page-size) > * {
-  margin: 0 4px !important;
+  margin: 0 !important;
 }
 
 // Prev/next have no colour prop, so they took the global accent; Canon
@@ -88,10 +94,18 @@
   }
 }
 
-// The active-filter count sits on the icon's corner, past the button's top
-// edge, which clips it.
+// Canon toolbar menu buttons use low emphasis. Coalesce hard-codes `text`
+// on the activator, so give it the outlined frame here. Keep the floating
+// active-filter count visible past the rounded control's edge.
 .c-list-filters {
   overflow: visible;
+  border-radius: var(--cs-radius);
+  border-color: var(--cs-neutral-border-low);
+  box-shadow: var(--cs-shadow-control);
+
+  &:active:not(:focus-visible) {
+    box-shadow: none;
+  }
 }
 
 // The filter menu's Reset row: Coalesce nudges its icon with inline margins

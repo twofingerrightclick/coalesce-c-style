@@ -3,5 +3,9 @@
 @layer vuetify-overrides {
   :root {
     font-feature-settings: var(--v-font-features);
+    // Match Canon's browser-default rendering. Vuetify forces grayscale
+    // smoothing, which makes text look thinner on macOS at the same weight.
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
   }
 }

@@ -27,6 +27,20 @@ export const Variants = tpl(
   <sb-row label="states" stack><v-card title="Link" link href="#" text="Hoverable" /><v-card title="Disabled" disabled text="Disabled card" /><v-card title="Hover elevation" hover text="Raises on hover" /></sb-row>`,
 );
 
+export const ToolbarHeader = tpl(
+  `<div class="d-flex flex-column ga-4" style="max-width: 640px">
+    <v-card>
+      <v-toolbar><v-toolbar-title>Project settings</v-toolbar-title><v-btn icon="$edit" aria-label="Edit settings" /></v-toolbar>
+      <v-card-text>The toolbar title, body, and footer share the card inset.</v-card-text>
+      <v-card-actions><v-spacer /><v-btn>Save changes</v-btn></v-card-actions>
+    </v-card>
+    <v-card style="--cs-card-pad: 28px">
+      <v-toolbar><v-toolbar-title>Custom card inset</v-toolbar-title></v-toolbar>
+      <v-card-text>A single token adjusts every section of this card.</v-card-text>
+    </v-card>
+  </div>`,
+);
+
 export const Elevation = tpl(
   `<sb-row label="elevation" stack><v-card v-for="e in [0,1,2,3,4,5]" :key="e" :elevation="e" :title="'elevation ' + e" text="Card body" /></sb-row>`,
 );

@@ -101,6 +101,19 @@ function neutralVariables(p: Palette, mode: Mode): Variables {
     "fill-hover": at(n, 50, 800),
     fill: at(n, 100, 800),
     "fill-strong": at(n, 200, 700),
+    // Nav List has a stronger dark current row and a half-opacity dark hover.
+    "nav-current": at(n, 100, 700),
+    "nav-hover-opacity": light ? 1 : 0.5,
+    "nav-icon": light ? n[500] : white,
+    // Canon Button Group's press and held selection steps differ from shared fills.
+    "group-pressed": at(n, 100, 700),
+    "group-selected": at(n, 200, 600),
+    // Canon's unseeded tags derive their fill and edge from inherited ink.
+    "tag-solid-opacity": light ? 0.7 : 0.43,
+    "tag-tint-opacity": light ? 0.048 : 0.224,
+    "tag-text-opacity": light ? 0.94 : 1,
+    "tag-line-opacity": light ? 0.186 : 0.303,
+    "tag-solid-text": light ? n[100] : white,
     // The chosen card on a segmented track (canon §4 A Segmented Control).
     segment: light ? white : n[700],
     "disabled-bg": at(n, 50, 800),

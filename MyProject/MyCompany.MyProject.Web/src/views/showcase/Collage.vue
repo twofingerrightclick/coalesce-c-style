@@ -41,7 +41,7 @@
 
     <!-- Heavy FA solid icons -->
     <div class="icons">
-      <v-icon v-for="i in icons" :key="i" :icon="csIcon(i)" size="40" />
+      <v-icon v-for="(icon, index) in icons" :key="index" :icon="csIcon(icon)" size="40" />
     </div>
 
     <!-- Buttons: elevation, ripple -->

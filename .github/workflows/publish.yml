@@ -1,11 +1,12 @@
 name: Publish
 
-# Push a tag that matches packages/c-style/package.json, e.g. v6.5.1-cs.1.
+# Run manually against a tag that matches packages/c-style/package.json, e.g. v6.5.1-cs.1.
 # npm only accepts staged publishes from tokens: this uploads the build, then a
 # maintainer approves it (with 2FA) at npmjs.com or with `npm stage approve`.
 on:
-  push:
-    tags: ["v*"]
+  workflow_dispatch:
+  # push:
+  #   tags: ["v*"]
 
 permissions:
   contents: read

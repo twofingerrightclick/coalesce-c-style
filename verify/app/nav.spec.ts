@@ -33,7 +33,7 @@ test.describe("M13 navigation and shell", () => {
     });
   }
 
-  test("nav items: H 40, radius 8, icon 10 in, 10 apart; current = zinc-100 fill, 500, ink icon; rest icon muted", async ({ page }) => {
+  test("nav items: H 40, radius 8, icon 10 in, small gap apart; current = zinc-100 fill, 500, ink icon; rest icon muted", async ({ page }) => {
     await gotoScheme(page, "/", "light");
     const items = page.locator(".v-navigation-drawer .v-list-item");
     const current = items.first();
@@ -41,7 +41,16 @@ test.describe("M13 navigation and shell", () => {
     const a = (await current.boundingBox())!;
     const b = (await next.boundingBox())!;
     expect(a.height).toBe(40);
-    expect(b.y - (a.y + a.height)).toBe(10);
+    const gap = await current.evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue("--cs-gap-sm")));
+    expect(b.y - (a.y + a.height)).toBe(gap);
+    const headingGaps = await page.locator(".v-navigation-drawer .v-list-subheader").first().evaluate((el) => {
+      const heading = el.getBoundingClientRect();
+      return {
+        above: heading.top - el.previousElementSibling!.getBoundingClientRect().bottom,
+        below: el.nextElementSibling!.getBoundingClientRect().top - heading.bottom,
+      };
+    });
+    expect(headingGaps).toEqual({ above: 2 * gap, below: 0 });
     await expect(current).toHaveCSS("border-top-left-radius", "8px");
     const iconLeft = await current.evaluate((el) => el.querySelector(".v-icon")!.getBoundingClientRect().left - el.getBoundingClientRect().left);
     expect(iconLeft).toBeCloseTo(10, 0);
@@ -56,6 +65,24 @@ test.describe("M13 navigation and shell", () => {
     expect([c.overlay, c.weight]).toEqual(["0", "500"]);
     const restWeight = await next.evaluate((el) => getComputedStyle(el.querySelector(".v-list-item-title")!).fontWeight);
     expect(restWeight).toBe("400");
+  });
+
+  test("nav divider: the small spacing token separates both sides", async ({ page }) => {
+    await gotoScheme(page, "/", "light");
+    const nav = page.locator(".v-navigation-drawer .v-list--nav");
+    const measure = () => nav.evaluate((el) => {
+      const divider = el.querySelector(".v-divider")!;
+      const above = divider.previousElementSibling!.getBoundingClientRect();
+      const line = divider.getBoundingClientRect();
+      const below = divider.nextElementSibling!.getBoundingClientRect();
+      return { above: line.top - above.bottom, below: below.top - line.bottom };
+    });
+    const gap = await nav.evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue("--cs-gap-sm")));
+    expect(await measure()).toEqual({ above: gap, below: gap });
+
+    // Both sides must follow an app's token override, not a fixed length.
+    await nav.evaluate((el) => (el as HTMLElement).style.setProperty("--cs-gap-sm", "12px"));
+    expect(await measure()).toEqual({ above: 12, below: 12 });
   });
 
   test("tabs: a 40px zinc-100 track, radius 10, 34px tabs radius 7, 2 apart; selected = bright card, ink; rest muted", async ({ page }) => {

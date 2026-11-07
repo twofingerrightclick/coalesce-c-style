@@ -1,12 +1,43 @@
 // Surfaces and feedback (canon §4 A Card, Accordion; §4 E Alert). Radius,
 // padding, type, elevation and the alert bar come from settings.scss.
+@use '../typography' as type;
+
 @layer vuetify-overrides {
+  // Canon full-width table cards: the card owns the frame and outer inset;
+  // table rules span the card while the outer cell contents align with its
+  // header and footer. A table inside v-card-text is already inset.
+  .v-card:where(:has(> .v-table, > .c-table, > .c-loader-status > .c-loader-status--content > :is(.c-table, .v-table))) {
+    > .v-toolbar:where(:not(.v-app-bar, .c-admin-table-toolbar, .c-admin-editor--toolbar, .c-admin-methods--toolbar)) > .v-toolbar__content {
+      min-block-size: calc(var(--cs-control-height) + 2 * var(--cs-card-pad));
+      padding-block: var(--cs-card-pad);
+    }
+
+    > .v-table,
+    > :where(.c-table) .v-table,
+    > :where(.c-loader-status) > :where(.c-loader-status--content) > :where(.c-table) .v-table,
+    > :where(.c-loader-status) > :where(.c-loader-status--content) > .v-table {
+      > :where(.v-table__wrapper) > table > :where(thead, tbody, tfoot) > tr {
+        > :first-child {
+          padding-inline-start: var(--cs-card-pad);
+        }
+
+        > :last-child {
+          padding-inline-end: var(--cs-card-pad);
+        }
+      }
+    }
+
+    > .c-list-pagination {
+      padding: var(--cs-card-pad);
+    }
+  }
+
   // `$card-actions-padding` drops the top padding because a preceding card
   // section already supplies the gap. Actions that open the card (a bare
   // action bar) need the card padding on top too. The loader slot may come
   // first.
   .v-card > :is(.v-card-actions:first-child, .v-card__loader + .v-card-actions) {
-    padding-top: 20px;
+    padding-top: var(--cs-card-pad);
   }
 
   // Alert and toast (canon §4 E): Vuetify's outlined variant paints border,
@@ -45,6 +76,12 @@
     box-shadow:
       -4px 0 0 0 rgba(var(--cs-tone-bar, 0, 0, 0, 0)),
       var(--v-elevation-3);
+  }
+
+  // Vuetify puts a title and its unwrapped description in the same content
+  // box. Only the title stays medium when both roles are present.
+  .v-snackbar__content:has(> .v-snackbar__title) {
+    font-weight: type.weight('body-medium');
   }
 
   // Canon banner: one row, centred (Vuetify drops the actions to the bottom

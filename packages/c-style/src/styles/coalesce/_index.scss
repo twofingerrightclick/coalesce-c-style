@@ -2,5 +2,7 @@
 // they must beat `coalesce-vue-vuetify3/styles.css`, which is unlayered too,
 // so `coalesce-c-style/styles` loads after it. Every selector starts with a `.c-` class.
 @use 'icons';
+@use 'colors';
 @use 'admin';
 @use 'list';
+@use 'pickers';

@@ -18,7 +18,7 @@ export const Img = tpl(
     <v-img :src="a" height="160" contain class="border" />
     <v-img :src="a" :aspect-ratio="1" width="160" rounded="lg" />
   </sb-row>
-  <sb-row label="gradient + content" stack><v-img :src="b" height="160" cover gradient="to bottom, rgba(0,0,0,0), rgba(0,0,0,.6)" class="align-end"><div class="pa-4 text-white">Caption over image</div></v-img></sb-row>`,
+  <sb-row label="gradient + content" stack><v-img :src="b" height="160" cover gradient="to bottom, rgba(0,0,0,0), rgba(0,0,0,.6)" class="align-end"><v-sheet theme="dark" color="transparent" class="pa-4 on-surface">Caption over image</v-sheet></v-img></sb-row>`,
   () => ({ a: img(220, "cover"), b: img(20) }),
 );
 
@@ -30,7 +30,7 @@ export const Carousel = tpl(
 );
 
 export const Parallax = tpl(
-  `<v-parallax :src="a" height="220" style="max-width: 640px"><div class="d-flex fill-height align-center justify-center text-h5 text-white">Parallax</div></v-parallax>`,
+  `<v-parallax :src="a" height="220" style="max-width: 640px"><v-sheet theme="dark" color="transparent" class="d-flex fill-height align-center justify-center text-h5 on-surface">Parallax</v-sheet></v-parallax>`,
   () => ({ a: img(160) }),
 );
 

@@ -1,0 +1,32 @@
+// Small semantic helpers, independent of Vuetify's literal Material palette.
+@layer vuetify-utilities {
+  @layer theme-foreground {
+    .text-muted {
+      color: var(--cs-muted);
+    }
+
+    // Fixed-contrast choices made internally by Vuetify, not public palette
+    // helpers. These must stay white/black regardless of the active theme.
+    .v-color-picker-swatches__color .v-icon.text-white,
+    .v-video-controls .v-media-progress-bar__background.text-white {
+      color: white;
+    }
+
+    .v-color-picker-swatches__color .v-icon.text-black {
+      color: black;
+    }
+  }
+
+  @layer theme-background {
+    // Vuetify uses this internally for drawer and file-upload lists. No fill
+    // is useful independently of a palette and must survive $color-pack:false.
+    .bg-transparent {
+      background-color: transparent;
+    }
+
+    .v-color-picker-preview .v-slider-track__fill.bg-white {
+      background-color: white;
+      color: black;
+    }
+  }
+}

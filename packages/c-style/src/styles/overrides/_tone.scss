@@ -42,8 +42,9 @@ $intents: (
     }
   }
 
-  // Canon's medium-emphasis recipe for every tonal component (avatar, card,
-  // alert, list item, tag; buttons step it per state in _btn.scss): the
+  // Canon's medium-emphasis recipe for tonal components (avatar, card,
+  // alert, list item, hued tag; neutral tags refine it in _data.scss and
+  // buttons step it per state in _btn.scss): the
   // tone's tint at tint-2, where Vuetify washes the label colour at .12.
   [class*='--variant-tonal'] > [class*='__underlay'] {
     background: rgb(var(--cs-tone-tint, var(--v-neutral-tint)));

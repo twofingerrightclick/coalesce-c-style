@@ -45,3 +45,12 @@ $typography: ();
 @each $name, $spec in $roles {
   $typography: map.set($typography, $name, role($spec...));
 }
+
+// Internal component overrides often need only the weight of a role, without
+// resetting their size, line-height, font family or tracking.
+@function weight($role) {
+  @if not map.has-key($typography, $role) {
+    @error 'Unknown typography role "#{$role}".';
+  }
+  @return map.get($typography, $role, 'weight');
+}
