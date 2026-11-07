@@ -46,10 +46,12 @@ test.describe("M10 surfaces and feedback", () => {
     expect(m.bodyBottom).toBeCloseTo(20, 0);
   });
 
-  test("expansion row: H 40, title 14/20/500", async ({ page }) => {
+  test("expansion row: H 44 with 12px block padding, title 14/20/500", async ({ page }) => {
     await open(page);
     const title = surface(page, "expansion").locator(".v-expansion-panel-title");
-    expect((await title.boundingBox())!.height).toBe(40);
+    expect((await title.boundingBox())!.height).toBe(44);
+    await expect(title).toHaveCSS("padding-top", "12px");
+    await expect(title).toHaveCSS("padding-bottom", "12px");
     await expect(title).toHaveCSS("font-size", "14px");
     await expect(title).toHaveCSS("line-height", "20px");
     await expect(title).toHaveCSS("font-weight", "500");

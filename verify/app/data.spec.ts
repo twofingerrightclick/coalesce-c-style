@@ -108,8 +108,9 @@ test.describe("M12 data display", () => {
       const u = getComputedStyle(el.querySelector(".v-chip__underlay")!);
       return { bg: u.backgroundColor, opacity: Number(u.opacity) };
     });
-    expect((await normalizeColors(page, { bg: under.bg })).bg).toBe("#a1a1aa");
-    expect(under.opacity).toBeCloseTo(0.15, 2);
+    // Canon's neutral tag uses the inherited ink at 4.8%, not the intent tint.
+    expect((await normalizeColors(page, { bg: under.bg })).bg).toBe("rgba(9, 9, 11, 0.94)");
+    expect(under.opacity).toBeCloseTo(0.048, 3);
     const success = page.locator('[data-data="chip-success"]');
     expect((await normalizeColors(page, await style(success, ["color"]))).color).toBe("#15803d");
   });

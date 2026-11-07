@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { normalizeColors } from "../lib/computed";
 import { gotoScheme } from "../lib/page";
+import { adminEditorURL } from "../lib/admin";
 
 // Fixes for the showcase pages' findings (docs/progress.md "Fixes: showcase
 // findings"), measured on /gallery, /dashboard, /workspace/39, /settings,
@@ -173,7 +174,8 @@ test.describe("showcase fixes", () => {
   });
 
   test("c-list-pagination: prev/next are 40 frameless squares level with the page field", async ({ page }) => {
-    await gotoScheme(page, "/workspace/39", "light");
+    const editorURL = await adminEditorURL(page, "Widget");
+    await gotoScheme(page, `/workspace/${editorURL.split("/").pop()}`, "light");
     const pager = page.locator(".c-list-page");
     const field = await box(pager.locator(".v-field"));
     for (const btn of await pager.locator("> .v-btn").all()) {
@@ -266,7 +268,8 @@ test.describe("showcase fixes", () => {
 
   test("datetime picker menu that doesn't fit below its field opens above, inside the viewport", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await gotoScheme(page, "/workspace/39", "light");
+    const editorURL = await adminEditorURL(page, "Widget");
+    await gotoScheme(page, `/workspace/${editorURL.split("/").pop()}`, "light");
     const field = await box(page.locator(".v-card .c-datetime-picker .v-field").first());
     await page.locator(".v-card .c-datetime-picker .v-field__append-inner .v-icon").first().click();
     const menu = page.locator(".c-datetime-picker__menu");

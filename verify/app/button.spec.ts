@@ -150,7 +150,7 @@ test.describe("M7 buttons", () => {
     await expect.poll(async () => (await buttonColors(b)).underlayOpacity).toBe(0.2);
   });
 
-  test("button group: outer radius only, 1px zinc-200 dividers, pressed fill ≈ zinc-100 (canon §4 A Button Group)", async ({ page }) => {
+  test("button group: outer radius only, 1px zinc-200 dividers, selected zinc-200 fill (canon §4 A Button Group)", async ({ page }) => {
     await open(page);
     const group = page.locator("[data-btn-group]");
     await expect(group).toHaveCSS("border-top-left-radius", "8px");
@@ -169,7 +169,8 @@ test.describe("M7 buttons", () => {
     ]);
     for (const r of radii) expect(r[3]).toBe("none");
     const pressed = await buttonColors(buttons.nth(1));
-    expect([pressed.fg, pressed.border, pressed.underlay, pressed.underlayOpacity]).toEqual([zinc[900], zinc[200], zinc[400], 0.15]);
+    expect([pressed.fg, pressed.border, pressed.underlayOpacity]).toEqual([zinc[900], zinc[200], 0]);
+    await expect(buttons.nth(1)).toHaveCSS("background-color", "rgb(228, 228, 231)");
   });
 
   test("card actions are medium emphasis at full padding (plan §8.1 R3)", async ({ page }) => {
