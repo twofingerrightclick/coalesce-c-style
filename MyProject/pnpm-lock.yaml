@@ -72,7 +72,7 @@ importers:
       '@lucide/vue':
         specifier: ^1.68.0
         version: 1.69.0(vue@3.5.44(typescript@6.0.3))
-      c-style:
+      coalesce-c-style:
         specifier: workspace:*
         version: link:../packages/c-style
       coalesce-vue:
@@ -145,7 +145,7 @@ importers:
       '@vueuse/core':
         specifier: ^14.3.0
         version: 14.4.0(vue@3.5.44(typescript@6.0.3))
-      c-style:
+      coalesce-c-style:
         specifier: workspace:*
         version: link:../../packages/c-style
       coalesce-vue:

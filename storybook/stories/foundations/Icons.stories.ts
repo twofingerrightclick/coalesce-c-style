@@ -1,6 +1,6 @@
 import type { Meta } from "@storybook/vue3-vite";
 import { Bell, Building2, CircleUser, House, Mail, Settings, Sparkles, Users } from "@lucide/vue";
-import { csAliases, csIcon } from "c-style";
+import { csAliases, csIcon } from "coalesce-c-style";
 import { tpl } from "../_helpers";
 
 export default {

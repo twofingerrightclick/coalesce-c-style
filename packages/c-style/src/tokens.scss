@@ -1,6 +1,6 @@
 // c-style's public SCSS module for an app's own components:
 //
-//   @use 'c-style/tokens' as cs;
+//   @use 'coalesce-c-style/tokens' as cs;
 //
 //   .tile {
 //     @include cs.surface(raised);
@@ -13,7 +13,7 @@
 //   .tile__row { @include cs.hairline(bottom); color: cs.token(muted); }
 //
 // Emits no CSS on its own, so any number of components may `@use` it. Every
-// value it writes is a `--cs-*` token (declared by `c-style/styles`, see
+// value it writes is a `--cs-*` token (declared by `coalesce-c-style/styles`, see
 // styles/_tokens.scss) or one of Canon's constant lengths, so theme, accent
 // and font changes at run time reach the component without a recompile.
 // Rules written here reference only the public tokens and the recipe's own
@@ -58,7 +58,7 @@ $tokens: control-height, control-pad, control-font, control-lh, control-gap, con
 ///   color: cs.token(muted);
 @function token($name) {
   @if not list.index($tokens, $name) {
-    @error "`#{$name}` is not a c-style token. See `$tokens` in c-style/tokens.";
+    @error "`#{$name}` is not a c-style token. See `$tokens` in coalesce-c-style/tokens.";
   }
   @return var(--cs-#{$name});
 }

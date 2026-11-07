@@ -9,7 +9,7 @@ const ramp = ["display", "headline", "title", "body", "label"].flatMap((role) =>
 );
 
 const fontNote = `
-  <sb-section title="Font" note="The Font toolbar switches the body and heading font with applyCStyleFont(useTheme(), family); the choice stays as you move between stories. Public Sans (default) ships with c-style and Inter is its opt-in import (c-style/fonts/inter); the Google Fonts and Fontshare presets load on demand and are for preview only.">
+  <sb-section title="Font" note="The Font toolbar switches the body and heading font with applyCStyleFont(useTheme(), family); the choice stays as you move between stories. Public Sans (default) ships with c-style and Inter is its opt-in import (coalesce-c-style/fonts/inter); the Google Fonts and Fontshare presets load on demand and are for preview only.">
     <sb-row label="presets"><span v-for="(p, key) in fontPresets" :key="key"><code>{{ key }}</code> {{ p.title }}</span></sb-row>
     <sb-row label="any font"><span>Add <code>&amp;globals=font:Space+Grotesk</code> to the URL for any Google Fonts family, or <code>&amp;globals=font:fontshare+cabinet-grotesk</code> for a Fontshare slug.</span></sb-row>
     <sb-row label="features"><span>Inter's alternates (ss01 cv11 cv04 cv03 cv02) apply only to Inter; other fonts get <code>font-feature-settings: normal</code>. Canon's negative tracking is scaled by <code>--v-font-tracking</code>: 1 for Inter, 0.5 for Public Sans, 0 for other fonts.</span></sb-row>

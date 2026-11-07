@@ -3,7 +3,7 @@ import type { ThemeInstance } from "vuetify";
 /**
  * A body/heading font for `cStyleBlueprint({ font })` or `applyCStyleFont`.
  * A string is a CSS family name (`"IBM Plex Sans"`). The app loads the font;
- * `c-style/styles` bundles Public Sans and `c-style/fonts/inter` Inter.
+ * `coalesce-c-style/styles` bundles Public Sans and `coalesce-c-style/fonts/inter` Inter.
  */
 export type CStyleFont =
   | string

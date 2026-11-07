@@ -27,13 +27,13 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
-      - run: pnpm install --frozen-lockfile --filter c-style...
+      - run: pnpm install --frozen-lockfile --filter coalesce-c-style...
       - name: Check the tag matches the package version
         run: test "v$(node -p "require('../packages/c-style/package.json').version")" = "${GITHUB_REF_NAME}"
-      - run: pnpm --filter c-style test
+      - run: pnpm --filter coalesce-c-style test
       # pnpm builds the tarball (it applies publishConfig and the dist build); npm stages it.
-      - run: pnpm --filter c-style pack --pack-destination "$RUNNER_TEMP/pack"
+      - run: pnpm --filter coalesce-c-style pack --pack-destination "$RUNNER_TEMP/pack"
       # A prerelease-style version needs an explicit tag, or npm refuses it.
-      - run: npm stage publish "$RUNNER_TEMP"/pack/c-style-*.tgz --tag latest --access public --provenance
+      - run: npm stage publish "$RUNNER_TEMP"/pack/coalesce-c-style-*.tgz --tag latest --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}

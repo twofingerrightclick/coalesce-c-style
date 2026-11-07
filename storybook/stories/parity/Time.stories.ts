@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/vue3-vite";
-import { CsTimeField, CsTimeInput, CsTimeRangeField } from "c-style";
+import { CsTimeField, CsTimeInput, CsTimeRangeField } from "coalesce-c-style";
 import { parity } from "./_parity";
 
 export default { title: "Parity/Time" } satisfies Meta;

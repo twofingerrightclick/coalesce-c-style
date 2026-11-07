@@ -1,5 +1,5 @@
 {
-  "name": "c-style",
+  "name": "coalesce-c-style",
   "version": "6.5.1-cs.1",
   "description": "Canon look for Vuetify 4 and Coalesce, through Vuetify's own SASS, defaults and theme channels.",
   "repository": {

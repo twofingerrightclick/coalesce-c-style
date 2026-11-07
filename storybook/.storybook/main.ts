@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import type { StorybookConfig } from "@storybook/vue3-vite";
 import vue from "@vitejs/plugin-vue";
 import { CoalesceVuetifyResolver } from "coalesce-vue-vuetify3/build";
-import { cStyle, layerOrderStyle } from "c-style/vite";
+import { cStyle, layerOrderStyle } from "coalesce-c-style/vite";
 import components from "unplugin-vue-components/vite";
 import { mergeConfig } from "vite";
 import { transformAssetUrls } from "vite-plugin-vuetify";
@@ -15,7 +15,7 @@ import { transformAssetUrls } from "vite-plugin-vuetify";
 // rendering stock Vuetify.
 const vuetifyHere = realpathSync(fileURLToPath(new URL("../node_modules/vuetify", import.meta.url)));
 const vuetifyCStyle = realpathSync(
-  fileURLToPath(new URL("../node_modules/c-style/node_modules/vuetify", import.meta.url)),
+  fileURLToPath(new URL("../node_modules/coalesce-c-style/node_modules/vuetify", import.meta.url)),
 );
 if (vuetifyHere != vuetifyCStyle) {
   throw new Error(

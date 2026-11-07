@@ -124,7 +124,7 @@ import {
   User,
   Users,
   csIcon,
-} from "c-style/icons";
+} from "coalesce-c-style/icons";
 
 const tab = ref("a");
 const tab2 = ref("b");

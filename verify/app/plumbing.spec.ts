@@ -54,7 +54,7 @@ test("first <style> on the page declares Vuetify's layer order", async ({ page }
   expect(first.replace(/\s+/g, "")).toContain("@layervuetify-core{@layerreset,base;}");
 });
 
-// c-style/settings sets $border-radius-root 8px (Vuetify: 4px). If Sass loads a
+// coalesce-c-style/settings sets $border-radius-root 8px (Vuetify: 4px). If Sass loads a
 // second copy of vuetify/settings, none of c-style's settings apply and this fails.
 test("c-style SASS settings reach Vuetify's component CSS", async ({ page }) => {
   const [type] = await discoverAdminTypes(page);

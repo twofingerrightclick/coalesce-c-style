@@ -4,7 +4,7 @@ import { normalizeColors } from "../lib/computed";
 import { gotoScheme, shadowLayers, type Scheme } from "../lib/page";
 
 // The public styling contract on an app component: the demo's
-// OptionTiles.vue (styled with `c-style/tokens` and `--cs-*` only) follows
+// OptionTiles.vue (styled with `coalesce-c-style/tokens` and `--cs-*` only) follows
 // the theme, the accent, the font, and Canon's numbers for its states.
 
 const blue = { 200: "191, 219, 254", 300: "147, 197, 253", 400: "96, 165, 250", 500: "59, 130, 246", 700: "29, 78, 216" };

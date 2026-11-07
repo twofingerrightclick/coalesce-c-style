@@ -17,7 +17,7 @@
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@microsoft/applicationinsights-web": "^3.4.1",
     "@vueuse/core": "^14.3.0",
-    "c-style": "workspace:*",
+    "coalesce-c-style": "workspace:*",
     "coalesce-vue": "6.5.1",
     "coalesce-vue-vuetify3": "6.5.1",
     "date-fns": "^4.0.0",

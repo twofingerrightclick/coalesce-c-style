@@ -15,7 +15,7 @@ function shadows(mode: Mode) {
 }
 
 /**
- * `--v-elevation-0…5`, which c-style/settings plugs into `$shadow-key`
+ * `--v-elevation-0…5`, which coalesce-c-style/settings plugs into `$shadow-key`
  * (decision 10). Every floating level carries Canon's edge hairline.
  */
 export function elevationVariables(mode: Mode): Record<string, string> {

@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import { createVuetify } from "vuetify";
 import { createCoalesceVuetify } from "coalesce-vue-vuetify3";
-import { cStyleBlueprint } from "c-style";
+import { cStyleBlueprint } from "coalesce-c-style";
 import { AxiosClient as CoalesceAxiosClient, isAxiosError } from "coalesce-vue";
 
 import App from "./App.vue";
@@ -15,7 +15,7 @@ import {
 import "@fortawesome/fontawesome-free/css/all.css";
 import "coalesce-vue-vuetify3/styles.css";
 import "vuetify/styles";
-import "c-style/styles";
+import "coalesce-c-style/styles";
 import "@/styles/site.scss";
 
 import $metadata from "@/metadata.g";

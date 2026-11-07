@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { expect, waitFor } from "storybook/test";
 import { ref } from "vue";
-import { CsTimeField, CsTimeInput, CsTimeRangeField } from "c-style";
+import { CsTimeField, CsTimeInput, CsTimeRangeField } from "coalesce-c-style";
 
 // c-style's own Canon Time components (docs/research/canon-time.md). Every
 // variant of Canon's one `.canon-time` box, light and dark through the

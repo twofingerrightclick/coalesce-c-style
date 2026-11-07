@@ -5,7 +5,7 @@ import { describe, expect, test } from "vitest";
 import { cStyleIntents, cStyleThemes, cStyleTokens, csVar } from "../src";
 
 // The public styling contract: the `--cs-*` tokens (src/styles/_tokens.scss,
-// src/tokens.ts) and the `c-style/tokens` SCSS module (src/tokens.scss).
+// src/tokens.ts) and the `coalesce-c-style/tokens` SCSS module (src/tokens.scss).
 
 const pkg = fileURLToPath(new URL("../", import.meta.url));
 const stylesCss = compile(`${pkg}src/styles/index.scss`).css;
@@ -86,7 +86,7 @@ describe("token list", () => {
   });
 });
 
-describe("c-style/styles declares every token", () => {
+describe("coalesce-c-style/styles declares every token", () => {
   const tokens = declared(stylesCss);
 
   test("every public token has a declaration", () => {
@@ -147,7 +147,7 @@ describe("c-style/styles declares every token", () => {
   });
 });
 
-describe("c-style/tokens module", () => {
+describe("coalesce-c-style/tokens module", () => {
   test("@use emits no CSS", () => {
     expect(consumer("").trim()).toBe("");
   });

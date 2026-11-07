@@ -2,7 +2,7 @@
 // copied into every Vuetify component stylesheet.
 //
 // Values are `!default` so an app can override them:
-//   @use 'c-style/settings' with ($button-height: 36px);
+//   @use 'coalesce-c-style/settings' with ($button-height: 36px);
 //
 // c-style's own rules read Canon's md lengths from `--cs-*` tokens
 // (_tokens.scss); this file holds the values Vuetify does SASS math on.

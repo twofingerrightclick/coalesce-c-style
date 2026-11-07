@@ -8,7 +8,7 @@
 // override of a size or motion token wins whatever the import order.
 //
 // Sizes are Canon's md values (canon §2.3), constant in both themes; there is
-// no inherited size context, so sm / lg come from the `c-style/tokens`
+// no inherited size context, so sm / lg come from the `coalesce-c-style/tokens`
 // mixins or Vuetify's named sizes. Colours, shadows and fonts alias the theme
 // variables Vuetify emits on `:root` and `.v-theme--*`, so they are declared
 // on the same elements and follow the theme, the accent

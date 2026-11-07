@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-// An app component styled with c-style's public API only (`c-style/tokens`
+// An app component styled with c-style's public API only (`coalesce-c-style/tokens`
 // and the `--cs-*` tokens): a radio group of tiles on a raised surface.
 // It is the worked example the Storybook (c-style/Option tiles) and
 // verify/app/tokens.spec.ts measure.
@@ -133,7 +133,7 @@ function onKeydown(event: KeyboardEvent) {
 </script>
 
 <style scoped lang="scss">
-@use "c-style/tokens" as cs;
+@use "coalesce-c-style/tokens" as cs;
 
 .option-tiles {
   @include cs.surface(raised);

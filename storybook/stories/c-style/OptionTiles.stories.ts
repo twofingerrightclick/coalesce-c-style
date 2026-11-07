@@ -3,7 +3,7 @@ import { ref } from "vue";
 import OptionTiles, { type OptionTileItem } from "@demo/components/OptionTiles.vue";
 
 // The demo app's OptionTiles.vue: an app component styled with the public
-// API only (`@use 'c-style/tokens'` and `--cs-*`). It lives in the demo so
+// API only (`@use 'coalesce-c-style/tokens'` and `--cs-*`). It lives in the demo so
 // that its `<style lang="scss">` compiles through an app's Vite, as an app
 // author's would; the stories prove the same file compiles here.
 

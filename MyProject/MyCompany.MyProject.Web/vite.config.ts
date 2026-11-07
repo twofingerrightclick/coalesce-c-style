@@ -10,7 +10,7 @@ import createAutoImport from "unplugin-auto-import/vite";
 import createVueComponentImporterPlugin from "unplugin-vue-components/vite";
 import { CoalesceVuetifyResolver } from "coalesce-vue-vuetify3/build";
 import { transformAssetUrls } from "vite-plugin-vuetify";
-import { cStyle } from "c-style/vite";
+import { cStyle } from "coalesce-c-style/vite";
 
 export default defineConfig({
   build: {

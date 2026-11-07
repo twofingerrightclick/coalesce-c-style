@@ -29,7 +29,7 @@ const fontshare = (slug: string) => [`https://api.fontshare.com/v2/css?f[]=${slu
 
 export const fontPresets: Record<string, { title: string } & FontChoice> = {
   "public-sans": { title: "Public Sans (c-style default)", css: [] },
-  inter: { title: "Inter (c-style/fonts/inter)", family: "Inter", css: [], load: () => import("c-style/fonts/inter") },
+  inter: { title: "Inter (coalesce-c-style/fonts/inter)", family: "Inter", css: [], load: () => import("coalesce-c-style/fonts/inter") },
   geist: { title: "Geist", family: "Geist", css: google("Geist") },
   plex: { title: "IBM Plex Sans", family: "IBM Plex Sans", css: google("IBM Plex Sans") },
   "source-sans": { title: "Source Sans 3", family: "Source Sans 3", css: google("Source Sans 3") },

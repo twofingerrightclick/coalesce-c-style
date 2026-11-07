@@ -18,7 +18,7 @@ const tokens = [
 ];
 
 export const Tokens = tpl(
-  `<sb-section title="--cs-* size tokens" note="Canon md values on :root, read from the computed style; the public contract app CSS may use (c-style/tokens). Per-instance sizes come from Vuetify's named sizes (size=&quot;small&quot; / &quot;large&quot;) or the control-box mixin.">
+  `<sb-section title="--cs-* size tokens" note="Canon md values on :root, read from the computed style; the public contract app CSS may use (coalesce-c-style/tokens). Per-instance sizes come from Vuetify's named sizes (size=&quot;small&quot; / &quot;large&quot;) or the control-box mixin.">
     <div style="font-size: 12px; font-family: ui-monospace, monospace"><sb-measure :props="tokens"><div /></sb-measure></div>
   </sb-section>`,
   () => ({ tokens }),

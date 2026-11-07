@@ -295,7 +295,7 @@ test.describe("showcase fixes", () => {
     expect(clipped).toBeNull();
   });
 
-  test("c-style/icons: csIcon with a re-exported Lucide icon renders at 20px and a 1.5 stroke", async ({ page }) => {
+  test("coalesce-c-style/icons: csIcon with a re-exported Lucide icon renders at 20px and a 1.5 stroke", async ({ page }) => {
     await gotoScheme(page, "/c-style", "light");
     const svg = page.locator('[data-data="cs-icon"] svg.lucide');
     await expect(svg).toHaveCount(1);

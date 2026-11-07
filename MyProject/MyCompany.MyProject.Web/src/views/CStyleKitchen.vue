@@ -312,7 +312,7 @@
       <option-tiles
         v-model="plan"
         label="Plan"
-        hint="OptionTiles.vue, styled with c-style/tokens only."
+        hint="OptionTiles.vue, styled with coalesce-c-style/tokens only."
         :items="plans"
         data-tokens="primary"
       />
@@ -350,7 +350,7 @@
 </template>
 
 <script setup lang="ts">
-import { csIcon, House } from "c-style/icons";
+import { csIcon, House } from "coalesce-c-style/icons";
 import {
   applyCStyleColors,
   applyCStyleFont,
@@ -358,7 +358,7 @@ import {
   CsTimeInput,
   CsTimeRangeField,
   type CsTimeRange,
-} from "c-style";
+} from "coalesce-c-style";
 import { useTheme } from "vuetify";
 import OptionTiles, { type OptionTileItem } from "@/components/OptionTiles.vue";
 

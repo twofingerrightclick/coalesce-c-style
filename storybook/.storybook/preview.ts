@@ -7,13 +7,13 @@ import * as vuetifyDirectives from "vuetify/directives";
 import * as coalesceVuetify3 from "coalesce-vue-vuetify3";
 import { createCoalesceVuetify, CAdminAuditLogPage, CAdminEditorPage, CAdminTablePage } from "coalesce-vue-vuetify3";
 import { AxiosClient } from "coalesce-vue";
-import { applyCStyleColors, applyCStyleFont, cStyleBlueprint } from "c-style";
+import { applyCStyleColors, applyCStyleFont, cStyleBlueprint } from "coalesce-c-style";
 
 // CSS in the order c-style requires (plan §2.3).
 import "@fortawesome/fontawesome-free/css/all.css";
 import "coalesce-vue-vuetify3/styles.css";
 import "vuetify/styles";
-import "c-style/styles";
+import "coalesce-c-style/styles";
 import "../src/storybook.css";
 
 import $metadata from "@/domain/metadata.g";

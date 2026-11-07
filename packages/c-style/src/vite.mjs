@@ -9,7 +9,7 @@ export { layerOrderCss, layerOrderStyle } from "./layer-order.mjs";
 
 const packageRoot = fileURLToPath(new URL("..", import.meta.url));
 
-// The font CSS c-style imports (Public Sans by default, `c-style/fonts/inter`
+// The font CSS c-style imports (Public Sans by default, `coalesce-c-style/fonts/inter`
 // on request) makes the browser fetch woff2 files from wherever those packages
 // are installed, often pnpm's global store.
 const require = createRequire(import.meta.url);
@@ -57,7 +57,7 @@ function cStyleServe() {
       const fallback = config.server?.fs?.allow ? [] : [searchForWorkspaceRoot(root)];
       return {
         server: { fs: { allow: [...fallback, packageRoot, ...fontRoots] } },
-        optimizeDeps: { include: ["c-style > @lucide/vue"] },
+        optimizeDeps: { include: ["coalesce-c-style > @lucide/vue"] },
       };
     },
   };

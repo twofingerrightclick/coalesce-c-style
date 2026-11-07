@@ -1,2 +1,2 @@
-// Sass-only entry points (`c-style/styles`, `c-style/settings`, `c-style/tokens`).
+// Sass-only entry points (`coalesce-c-style/styles`, `coalesce-c-style/settings`, `coalesce-c-style/tokens`).
 export {};

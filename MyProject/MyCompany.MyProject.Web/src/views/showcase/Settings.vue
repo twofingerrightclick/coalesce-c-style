@@ -410,7 +410,7 @@
 </template>
 
 <script setup lang="ts">
-import { CsTimeField, CsTimeRangeField, type CsTimeRange } from "c-style";
+import { CsTimeField, CsTimeRangeField, type CsTimeRange } from "coalesce-c-style";
 
 useTitle("Settings");
 

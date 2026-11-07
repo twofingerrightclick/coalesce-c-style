@@ -5,13 +5,13 @@ description: Styling Vue components in an app that uses c-style (Canon look for 
 
 # c-style: styling app components
 
-c-style already makes Vuetify and Coalesce look like Canon. Your component must match in light and dark, under any accent and font, using only c-style's public API. The full reference (every token's meaning and light/dark source, mixin details, worked example) is the "Styling your own components" section of c-style's `README.md` (`node_modules/c-style/README.md`); read it when a name or behaviour below is not enough.
+c-style already makes Vuetify and Coalesce look like Canon. Your component must match in light and dark, under any accent and font, using only c-style's public API. The full reference (every token's meaning and light/dark source, mixin details, worked example) is the "Styling your own components" section of c-style's `README.md` (`node_modules/coalesce-c-style/README.md`); read it when a name or behaviour below is not enough.
 
 ## 1. Pick the first rung that works
 
 1. **Compose Vuetify components** (`v-btn`, `v-card`, `v-list`, `v-text-field`, `v-chip`, …). They are already Canon in every state. Set subtree props with `<v-defaults-provider :defaults="{ VBtn: { … } }">`.
 2. **Vuetify utility classes**: `pa-*` / `ma-*` / `ga-*` (4px step = Canon's scale), `rounded-*`, `elevation-*`, `text-display-*` … `text-label-*` (all Canon). For secondary text use `cs.token(muted)`, not `text-medium-emphasis` (Vuetify's 60% ink).
-3. **Tokens and mixins** for your own markup: `@use 'c-style/tokens' as cs;` in `<style scoped lang="scss">`.
+3. **Tokens and mixins** for your own markup: `@use 'coalesce-c-style/tokens' as cs;` in `<style scoped lang="scss">`.
 4. **Plain unlayered CSS** for layout (grid, position). It already beats c-style's layered CSS.
 
 ## 2. Tokens (`--cs-*`, 125 names)
@@ -50,7 +50,7 @@ Composition rules:
 - `<button>` needs `font: inherit` or a `type()`.
 
 ```scss
-@use 'c-style/tokens' as cs;
+@use 'coalesce-c-style/tokens' as cs;
 .panel { @include cs.surface(raised); }
 .panel__head { padding: 12px var(--cs-gap-md); @include cs.hairline(bottom); @include cs.type(title-small); }
 .panel__hint { @include cs.type(body-small); color: cs.token(muted); }
@@ -64,7 +64,7 @@ Model component: `src/components/OptionTiles.vue` in c-style's demo app.
 - Every themed value (colour, shadow, font, surface radius, icon size) comes from a token or mixin. Canon constant lengths (12px padding, a grid column width) may be literals.
 - Read only public `--cs-*` names. `--v-*`, `--cs-btn-*`, `--cs-tone-*`, `--cs-field-*`, `--cs-time-*` and `--_cs-*` are internal.
 - Win the cascade with source order and plain selectors; `!important` is never needed.
-- Leave Vuetify internals (`.v-btn__*`, `.v-field__*`, …) alone. A Vuetify component that looks wrong gets props, `v-defaults-provider` or `c-style/settings`; otherwise report it as a c-style issue.
+- Leave Vuetify internals (`.v-btn__*`, `.v-field__*`, …) alone. A Vuetify component that looks wrong gets props, `v-defaults-provider` or `coalesce-c-style/settings`; otherwise report it as a c-style issue.
 - Set colours on the theme, never by redefining colour tokens on an ancestor.
 
 ## 5. Verify before done

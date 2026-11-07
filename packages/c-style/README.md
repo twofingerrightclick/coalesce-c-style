@@ -1,10 +1,12 @@
 # c-style
 
+Published on npm as **`coalesce-c-style`**.
+
 Canon's look for Vuetify 4 and Coalesce (`coalesce-vue-vuetify3`). c-style restyles stock Vuetify components and Coalesce's `c-*` components through Vuetify's own channels: SASS settings, a blueprint of component defaults, and a theme. A small amount of layered CSS covers what those channels can't express. Apps keep writing plain `<v-btn>`, `<v-text-field>` and `<c-admin-table-page>`; nothing in app templates changes.
 
 What you get, at Canon's md size: Public Sans, bundled (Canon's own Inter is an opt-in import); 32/40/48px controls (40 by default) with 20px Lucide icons at a 1.5px stroke; 4/8/12px radii; zinc neutrals with a blue accent, both generated as full 50–950 ladders from any brand hex; hairline rules, edge-and-shadow depth, a 2px+1px focus ring, and 0.12s motion with a 0.98 press. Light and dark follow the OS (`defaultTheme: 'system'`).
 
-Styling an app's own components to match: see [Styling your own components](#styling-your-own-components) (tokens, the `c-style/tokens` SCSS module, and an agent skill).
+Styling an app's own components to match: see [Styling your own components](#styling-your-own-components) (tokens, the `coalesce-c-style/tokens` SCSS module, and an agent skill).
 
 ## Why it ships this way
 
@@ -12,13 +14,13 @@ c-style is one Vite-first package with seven entry points. Vuetify's SASS variab
 
 | Entry | Contents | Runs in |
 |---|---|---|
-| `c-style/vite` | `cStyle(options)`: `vite-plugin-vuetify` with c-style's settings, plus Vuetify's layer-order `<style>` in `index.html` and dev-server file access for the package and its font | `vite.config.ts` |
-| `c-style` | `cStyleBlueprint`, `cStyleThemes`, `applyCStyleColors`, `generateLadder`, `palettes`, icons (`cs`, `csAliases`, `csIcon`, `csIconOptions`), `layerOrderCss` / `layerOrderStyle`, Canon Time components (`CsTimeField`, `CsTimeRangeField`, `CsTimeInput`), `csVar`, `cStyleTokens`, `cStyleIntents`, types | browser |
-| `c-style/icons` | every `@lucide/vue` icon, re-exported, plus `csIcon` | browser |
-| `c-style/fonts/inter` | Canon's Inter (rsms's `inter-ui` build), opt-in; import after `c-style/styles` (see [Font](#font)) | browser, via Vite |
-| `c-style/settings` | Vuetify SASS settings (`@forward 'vuetify/settings' with (… !default)`); emits no CSS | Sass |
-| `c-style/styles` | layer order, Public Sans, `--cs-*` tokens, layered overrides, unlayered Coalesce rules | browser, via Vite |
-| `c-style/tokens` | the public SCSS module for app components (`token()`, `surface`, `interactive`, `control-box`, `type`, …); emits no CSS | Sass |
+| `coalesce-c-style/vite` | `cStyle(options)`: `vite-plugin-vuetify` with c-style's settings, plus Vuetify's layer-order `<style>` in `index.html` and dev-server file access for the package and its font | `vite.config.ts` |
+| `coalesce-c-style` | `cStyleBlueprint`, `cStyleThemes`, `applyCStyleColors`, `generateLadder`, `palettes`, icons (`cs`, `csAliases`, `csIcon`, `csIconOptions`), `layerOrderCss` / `layerOrderStyle`, Canon Time components (`CsTimeField`, `CsTimeRangeField`, `CsTimeInput`), `csVar`, `cStyleTokens`, `cStyleIntents`, types | browser |
+| `coalesce-c-style/icons` | every `@lucide/vue` icon, re-exported, plus `csIcon` | browser |
+| `coalesce-c-style/fonts/inter` | Canon's Inter (rsms's `inter-ui` build), opt-in; import after `coalesce-c-style/styles` (see [Font](#font)) | browser, via Vite |
+| `coalesce-c-style/settings` | Vuetify SASS settings (`@forward 'vuetify/settings' with (… !default)`); emits no CSS | Sass |
+| `coalesce-c-style/styles` | layer order, Public Sans, `--cs-*` tokens, layered overrides, unlayered Coalesce rules | browser, via Vite |
+| `coalesce-c-style/tokens` | the public SCSS module for app components (`token()`, `surface`, `interactive`, `control-box`, `type`, …); emits no CSS | Sass |
 
 The workspace links the TypeScript and SCSS in `src/`. The published package ships a prebuilt `dist/` (TypeScript bundled with tsdown; Sass, CSS and the Vite plugin copied as they are).
 
@@ -27,7 +29,7 @@ Peer dependencies: `vue ^3.5`, `vuetify ^4.3`, `vite-plugin-vuetify ^2.1`, `vite
 ## Install
 
 ```sh
-pnpm add c-style
+pnpm add coalesce-c-style
 ```
 
 Then add the peer dependencies your app doesn't already have (`vue`, `vuetify`, `vite-plugin-vuetify`, `vite`, `sass`). c-style brings `@lucide/vue`, `@fontsource-variable/public-sans`, `inter-ui` and `culori`.
@@ -39,7 +41,7 @@ A version has two parts: `<Coalesce version>-cs.<build>`. `6.5.1-cs.3` is the th
 - **Left of `-cs.`:** the Coalesce release c-style was checked against. Use the c-style build whose left side matches your Coalesce version.
 - **After `-cs.`:** c-style's own build number. It counts up within a Coalesce version and restarts at 1 for the next one.
 - **Vuetify:** the Vuetify version c-style is tested with is its `vuetify` dev dependency (currently 4.3.2). The peer range is `^4.3.0`.
-- **Pinning:** npm treats these as prereleases, so a range like `^6.5.1` won't pick them up. `pnpm add c-style` installs the newest build, and `pnpm add c-style@6.5.1-cs.3` pins one.
+- **Pinning:** npm treats these as prereleases, so a range like `^6.5.1` won't pick them up. `pnpm add coalesce-c-style` installs the newest build, and `pnpm add coalesce-c-style@6.5.1-cs.3` pins one.
 
 | c-style | Coalesce | Vuetify |
 |---|---|---|
@@ -52,11 +54,11 @@ In a pnpm workspace, link the package instead:
 ```jsonc
 // package.json of the app
 "dependencies": {
-  "c-style": "workspace:*"
+  "coalesce-c-style": "workspace:*"
 }
 ```
 
-The workspace uses the TypeScript and SCSS in `src/`. The published package ships the same files built to `dist/` (`pnpm --filter c-style build`).
+The workspace uses the TypeScript and SCSS in `src/`. The published package ships the same files built to `dist/` (`pnpm --filter coalesce-c-style build`).
 
 ### Releasing
 
@@ -74,7 +76,7 @@ The whole change for the Coalesce starter template. Routes, views and Coalesce p
 ```diff
 -import createVuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 +import { transformAssetUrls } from "vite-plugin-vuetify";
-+import { cStyle } from "c-style/vite";
++import { cStyle } from "coalesce-c-style/vite";
  ...
    plugins: [
      ...
@@ -91,10 +93,10 @@ The whole change for the Coalesce starter template. Routes, views and Coalesce p
  import "@fortawesome/fontawesome-free/css/all.css";
  import "coalesce-vue-vuetify3/styles.css";
  import "vuetify/styles";
-+import "c-style/styles";
++import "coalesce-c-style/styles";
  import "@/styles/site.scss";
 -import { aliases, fa } from "vuetify/iconsets/fa";
-+import { cStyleBlueprint } from "c-style";
++import { cStyleBlueprint } from "coalesce-c-style";
  ...
 -const inputDefaults = { density: "compact", variant: "outlined" };
  const vuetify = createVuetify({
@@ -105,7 +107,7 @@ The whole change for the Coalesce starter template. Routes, views and Coalesce p
  });
 ```
 
-`package.json`: add `"c-style": "workspace:*"`; `@fontsource/roboto` can go.
+`package.json`: add `"coalesce-c-style": "workspace:*"`; `@fontsource/roboto` can go.
 
 `site.scss`: the template's input-details alignment, readonly dashed outline, `--fa-display` and `a { text-decoration: none }` rules are now c-style's; delete them. (The last one is unlayered, so it would keep Canon's link line from showing on hover.)
 
@@ -114,10 +116,10 @@ The whole change for the Coalesce starter template. Routes, views and Coalesce p
 1. `@fortawesome/fontawesome-free/css/all.css` (Coalesce still renders a few raw FontAwesome `<i>` tags; c-style masks them with Lucide shapes).
 2. `coalesce-vue-vuetify3/styles.css`
 3. `vuetify/styles`
-4. `c-style/styles`, which must come after Coalesce's CSS: both are unlayered, and c-style's `.c-*` rules win by source order.
+4. `coalesce-c-style/styles`, which must come after Coalesce's CSS: both are unlayered, and c-style's `.c-*` rules win by source order.
 5. The app's own styles.
 
-Keep a single CSS chunk (the template's `codeSplitting.groups` `styles` group) so bundled order follows `main.ts`. Vuetify's cascade-layer order must be the first CSS the page parses (vuetify#22752); the template's `index.html` already inlines it, `cStyle()` injects it when a page lacks it, and `c-style/styles` repeats it.
+Keep a single CSS chunk (the template's `codeSplitting.groups` `styles` group) so bundled order follows `main.ts`. Vuetify's cascade-layer order must be the first CSS the page parses (vuetify#22752); the template's `index.html` already inlines it, `cStyle()` injects it when a page lacks it, and `coalesce-c-style/styles` repeats it.
 
 ### Optional cleanup
 
@@ -162,20 +164,20 @@ cStyleBlueprint({ font: "IBM Plex Sans" });  // or { family, features, tracking 
 applyCStyleFont(useTheme(), "Geist");         // switch at run time, no reload; no argument restores Public Sans
 ```
 
-c-style only sets theme variables (`--v-font-body`, `--v-font-heading`, `--v-font-features`, `--v-font-tracking`); the app ships the font files. Self-host them the same way c-style does: an `@fontsource` package or your own `@font-face` with woff2 files in the app, imported after `c-style/styles`. Avoid a CDN `<link>` in production; the Google Fonts and Fontshare presets in the Storybook are for preview only.
+c-style only sets theme variables (`--v-font-body`, `--v-font-heading`, `--v-font-features`, `--v-font-tracking`); the app ships the font files. Self-host them the same way c-style does: an `@fontsource` package or your own `@font-face` with woff2 files in the app, imported after `coalesce-c-style/styles`. Avoid a CDN `<link>` in production; the Google Fonts and Fontshare presets in the Storybook are for preview only.
 
-- **Inter (Canon's font):** `import "c-style/fonts/inter"` after `c-style/styles`, and `cStyleBlueprint({ font: "Inter" })`. It is rsms's build (`inter-ui`), which keeps the alternates Canon turns on.
+- **Inter (Canon's font):** `import "coalesce-c-style/fonts/inter"` after `coalesce-c-style/styles`, and `cStyleBlueprint({ font: "Inter" })`. It is rsms's build (`inter-ui`), which keeps the alternates Canon turns on.
 - **Features:** Canon's Inter alternates (`ss01 cv11 cv04 cv03 cv02`) apply only to Inter. Every other font gets `font-feature-settings: normal`, because the same tags select unrelated glyphs elsewhere (`ss01` swaps glyphs in Satoshi, General Sans, Work Sans and Public Sans). Pass `features` to choose a font's own.
 - **Tracking:** Canon's negative letter-spacing (−0.006em at 14px, to −0.02em on display roles) is tuned for Inter. `--v-font-tracking` scales it: 1 for Inter, 0.5 for Public Sans (wider-set; half keeps titles compact without crowding body text), 0 for any other font unless you pass `tracking`. Positive caps tracking is unchanged.
 - `applyCStyleColors` leaves the font alone, and `applyCStyleFont` leaves colours alone.
 
 ## Overriding SASS settings
 
-Every value in `c-style/settings` is `!default`. To change one, write an app settings file and point `cStyle` at it:
+Every value in `coalesce-c-style/settings` is `!default`. To change one, write an app settings file and point `cStyle` at it:
 
 ```scss
 // src/styles/settings.scss
-@use 'c-style/settings' with (
+@use 'coalesce-c-style/settings' with (
   $table-row-height: 48px,
 );
 ```
@@ -206,10 +208,10 @@ Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`)
 ## Icons
 
 - **Vuetify aliases** (`$close`, `$dropdown`, `$checkboxOn`, … all 65) render Lucide icons at a 1.5px stroke that stays 1.5 at any size. Checkbox and radio glyphs are c-style's own SVGs.
-- **App icons:** `<v-icon :icon="csIcon(House)" />` with any Lucide icon. `csIcon(icon, props?)` caches per icon, so it is safe in templates. Import both from `c-style/icons`, which re-exports `@lucide/vue`, so the app needs no Lucide dependency of its own (and gets c-style's copy):
+- **App icons:** `<v-icon :icon="csIcon(House)" />` with any Lucide icon. `csIcon(icon, props?)` caches per icon, so it is safe in templates. Import both from `coalesce-c-style/icons`, which re-exports `@lucide/vue`, so the app needs no Lucide dependency of its own (and gets c-style's copy):
 
   ```ts
-  import { csIcon, House } from "c-style/icons";
+  import { csIcon, House } from "coalesce-c-style/icons";
   ```
 - **FontAwesome strings** that Coalesce passes (`"fa fa-clock"`, `"fa-edit"`, …) are mapped to Lucide by the `cs` icon set; other classes on the string are kept. Unmapped strings render as class names, so FontAwesome or MDI classes still work. A `fa:` prefix forces Vuetify's FontAwesome set.
 - Coalesce's raw `<i class="fa fa-*">` glyphs (row actions, info and asterisk marks, the password eye) are masked with the matching Lucide shape (`scripts/fa-masks.mjs` regenerates the masks).
@@ -220,7 +222,7 @@ Fields are 40px at every `density` (Coalesce passes `compact` and `comfortable`)
 Canon's time field is far better than Vuetify's `v-time-picker` for typing: a row of framed cells (hour, minute, optional second, AM/PM), each typed into or stepped from the keyboard. c-style ships it as three Vue components (inventory and keyboard model: `docs/research/canon-time.md`).
 
 ```ts
-import { CsTimeField, CsTimeRangeField } from "c-style";
+import { CsTimeField, CsTimeRangeField } from "coalesce-c-style";
 ```
 
 ```vue
@@ -246,7 +248,7 @@ Not covered: localised strings (labels and messages are English); no clock dial 
 
 ## Styling your own components
 
-c-style restyles Vuetify and Coalesce; your app's own components need the same look in light and dark, under any accent and font. Do it through the public API: the `--cs-*` tokens, the `c-style/tokens` SCSS module and `csVar` at run time. Everything else c-style sets is internal and may change.
+c-style restyles Vuetify and Coalesce; your app's own components need the same look in light and dark, under any accent and font. Do it through the public API: the `--cs-*` tokens, the `coalesce-c-style/tokens` SCSS module and `csVar` at run time. Everything else c-style sets is internal and may change.
 
 ### Which tool to use
 
@@ -257,15 +259,15 @@ Take the first rung that can express the design:
    - Spacing `pa-*`, `ma-*`, `ga-*` keep Vuetify's 4px step, which is Canon's scale (`ga-2` = `--cs-gap-sm`, `pa-4` = `--cs-gap-md`).
    - Re-pointed to Canon: `rounded-*` (`sm` 4, default and `md` 8, `lg` 12, `xl` 16, `xxl` 24), `elevation-*` (1 control shadow, 2 raised, 3 and 4 floating, 5 overlay, each with the edge hairline above 1), the type classes `text-display-*` … `text-label-*` (Canon's ramp, for example `text-title-medium`, `text-body-small`), `bg-*` and `text-*` colour classes (theme roles).
    - Not re-pointed: `text-medium-emphasis` and `text-high-emphasis` are Vuetify's on-background ink at 60% and 100%. For Canon's secondary text use `color: cs.token(muted)`. `text-primary` outside a button, chip or tonal variant is the solid step (600); a label in the accent is `cs.token(primary-text)`.
-3. **Tokens and the SCSS module** for your own markup: `@use 'c-style/tokens' as cs` in the component's `<style lang="scss">`, then the mixins and `cs.token(...)` (below).
+3. **Tokens and the SCSS module** for your own markup: `@use 'coalesce-c-style/tokens' as cs` in the component's `<style lang="scss">`, then the mixins and `cs.token(...)` (below).
 4. **Plain CSS in the component** for what's left (grid templates, positioning). c-style's CSS sits in cascade layers, so unlayered app CSS wins without `!important`.
 
 ### The token contract
 
-125 custom properties, all prefixed `--cs-`, declared by `c-style/styles` in `@layer vuetify-overrides`. The list is `cStyleTokens` (TypeScript) and `$tokens` (SCSS); a unit test keeps those and the stylesheet in step.
+125 custom properties, all prefixed `--cs-`, declared by `coalesce-c-style/styles` in `@layer vuetify-overrides`. The list is `cStyleTokens` (TypeScript) and `$tokens` (SCSS); a unit test keeps those and the stylesheet in step.
 
 - **Colour, shadow and font tokens are read-only.** They alias Vuetify's theme variables and are redeclared on `:root` and on every `.v-theme--*` element, so they follow `theme.change`, a `theme="dark"` subtree, `applyCStyleColors` and `applyCStyleFont` without a recompile. That redeclaration is also why a value you set on an ancestor stops at the first Vuetify component inside it. Change them through the theme: `cStyleBlueprint({ colors, font })`, `applyCStyleColors`, `applyCStyleFont`.
-- **Size and motion tokens may be overridden on `:root`.** An unlayered `:root { --cs-radius: 6px; }` wins in any import order. It reaches your components and the c-style rules that read the token; Vuetify's own component sizes (button, field, chip heights and the like) are compiled from SASS and don't read these tokens, so change those through [`c-style/settings`](#overriding-sass-settings).
+- **Size and motion tokens may be overridden on `:root`.** An unlayered `:root { --cs-radius: 6px; }` wins in any import order. It reaches your components and the c-style rules that read the token; Vuetify's own component sizes (button, field, chip heights and the like) are compiled from SASS and don't read these tokens, so change those through [`coalesce-c-style/settings`](#overriding-sass-settings).
 - **Tokens are the element's effective theme.** Inside a component c-style recolours (a text-variant `primary` button reads its text step as `primary`, a hovered solid button its hover step, disabled buttons and Coalesce admin toolbars their own), slot content reading `--cs-primary-solid` gets that component's value.
 - **Colour tokens are complete colours** (`color: var(--cs-muted)`), not channel lists.
 - **Not public:** Vuetify's `--v-*` variables (`--v-theme-primary`, `--v-muted`, …), c-style's internal `--cs-btn-*`, `--cs-tone-*`, `--cs-field-*`, `--cs-time-*`, the mixins' element-local `--_cs-*` slots, and the Sass partials under `src/styles/`.
@@ -337,11 +339,11 @@ In the tables, `n` is the neutral ladder (zinc by default) and `i` the intent's 
 | `halo` | i100 / i900 | 3px field focus halo |
 | `border-low` | i200 / i300 at 35% | low-emphasis border (the button recipe) |
 
-### The SCSS module: `c-style/tokens`
+### The SCSS module: `coalesce-c-style/tokens`
 
 ```scss
 <style scoped lang="scss">
-@use 'c-style/tokens' as cs;
+@use 'coalesce-c-style/tokens' as cs;
 </style>
 ```
 
@@ -429,11 +431,11 @@ Every state selector is (0,2,0), so your own `.x:hover` rule after the include w
 - Recolour a variant with `tone()` in a modifier class, not a second `interactive()`.
 - `interactive` doesn't reset a `<button>`'s font; add `font: inherit` or a `type()`.
 
-**Errors.** Every argument is checked at compile time: `cs.token(mutted)` fails with "`mutted` is not a c-style token. See `$tokens` in c-style/tokens.", and a bad intent, emphasis, surface level, side, size or role fails with "Unknown intent `brand`; expected one of primary, neutral, success, warning, error, info." (and so on).
+**Errors.** Every argument is checked at compile time: `cs.token(mutted)` fails with "`mutted` is not a c-style token. See `$tokens` in coalesce-c-style/tokens.", and a bad intent, emphasis, surface level, side, size or role fails with "Unknown intent `brand`; expected one of primary, neutral, success, warning, error, info." (and so on).
 
 ### Runtime (TypeScript)
 
-From `c-style`:
+From `coalesce-c-style`:
 
 - `csVar(name, fallback?)` returns `var(--cs-<name>)` (or `var(--cs-<name>, <fallback>)`) for inline styles and charts: `:style="{ color: csVar('muted') }"`. `name` is type-checked against the contract.
 - `cStyleTokens`: every token name without the prefix (125). `cStyleIntents`: the six intents.
@@ -447,7 +449,7 @@ To read a resolved colour (a canvas chart, say), `getComputedStyle(el).getProper
 
 ```vue
 <style scoped lang="scss">
-@use 'c-style/tokens' as cs;
+@use 'coalesce-c-style/tokens' as cs;
 
 .option-tiles { @include cs.surface(raised); }
 
@@ -503,7 +505,7 @@ The selected tile gets its pressed rung from `aria-checked`, so the template set
 - **Do** use `cs.token(...)` in SCSS, so a typo fails the build. **Don't** read `--v-*` variables or internal `--cs-*` names (`--cs-tone-*`, `--cs-btn-*`, `--cs-field-*`, `--cs-time-*`, `--_cs-*`).
 - **Do** let ARIA state drive state styling (`aria-checked`, `aria-pressed`, `aria-disabled`). **Don't** add `!important`; unlayered component CSS already beats c-style's layers.
 - **Do** change colours and fonts through `cStyleBlueprint`, `applyCStyleColors`, `applyCStyleFont`. **Don't** set colour tokens on an ancestor.
-- **Don't** restyle Vuetify internals (`.v-btn__overlay`, `.v-field__outline`, …) from app code. If a Vuetify component looks wrong, use its props, `v-defaults-provider` or `c-style/settings`, or open an issue against c-style.
+- **Don't** restyle Vuetify internals (`.v-btn__overlay`, `.v-field__outline`, …) from app code. If a Vuetify component looks wrong, use its props, `v-defaults-provider` or `coalesce-c-style/settings`, or open an issue against c-style.
 
 ### Checking your component
 
@@ -522,7 +524,7 @@ The package ships an agent skill, `skills/c-style/SKILL.md`, that tells coding a
 
 ```sh
 mkdir -p .claude/skills
-cp -r node_modules/c-style/skills/c-style .claude/skills/
+cp -r node_modules/coalesce-c-style/skills/c-style .claude/skills/
 ```
 
 Re-copy it after upgrading c-style.

@@ -10,7 +10,7 @@ export default {
 
 export const Code = tpl(
   `<p>Inline <v-code>createVuetify({ blueprint })</v-code> in a sentence.</p>
-  <v-code tag="pre" class="mt-4">import { cStyle } from "c-style/vite";
+  <v-code tag="pre" class="mt-4">import { cStyle } from "coalesce-c-style/vite";
 export default { plugins: [cStyle()] };</v-code>`,
 );
 
