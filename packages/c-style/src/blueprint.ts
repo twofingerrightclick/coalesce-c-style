@@ -6,7 +6,7 @@ import { cStyleThemes, type CStyleColors, type CStyleFont } from "./theme";
 export interface CStyleBlueprintOptions {
   /** Brand colours; see `CStyleColors`. Omitted intents use Canon's palette. */
   colors?: CStyleColors;
-  /** Body and heading font; see `CStyleFont`. Default: Public Sans, bundled by `coalesce-c-style/styles`. */
+  /** Body and heading font; see `CStyleFont`. Defaults to `cStyle({ font })` from Vite, otherwise Public Sans. */
   font?: CStyleFont;
 }
 

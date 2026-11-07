@@ -95,7 +95,7 @@ c-style relies on some Vuetify and Coalesce internals. After an upgrade, run all
 
 ## Releasing
 
-1. Set `version` in `packages/c-style/package.json` (for example `6.5.1-cs.2`) and add a row to the compatibility tables in [the main README](README.md#versions-and-compatibility) and [the package README](packages/c-style/README.md#versions).
+1. Set `version` in `packages/c-style/package.json` and verify its peer ranges and test-environment dependencies match the intended release. The READMEs refer to that manifest for compatibility instead of maintaining separate version tables.
 2. Run the package tests, type checks, demo app tests, and Storybook rendering and parity suites listed above.
 3. Commit, create the release tag, then push the commit and that tag: `git tag v6.5.1-cs.2 && git push --atomic origin main v6.5.1-cs.2`.
 4. For a local release, pack from `MyProject/` with `pnpm --filter coalesce-c-style pack --pack-destination /tmp/coalesce-c-style-pack`, then publish that tarball with `npm publish /tmp/coalesce-c-style-pack/coalesce-c-style-6.5.1-cs.2.tgz --tag latest --access public --provenance=false`. Complete npm's browser authentication request. Local releases do not have CI provenance.

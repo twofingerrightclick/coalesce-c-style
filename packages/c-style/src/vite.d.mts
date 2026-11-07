@@ -1,9 +1,12 @@
+import type { CStyleFont } from "./index.js";
 import type { Plugin } from "vite";
 import type vuetify from "vite-plugin-vuetify";
 
 export { layerOrderCss, layerOrderStyle } from "./layer-order.mjs";
 
 export interface CStyleOptions {
+  /** One body/heading font. Sets theme tokens and omits Public Sans when custom. Load the font CSS in your app. */
+  font?: CStyleFont;
   /**
    * SASS settings file passed to `vite-plugin-vuetify` as `styles.configFile`,
    * absolute or relative to the Vite root. Defaults to `coalesce-c-style/settings`; an

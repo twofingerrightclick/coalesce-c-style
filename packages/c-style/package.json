@@ -36,6 +36,10 @@
       "types": "./src/vite.d.mts",
       "default": "./src/vite.mjs"
     },
+    "./fonts/public-sans": {
+      "types": "./src/styles/styles.d.ts",
+      "default": "./src/fonts/public-sans.css"
+    },
     "./fonts/inter": {
       "types": "./src/styles/styles.d.ts",
       "default": "./src/fonts/inter.css"
@@ -91,6 +95,8 @@
   },
   "files": [
     "dist",
+    "docs",
+    "skills/c-style",
     "README.md",
     "LICENSE"
   ],
@@ -109,6 +115,10 @@
       "./vite": {
         "types": "./dist/vite.d.mts",
         "default": "./dist/vite.mjs"
+      },
+      "./fonts/public-sans": {
+        "types": "./dist/styles/styles.d.ts",
+        "default": "./dist/fonts/public-sans.css"
       },
       "./fonts/inter": {
         "types": "./dist/styles/styles.d.ts",

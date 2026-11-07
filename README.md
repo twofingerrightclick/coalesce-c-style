@@ -31,7 +31,7 @@ Together you get c-style: Coalesce, ready for stakeholders who expect a 2026 loo
 - **Time inputs** for keyboard-friendly time and time-range entry.
 - **Tokens and SCSS mixins** for styling your own components to match.
 
-c-style uses Vuetify's themes, component defaults and Sass settings, so you can keep using Vuetify's configuration and component props. See the [usage reference](packages/c-style/README.md) for the full API and [known differences from Canon](packages/c-style/README.md#known-deviations-from-canon).
+c-style uses Vuetify's themes, component defaults and Sass settings, so you can keep using Vuetify's configuration and component props. See the [usage reference](packages/c-style/README.md) for the full API and [known differences from Canon](packages/c-style/docs/canon-differences.md).
 
 ## Before and after
 
@@ -43,7 +43,7 @@ Stock Coalesce starter template (Vuetify 4 + Material) on the left, the same app
 
 ## What's chunky about stock Vuetify
 
-Vuetify's defaults are Material Design 2 at full volume. Seven things stand out:
+Vuetify's defaults are Material Design 2 at full volume. Common pain points include:
 
 - **The primary colour is the nav bar.** A slab of saturated brand colour across the top of every page, so the chrome competes with the content.
 - **FontAwesome Solid icons.** Heavy, filled and near-black; they outweigh the text beside them.
@@ -55,7 +55,7 @@ Vuetify's defaults are Material Design 2 at full volume. Seven things stand out:
 
 c-style replaces each one with Canon's quieter equivalent: a neutral nav bar, 1.5px Lucide icons, tabs in a segmented container, flat tonal buttons, alerts with a status edge and an icon, hairline-and-shadow cards and a thin chevron.
 
-The collage below puts all seven on one canvas. Light and dark, stock then c-style:
+The collage below shows these differences on one canvas. Light and dark, stock then c-style:
 
 | Before | After |
 |---|---|
@@ -64,13 +64,14 @@ The collage below puts all seven on one canvas. Light and dark, stock then c-sty
 
 ## Use it in your app
 
-For an app on Coalesce 6.5.1:
+Choose a c-style release matching your app's Coalesce release:
 
 ```sh
-pnpm add --save-exact coalesce-c-style@6.5.1-cs.2
+# Replace <matching-version> with the selected release.
+pnpm add --save-exact "coalesce-c-style@<matching-version>"
 ```
 
-Your app also needs Vue 3.5+, Vuetify 4.3, Vite 7 or 8, `vite-plugin-vuetify` 2.1 and Sass 1.80+. See [Install](packages/c-style/README.md#install) for the peer dependency ranges.
+The [package manifest](packages/c-style/package.json) defines supported peer dependency ranges. See [Install](packages/c-style/README.md#install) for choosing and configuring a release.
 
 Replace the Vuetify plugin in `vite.config.ts`:
 
@@ -82,6 +83,8 @@ Replace the Vuetify plugin in `vite.config.ts`:
 -    createVuetify({ autoImport: true }),
 +    cStyle(),
 ```
+
+Keep `createVuePlugin({ template: { transformAssetUrls } })` and the other Vite plugins. `cStyle()` includes `vite-plugin-vuetify` with auto-import enabled; use it only once and pass any existing Vuetify plugin options through `cStyle({ vuetify: { /* options */ } })`. For custom Sass settings, see [Overriding Sass settings](packages/c-style/docs/configuration.md#overriding-sass-settings).
 
 In `main.ts`, import c-style after Coalesce and Vuetify styles, and before your app's styles:
 
@@ -101,24 +104,19 @@ const vuetify = createVuetify({
 
 Replace the starter's Font Awesome icon configuration, input defaults and empty light/dark theme configuration with the blueprint above. Remove Roboto imports if you use the bundled Public Sans. Keep any other app-specific Vuetify options.
 
-Follow the [starter app migration steps](packages/c-style/README.md#adopting-it-in-a-coalesce-app) to remove conflicting `site.scss` rules and check CSS import order. Your routes, views and Coalesce props stay as they are.
+Options beside `blueprint` override its defaults, so review retained `icons`, `defaults` and `theme` settings. Keep the existing `app.use(vuetify)` and Coalesce registration. Supported Font Awesome and Roboto package CSS imports are excluded by `cStyle()` by default; CDN links, copied vendor stylesheets and Sass entry points remain active. See [exclusion scope and opt-ins](packages/c-style/docs/configuration.md#excluding-replaced-font-styles), including how to retain styles for unmapped Font Awesome icons or Roboto.
+
+Follow the [starter app migration steps](packages/c-style/README.md#adopting-it-in-a-coalesce-app) to remove conflicting `site.scss` rules and check CSS import order. Keep your routes and component structure, but audit existing Material color helpers and named color props using the [semantic color migration guidance](packages/c-style/docs/configuration.md#semantic-colors). For a gradual migration, custom Sass settings can restore `$color-pack: true`.
 
 ## Versions and compatibility
 
-Choose the c-style version that matches your app's Coalesce version. Versions follow **`<Coalesce version>-cs.<build>`**: `6.5.1-cs.1` is c-style build 1 for Coalesce 6.5.1.
+Choose a c-style release matching your app's Coalesce version. Versions follow `<Coalesce version>-cs.<build>`; the build suffix identifies c-style updates for that Coalesce release. Pin the chosen version explicitly because these releases use prerelease versions.
 
-The Coalesce part identifies the release c-style is tested with and works best with. The `cs` build number increases for c-style updates to that release and starts again at 1 for a new Coalesce version. Other Coalesce versions may work, but are not the tested match.
-
-| c-style | Tested Coalesce (`coalesce-vue-vuetify3`) | Tested Vuetify |
-|---|---|---|
-| `6.5.1-cs.2` | `6.5.1` | `4.3.2` |
-| `6.5.1-cs.1` | `6.5.1` | `4.3.2` |
-
-The Vuetify peer range is `^4.3.0`. npm treats `-cs.*` versions as prereleases, so a range such as `^6.5.1` does not select them. Pin a matching build explicitly; the unversioned install command selects the latest published build, which may target a different Coalesce release.
+The [package manifest](packages/c-style/package.json) defines the package version, supported peer ranges and dependencies used by its test environment. Read the manifest from the release you are adopting; repository `main` can be ahead of the published package.
 
 ## Tweak the look
 
-Set colors and font in one place:
+Set colors in the blueprint:
 
 ```ts
 cStyleBlueprint({
@@ -128,11 +126,21 @@ cStyleBlueprint({
     success: "emerald",
     dark: { primary: "#a78bfa" },
   },
-  font: "Public Sans",
 });
 ```
 
-Public Sans is included. To use Canon's Inter, import `"coalesce-c-style/fonts/inter"` after c-style's styles and set `font: "Inter"`. For another font, ship its font files in your app and set its family name.
+Public Sans is the default. To replace it for body text and headings:
+
+```ts
+// vite.config.ts
+cStyle({ font: "Inter" });
+
+// main.ts
+import "coalesce-c-style/styles";
+import "coalesce-c-style/fonts/inter";
+```
+
+For your own font, use its family name and import its stylesheet. A custom default omits the automatic Public Sans bundle; additional font imports still work.
 
 Use the standard Vuetify props for individual components:
 
@@ -141,14 +149,14 @@ Use the standard Vuetify props for individual components:
 <v-btn color="neutral" variant="outlined" size="small">Cancel</v-btn>
 ```
 
-Use semantic colors such as `primary`, `neutral`, `success` and `error` so components follow the active brand and theme. Literal Material palette helpers such as `text-grey` and `bg-blue-lighten-2` are disabled by default; see [Semantic colors](packages/c-style/README.md#semantic-colors) for replacements and the compatibility option.
+Use semantic colors such as `primary`, `neutral`, `success` and `error` so components follow the active brand and theme. Literal Material palette helpers such as `text-grey` and `bg-blue-lighten-2` are disabled by default; see [Semantic colors](packages/c-style/docs/configuration.md#semantic-colors) for replacements and the compatibility option.
 
 For more control:
 
-- [Colors](packages/c-style/README.md#colours) and [fonts](packages/c-style/README.md#font), including runtime switching.
-- [Sizes](packages/c-style/README.md#sizes) and [Sass settings](packages/c-style/README.md#overriding-sass-settings) for dimensions and spacing.
-- [Icons](packages/c-style/README.md#icons) and [time inputs](packages/c-style/README.md#components-canon-time).
-- [Styling your own components](packages/c-style/README.md#styling-your-own-components) with tokens and SCSS mixins.
+- [Colors](packages/c-style/docs/configuration.md#colours) and [fonts](packages/c-style/docs/configuration.md#font), including runtime switching.
+- [Sizes](packages/c-style/docs/components.md#sizes) and [Sass settings](packages/c-style/docs/configuration.md#overriding-sass-settings) for dimensions and spacing.
+- [Icons](packages/c-style/docs/components.md#icons) and [time inputs](packages/c-style/docs/components.md#components-canon-time).
+- [Styling your own components](packages/c-style/docs/styling.md) with tokens and SCSS mixins.
 - [Troubleshooting](packages/c-style/README.md#troubleshooting) for setup issues.
 
 ## Developing c-style

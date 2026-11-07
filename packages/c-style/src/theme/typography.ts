@@ -3,7 +3,8 @@ import type { ThemeInstance } from "vuetify";
 /**
  * A body/heading font for `cStyleBlueprint({ font })` or `applyCStyleFont`.
  * A string is a CSS family name (`"IBM Plex Sans"`). The app loads the font;
- * `coalesce-c-style/styles` bundles Public Sans and `coalesce-c-style/fonts/inter` Inter.
+ * `cStyle({ font })` configures the build default and omits Public Sans for custom fonts.
+ * `coalesce-c-style/fonts/inter` loads the optional Inter font.
  */
 export type CStyleFont =
   | string
@@ -18,6 +19,10 @@ export type CStyleFont =
        */
       tracking?: number;
     };
+
+declare const __COALESCE_C_STYLE_FONT__: CStyleFont;
+const defaultFont: CStyleFont = typeof __COALESCE_C_STYLE_FONT__ === "undefined"
+  ? "Public Sans" : __COALESCE_C_STYLE_FONT__;
 
 const fallbacks = "ui-sans-serif, system-ui, sans-serif";
 
@@ -43,8 +48,8 @@ function stack(family: string) {
   return `${quote(family)}, ${fallbacks}`;
 }
 
-/** Theme variables (`--v-font-*`) for `font`; omitted, Public Sans. */
-export function fontVariables(font: CStyleFont = "Public Sans") {
+/** Theme variables (`--v-font-*`) for `font`; omitted, the Vite-configured font (otherwise Public Sans). */
+export function fontVariables(font: CStyleFont = defaultFont) {
   const { family, features, tracking } = typeof font == "string" ? { family: font } : font;
   const isInter = inter.test(family.trim());
   return {
@@ -62,7 +67,7 @@ export const typographyVariables = {
 
 /**
  * Switches a running app's body and heading font: `applyCStyleFont(useTheme(), "IBM Plex Sans")`.
- * Updates every registered theme in place; `undefined` restores Public Sans.
+ * Updates every registered theme in place; `undefined` restores the Vite-configured default.
  */
 export function applyCStyleFont(theme: ThemeInstance, font?: CStyleFont) {
   const next = fontVariables(font);

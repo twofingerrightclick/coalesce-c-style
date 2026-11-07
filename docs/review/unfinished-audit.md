@@ -25,8 +25,8 @@ counterpart, so dedicated treatment requires a design decision.
 
 ## Accepted differences
 
-The package README's [Known deviations](../../packages/c-style/README.md#known-deviations-from-canon)
-is the maintained inventory of intentional or constrained differences:
+The [Canon comparison guide](../../packages/c-style/docs/canon-differences.md)
+points to the parity gate's maintained criteria for intentional or constrained differences:
 typography defaults, several color steps, message spacing, chip remove
 segments, tab crossfades, sidebar spacing, pagination measurement, standalone
 link styling, tooltip arrows, dialog transition, today indicators and choice

@@ -21,18 +21,44 @@ const fontRoots = [
 
 export const settingsFile = fileURLToPath(new URL("./styles/settings.scss", import.meta.url));
 
-export function cStyle({ settings, vuetify: vuetifyOptions, excludeStyles = {} } = {}) {
+export function cStyle({ settings, font, vuetify: vuetifyOptions, excludeStyles = {} } = {}) {
   return [
     ...vuetify({
       autoImport: true,
       ...vuetifyOptions,
       styles: { configFile: settings ?? settingsFile },
     }),
+    cStyleFonts(font),
     cStyleExcludeStyles(excludeStyles),
     ...(excludeStyles.buttonOverlay === false ? [] : [cStyleButtonOverlay()]),
     cStyleHtml(),
     cStyleServe(),
   ];
+}
+
+// Define the theme default at build time as well as excluding the unused font CSS.
+// `typeof` in typography.ts preserves Public Sans for consumers without this plugin.
+function cStyleFonts(font) {
+  const family = typeof font === "string" ? font.trim() : font?.family.trim();
+  if (font !== undefined && !family) throw new Error("cStyle font must have a non-empty family");
+  const custom = family && !/^"?Public Sans( Variable)?"?$/i.test(family);
+  return {
+    name: "c-style:font",
+    enforce: "pre",
+    config() {
+      return {
+        define: { __COALESCE_C_STYLE_FONT__: JSON.stringify(font ?? "Public Sans") },
+        // Installed dependencies must receive the same font define on the server.
+        ssr: { noExternal: ["coalesce-c-style"] },
+        resolve: {
+          alias: custom ? [{
+            find: /^coalesce-c-style\/styles(?=\?|$)/,
+            replacement: fileURLToPath(new URL("./styles/font-free.scss", import.meta.url)),
+          }] : [],
+        },
+      };
+    },
+  };
 }
 
 // Normal Vite plugins see compiled CSS after vite:css and before vite:css-post.
