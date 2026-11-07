@@ -4,11 +4,11 @@
   "description": "Canon look for Vuetify 4 and Coalesce, through Vuetify's own SASS, defaults and theme channels.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/twofingerrightclick/c-style.git",
+    "url": "git+https://github.com/twofingerrightclick/coalesce-c-style.git",
     "directory": "packages/c-style"
   },
-  "homepage": "https://github.com/twofingerrightclick/c-style#readme",
-  "bugs": "https://github.com/twofingerrightclick/c-style/issues",
+  "homepage": "https://github.com/twofingerrightclick/coalesce-c-style#readme",
+  "bugs": "https://github.com/twofingerrightclick/coalesce-c-style/issues",
   "keywords": [
     "vuetify",
     "coalesce",
