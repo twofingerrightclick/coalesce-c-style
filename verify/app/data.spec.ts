@@ -169,7 +169,10 @@ test.describe("M12 data display", () => {
             };
           });
           expect(m.size, key).toEqual([size, size]);
-          expect(m.type, key).toEqual([fontSize, lineHeight, "400"]);
+          expect(m.type[0], key).toBe(fontSize);
+          // Computed unitless line heights can serialize as 31.9999px.
+          expect(parseFloat(m.type[1]), key).toBeCloseTo(parseFloat(lineHeight), 2);
+          expect(m.type[2], key).toBe("400");
           expect(m.corner, key).toBeLessThan(1);
         }
       }

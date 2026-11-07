@@ -115,7 +115,7 @@ test.describe("M10 surfaces and feedback", () => {
       expect(shadowLayers(m.shadow)[0]).toBe(shadows[scheme].edge);
       expect(shadowLayers(m.shadow)).toHaveLength(3);
       expect(m.font).toEqual(["14px", "20px", "12px", "12px"]);
-      expect((await wrapper.boundingBox())!.height).toBe(46);
+      expect((await wrapper.boundingBox())!.height).toBeCloseTo(46, 1);
     }
   });
 

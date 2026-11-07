@@ -41,7 +41,9 @@ for (const [value, family] of [
   test(`font:${value} loads ${family} at 400/500/600 without Inter's alternates`, async ({ page }) => {
     const { errors } = await openStory(page, ramp, { font: value });
     expect(errors).toEqual([]);
-    await expect.poll(() => appFont(page)).toEqual({ family, features: "normal", weights: [400, 500, 600] });
+    // External stylesheets and font binaries can take longer than the default
+    // five-second assertion timeout, especially on a cold CDN connection.
+    await expect.poll(() => appFont(page), { timeout: 30_000 }).toEqual({ family, features: "normal", weights: [400, 500, 600] });
   });
 }
 

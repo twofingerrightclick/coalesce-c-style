@@ -40,8 +40,10 @@ test.describe("M4 typography (canon §2.9)", () => {
       "font-size": "14px", "line-height": "20px", // Canon's −0.006em at Public Sans' 0.5 tracking scale.
       "letter-spacing": "-0.042px", "font-weight": "400",
     });
-    expect(await probeClass(page, "text-headline-medium", props)).toMatchObject({
-      "font-size": "24px", "line-height": "32px", "font-weight": "600",
+    const headline = await probeClass(page, "text-headline-medium", props);
+    expect(headline).toMatchObject({
+      "font-size": "24px", "font-weight": "600",
     });
+    expect(parseFloat(headline["line-height"])).toBeCloseTo(32, 2);
   });
 });
