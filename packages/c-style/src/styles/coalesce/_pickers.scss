@@ -1,3 +1,20 @@
+// Match Coalesce's unlayered search highlight rules in their own channel.
+// Preserve the selected checkmark and use the theme's focus fill.
+@media (forced-colors: none) {
+  .c-select__menu-content .v-list-item.pending-selection:not(.v-list-item--active)::after {
+    opacity: 0;
+  }
+
+  .c-select__menu-content .v-list-item--active.pending-selection::after {
+    opacity: 1;
+  }
+}
+
+.c-select__menu-content .v-list-item.pending-selection:not(.v-list-item--active) > .v-list-item__overlay,
+.c-select__menu-content .v-list-item.pending-selection.v-list-item--active > .v-list-item__overlay {
+  opacity: calc(var(--v-focus-opacity) * var(--v-theme-overlay-multiplier));
+}
+
 // Coalesce stacks datetime picker sections at 600px, but also stretches the
 // absolutely positioned confirmation button across the time columns. Keep
 // that action in flow, on its own row after the full-width picker sections.

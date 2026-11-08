@@ -44,6 +44,11 @@ const router = createRouter({
       component: () => import("./views/showcase/Collage.vue"),
     },
     {
+      path: "/readme",
+      component: () => import("./views/showcase/Readme.vue"),
+      meta: { standalone: true },
+    },
+    {
       path: "/c-style",
       component: () => import("./views/CStyleKitchen.vue"),
     },

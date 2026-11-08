@@ -1,6 +1,6 @@
 <template>
   <v-app id="vue-app">
-    <v-app-bar density="compact">
+    <v-app-bar v-if="!standalone" density="compact">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>
         <router-link to="/" style="color: inherit">
@@ -27,7 +27,7 @@
         </v-list>
       </v-menu>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer">
+    <v-navigation-drawer v-if="!standalone" v-model="drawer">
       <v-list>
         <v-list-item to="/" prepend-icon="fa fa-home" title="Home" />
         <v-list-item
@@ -56,6 +56,11 @@
           prepend-icon="fa fa-palette"
           title="Components"
         />
+        <v-list-item
+          to="/readme"
+          prepend-icon="fa fa-palette"
+          title="README preview"
+        />
         <v-divider></v-divider>
         <v-list-item to="/admin" prepend-icon="fa fa-cogs" title="Admin" />
       </v-list>
@@ -76,7 +81,7 @@
       </router-view>
     </v-main>
 
-    <c-app-update-alert />
+    <c-app-update-alert v-if="!standalone" />
   </v-app>
 </template>
 
@@ -86,6 +91,8 @@ import { useTheme } from "vuetify";
 import { format } from "date-fns-tz";
 
 const drawer = ref<boolean | null>(null);
+const route = useRoute();
+const standalone = computed(() => route.meta.standalone === true);
 
 const vuetifyTheme = useTheme();
 

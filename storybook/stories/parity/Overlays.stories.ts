@@ -40,13 +40,13 @@ export const Dialog = parity(
     <v-card data-parity="dialog">
       <v-card-item><v-card-title data-parity="dialog-title">Edit event</v-card-title><template #append><v-btn icon="$close" color="neutral" variant="text" aria-label="Close" /></template></v-card-item>
       <v-card-text><v-text-field label="Title" model-value="Hackweek" hide-details /></v-card-text>
-      <v-card-actions data-parity="dialog-footer"><v-spacer /><v-btn color="neutral" variant="text">Cancel</v-btn><v-btn variant="flat" color="primary">Save</v-btn></v-card-actions>
+      <v-card-actions data-parity="dialog-footer"><v-btn color="neutral" variant="outlined">Cancel</v-btn><v-spacer /><v-btn variant="flat" color="primary">Save</v-btn></v-card-actions>
     </v-card>
   </v-dialog></div>`,
   `<dialog class="canon-dialog" open style="max-width:480px" data-parity="dialog"><form method="dialog">
     <header class="canon-dialog-header"><h2 class="canon-dialog-title" data-parity="dialog-title">Edit event</h2><button type="button" class="canon-button" data-emphasis="minimal" data-intent="neutral" data-display="icon"><span class="canon-icon" data-icon="close" aria-hidden="true"></span><span class="canon-button-label">Close</span></button></header>
     <div class="canon-dialog-body"><div class="canon-field"><div class="canon-label"><label class="canon-label-text" for="t">Title</label></div><div class="canon-text-input"><input id="t" type="text" value="Hackweek" placeholder></div></div></div>
-    <footer class="canon-dialog-footer" data-parity="dialog-footer"><button type="button" class="canon-button" data-emphasis="minimal" data-intent="neutral"><span class="canon-button-label">Cancel</span></button><button type="button" class="canon-button" data-emphasis="high"><span class="canon-button-label">Save</span></button></footer>
+    <footer class="canon-dialog-footer" data-parity="dialog-footer"><button type="button" class="canon-button" data-emphasis="low" data-intent="neutral"><span class="canon-button-label">Cancel</span></button><button type="button" class="canon-button" data-emphasis="high" data-align="end"><span class="canon-button-label">Save</span></button></footer>
   </form></dialog>`,
   staticPopover,
 );

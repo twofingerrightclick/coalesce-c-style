@@ -34,11 +34,11 @@
   // rounded fill, except in forced colors where the fill may not be visible.
   @media (forced-colors: none) {
     .v-menu .v-list-item:not(.v-list-item--active):is(:focus-visible, .v-list-item--focus-visible, .pending-selection)::after {
-      opacity: 0 !important; // Coalesce's unlayered pending-selection rule wins the layer cascade.
+      opacity: 0;
     }
 
     .v-menu .v-list-item--active.pending-selection::after {
-      opacity: 1 !important; // Keep the selected checkmark visible while highlighted.
+      opacity: 1;
     }
   }
 
@@ -74,12 +74,6 @@
   // current result, just like any other highlighted option.
   .v-menu .v-list-item--active:is(:focus-visible, .v-list-item--focus-visible) > .v-list-item__overlay {
     opacity: calc(var(--v-focus-opacity) * var(--v-theme-overlay-multiplier));
-  }
-
-  // Coalesce sets its pending fill in an unlayered rule, so use the same
-  // theme-controlled focus opacity for both selected and unselected rows.
-  .v-menu .v-list-item.pending-selection > .v-list-item__overlay {
-    opacity: calc(var(--v-focus-opacity) * var(--v-theme-overlay-multiplier)) !important;
   }
 
   // Canon dialog: a 72px header over a rule line, 24px body, and a footer

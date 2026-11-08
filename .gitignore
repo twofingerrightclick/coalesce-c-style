@@ -1,4 +1,5 @@
 .refs/
+.pnpm-store/
 node_modules/
 verify/screenshots/
 verify/test-results/
