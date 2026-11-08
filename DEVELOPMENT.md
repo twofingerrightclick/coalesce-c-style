@@ -10,7 +10,7 @@ This README covers working on c-style itself. For installation, app configuratio
 | `storybook/` | Storybook (`c-style-storybook`): every component, Foundations pages, `Parity/*` stories against Canon's vendored CSS, and a mocked Coalesce domain |
 | `verify/` | Playwright (`c-style-verify`): `app/` measures the demo app, `parity/` measures Storybook, `capture/` writes screenshots |
 | `MyProject/` | Demo Coalesce app that adopts c-style, and the pnpm workspace root. `/c-style` is the fixture page the app specs measure; `/dashboard`, `/workspace`, `/settings` are the showcase views |
-| `docs/` | `plan.md` (decisions), `progress.md` (log, mechanisms, deviations), `research/`, `showcase/` (the screenshots in the main README) |
+| `docs/` | [Parity tracking](docs/progress.md) (checklist, criteria and historical log), `plan.md` (original decisions), `research/`, `showcase/` (the screenshots in the main README) |
 
 ### Running
 

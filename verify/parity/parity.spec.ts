@@ -6,7 +6,7 @@ import { fetchStories } from "../lib/storybook";
 // Regression gate (plan §6): every `data-parity` pair in the Parity stories
 // matches Canon, light and dark, except the diffs `expected` names. Each is
 // structural (the two sides put the same look on different boxes) or a
-// documented deviation (packages/c-style/README.md, "Known deviations").
+// documented deviation (packages/c-style/docs/canon-differences.md).
 // PARITY_DUMP=<file> writes the unexpected diffs there instead of failing,
 // for re-baselining after a deliberate change.
 
