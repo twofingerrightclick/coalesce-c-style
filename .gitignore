@@ -7,3 +7,6 @@ verify/playwright-report/
 storybook-static/
 *.tsbuildinfo
 dist/
+
+# Generated tool logs (at any depth).
+*.log

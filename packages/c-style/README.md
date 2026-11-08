@@ -1,8 +1,8 @@
 # coalesce-c-style
 
-A quieter, more compact look for **Vuetify and IntelliTect Coalesce**, based on [Canon](https://recepkutuk.github.io/canon/). Keep using Vuetify's `v-*` and Coalesce's `c-*` components: c-style supplies the theme, component defaults, Sass settings and CSS.
+c-style is a styling plugin for **Vuetify 4 and IntelliTect Coalesce**, based on [Canon](https://recepkutuk.github.io/canon/). It supplies themes, component defaults, Sass settings and CSS for your existing `v-*` and `c-*` components.
 
-You get light and dark themes that follow the OS, locally bundled Public Sans, Lucide icons, compact controls, and consistent spacing. Set your brand color once to apply it across the app.
+The plugin includes light and dark themes that follow the OS, locally bundled Public Sans, and Lucide icons. Set your brand color once to apply it across the app.
 
 ## Install
 
