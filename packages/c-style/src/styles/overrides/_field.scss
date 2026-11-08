@@ -69,6 +69,15 @@
     padding-block: 0;
   }
 
+  // Coalesce color properties use a native color input inside a text field.
+  .v-field__input[type='color']::-webkit-color-swatch {
+    border-radius: var(--cs-radius);
+  }
+
+  .v-field__input[type='color']::-moz-color-swatch {
+    border-radius: var(--cs-radius);
+  }
+
   .v-input--readonly .v-field--variant-outlined > .v-field__outline > * {
     border-style: dashed;
   }

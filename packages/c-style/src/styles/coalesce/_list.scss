@@ -145,6 +145,17 @@
   }
 }
 
+// A failed request is reported through the menu search field's details.
+// Center it within the popup and avoid presenting a failure as an empty result.
+.c-select__menu-content .v-input--error > .v-input__details {
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.c-select__menu-content .v-sheet:has(> .v-input--error .v-messages__message) > .grey--text {
+  display: none;
+}
+
 // c-time-picker's header is a 32px readout on a solid colour sheet; Canon's
 // calendar heads its panel with a 40px row of title type on the surface,
 // like the date picker's controls beside it.
