@@ -8,9 +8,9 @@ export default {
 
 export const VField = tpl(
   `<sb-row v-for="v in variants" :key="v" :label="v" stack>
-    <v-field :variant="v" label="Label"><div class="pa-4">custom content</div></v-field>
-    <v-field :variant="v" label="Active" active focused><input class="v-field__input" value="focused" /></v-field>
-    <v-field :variant="v" label="Error" error active><input class="v-field__input" value="error" /></v-field>
+    <div><v-field :variant="v" label="Label"><div class="pa-4">custom content</div></v-field></div>
+    <div><v-field :variant="v" label="Active" active focused><input class="v-field__input" value="focused" /></v-field></div>
+    <div><v-field :variant="v" label="Error" error active><input class="v-field__input" value="error" /></v-field></div>
   </sb-row>`,
   () => ({ variants: fieldVariants }),
 );

@@ -24,6 +24,10 @@ pnpm install
 - **Demo app:** `dotnet run --project MyCompany.MyProject.AppHost` (from `MyProject/`); the web project serves Vite at https://localhost:48110 with hot reload. The demo uses SQLite in memory: no Docker, SQL Server, connection string, or migration command is needed. Data resets whenever the web process restarts. The SQL Server migrations project is retained from the starter template but is not part of demo startup.
 - **Storybook:** `pnpm --filter c-style-storybook storybook`, then http://localhost:6006. The toolbar switches theme, accent and font.
 
+Regular Vuetify, Coalesce and c-style component stories show the implementation on the left and original Canon examples on the right (stacked on narrow screens). References follow the theme toolbar and identify direct equivalents, related patterns and components with no Canon equivalent. Canon keeps its original palette when changing the c-style accent.
+
+The mappings in `storybook/src/canon/` select sections from the checked-in `canon/reference/` pages, served by Storybook at `/canon-reference/`. They reuse the original markup, reference layout CSS and Canon runtime rather than copying components into each story. Add a mapping when adding a regular component story; `verify/parity/catalog-references.spec.ts` checks that every such story has a rendered reference or an explicit explanation. The separate `Parity/` stories remain the focused automated style comparisons.
+
 ### Tests
 
 ```sh

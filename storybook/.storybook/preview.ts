@@ -26,6 +26,8 @@ import SbSection from "@/components/SbSection.vue";
 import SbRow from "@/components/SbRow.vue";
 import Parity from "@/components/Parity.vue";
 import CanonFrame from "@/components/CanonFrame.vue";
+import StoryComparison from "@/components/StoryComparison.vue";
+import { canonReferenceFor } from "@/canon";
 import SbMeasure from "@/components/foundations/Measure.vue";
 
 AxiosClient.defaults.baseURL = "/api";
@@ -94,12 +96,17 @@ const StoryShell = defineComponent({
 });
 
 const withCStyle: Decorator = (story, context) => ({
-  components: { story, StoryShell },
+  components: { story, StoryShell, StoryComparison },
   setup: () => ({
     globals: context.globals as StoryGlobals,
     padded: context.parameters.padded !== false,
+    reference: canonReferenceFor(context.title, context.name),
+    implementation: context.title.split("/")[0],
   }),
-  template: `<StoryShell :globals="globals" :padded="padded"><story /></StoryShell>`,
+  template: `<StoryShell :globals="globals" :padded="reference ? true : padded">
+    <StoryComparison v-if="reference" :reference="reference" :scheme="globals.theme" :implementation="implementation"><story /></StoryComparison>
+    <story v-else />
+  </StoryShell>`,
 });
 
 const preview: Preview = {

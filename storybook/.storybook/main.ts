@@ -39,7 +39,11 @@ const config: StorybookConfig = {
     options: { docgen: false },
   },
   stories: ["../stories/**/*.stories.ts"],
-  staticDirs: ["../public"],
+  staticDirs: [
+    "../public",
+    { from: "../../canon/reference", to: "/canon-reference" },
+    { from: "../node_modules/coalesce-c-style/node_modules/inter-ui/variable", to: "/canon-fonts" },
+  ],
   core: { disableTelemetry: true },
   previewHead: (head) => `${layerOrderStyle}\n${head}`,
   viteFinal: (viteConfig) =>

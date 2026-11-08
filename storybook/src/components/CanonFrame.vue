@@ -24,6 +24,10 @@ const srcdoc = computed(
 <meta charset="utf-8">
 <link rel="stylesheet" href="${new URL(`${base}canon/canon.css`, location.href)}">
 <script src="${new URL(`${base}canon/canon.js`, location.href)}" defer><\/script>
+<style>
+@font-face{font-family:InterVariable;font-style:normal;font-weight:100 900;font-display:swap;src:url("${new URL(`${base}canon-fonts/InterVariable.woff2`, location.href)}") format("woff2")}
+@font-face{font-family:InterVariable;font-style:italic;font-weight:100 900;font-display:swap;src:url("${new URL(`${base}canon-fonts/InterVariable-Italic.woff2`, location.href)}") format("woff2")}
+</style>
 <style>html,body{margin:0;background:transparent}body{padding:16px}${props.css}</style>
 </head>
 <body>${props.html}</body>
@@ -33,6 +37,9 @@ const srcdoc = computed(
 function onLoad() {
   const doc = frame.value?.contentDocument;
   if (!doc) return;
+  doc.querySelectorAll<HTMLInputElement>('input[data-ref-indeterminate]').forEach((input) => {
+    input.indeterminate = true;
+  });
   observer?.disconnect();
   observer = new ResizeObserver(() => {
     height.value = Math.ceil(doc.documentElement.scrollHeight);
