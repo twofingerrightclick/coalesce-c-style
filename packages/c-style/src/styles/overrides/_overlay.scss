@@ -29,6 +29,19 @@
     box-shadow: none;
   }
 
+  // Autocomplete and Coalesce's c-select track highlighted results without
+  // moving DOM focus. Remove their square pseudo-element border over the
+  // rounded fill, except in forced colors where the fill may not be visible.
+  @media (forced-colors: none) {
+    .v-menu .v-list-item:not(.v-list-item--active):is(:focus-visible, .v-list-item--focus-visible, .pending-selection)::after {
+      opacity: 0 !important; // Coalesce's unlayered pending-selection rule wins the layer cascade.
+    }
+
+    .v-menu .v-list-item--active.pending-selection::after {
+      opacity: 1 !important; // Keep the selected checkmark visible while highlighted.
+    }
+  }
+
   // A chosen option in a menu: weight 500 and a trailing tick instead of
   // Vuetify's activated fill (canon §4 B Select option row).
   .v-menu .v-list-item--active {
@@ -55,6 +68,18 @@
       background: currentColor;
       mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
     }
+  }
+
+  // A chosen row still receives the focus fill when it is the keyboard's
+  // current result, just like any other highlighted option.
+  .v-menu .v-list-item--active:is(:focus-visible, .v-list-item--focus-visible) > .v-list-item__overlay {
+    opacity: calc(var(--v-focus-opacity) * var(--v-theme-overlay-multiplier));
+  }
+
+  // Coalesce sets its pending fill in an unlayered rule, so use the same
+  // theme-controlled focus opacity for both selected and unselected rows.
+  .v-menu .v-list-item.pending-selection > .v-list-item__overlay {
+    opacity: calc(var(--v-focus-opacity) * var(--v-theme-overlay-multiplier)) !important;
   }
 
   // Canon dialog: a 72px header over a rule line, 24px body, and a footer
