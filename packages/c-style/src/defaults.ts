@@ -18,10 +18,10 @@ const textInputs = [
  * Canon's field is a 1px frame; Vuetify's outlined variant is the one c-style
  * restyles (plan §3b). `singleLine` stops Vuetify's floating label, so
  * `_field.scss` can put the one label above the frame (decision 15).
+ * Message-space policy stays with Vuetify and application defaults.
  */
 const textInput = {
   variant: "outlined",
-  hideDetails: "auto",
   singleLine: true,
   persistentPlaceholder: true,
 };
@@ -60,10 +60,6 @@ export const defaults: Partial<DefaultsInstance> = {
   // label inside, where it reads as a placeholder (Coalesce's table search).
   VField: { ...textInput, ...quietButton, class: "cs-label-above" },
   VBtn: { color: "primary", variant: "tonal" },
-  // Canon form layout: fields stacked in a form sit a form gap apart
-  // (_field.scss). Opt-in by form, so inputs laid out in a row elsewhere
-  // (toolbars, filter bars) keep their own spacing.
-  VForm: { class: "cs-form" },
   VToolbar: {
     ...quietButton,
     // An active field hides Vuetify's single-line label, and a persistent
@@ -92,13 +88,9 @@ export const defaults: Partial<DefaultsInstance> = {
   // Checked is neutral ink, not the accent (decision 7). Every checkbox,
   // radio and switch renders a VSelectionControl.
   VSelectionControl: { color: "neutral" },
-  // Choices reserve no message row until they have a message, like text
-  // inputs (Vuetify keeps 24px under every checkbox, switch and group).
-  VCheckbox: { hideDetails: "auto" },
-  VRadioGroup: { hideDetails: "auto" },
   // Vuetify paints an on switch's thumb in the track colour; Canon's stays
   // the surface (white / zinc-900).
-  VSwitch: { thumbColor: "surface", hideDetails: "auto" },
+  VSwitch: { thumbColor: "surface" },
   // Canon alert: a neutral surface with an edge, the intent only in a 4px
   // start bar and the icon (_surface.scss restyles outlined).
   VAlert: { ...quietButton, variant: "outlined", border: "start" },

@@ -5,7 +5,7 @@ export default { title: "Parity/Choices" } satisfies Meta;
 
 export const Checkbox = parity(
   "Checkbox: unchecked, checked, indeterminate, disabled",
-  `<v-form>
+  `<v-form class="d-flex flex-column ga-2">
     <v-checkbox label="Unchecked" :model-value="false" hide-details data-parity="cb-off" />
     <v-checkbox label="Checked" :model-value="true" hide-details data-parity="cb-on" />
     <v-checkbox label="Indeterminate" indeterminate hide-details data-parity="cb-mixed" />
@@ -36,7 +36,7 @@ export const Radio = parity(
 
 export const Switch = parity(
   "Switch: off, on, hint, disabled",
-  `<v-form>
+  `<v-form class="d-flex flex-column ga-2">
     <v-switch label="Off" :model-value="false" hide-details data-parity="sw-off" />
     <v-switch label="On" :model-value="true" hide-details data-parity="sw-on" />
     <v-switch label="Maintenance mode" :model-value="true" hint="Visitors see a maintenance page." persistent-hint data-parity="sw-hint" />

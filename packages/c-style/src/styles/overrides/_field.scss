@@ -120,11 +120,4 @@
   .cs-label-inside:where(:not(.v-field--focused):has(:is(.v-select__selection-text, .v-combobox__selection-text):empty)) .v-field-label {
     visibility: visible;
   }
-
-  // Canon form layout: stacked fields a form gap apart (16 at md). Scoped
-  // to forms (the blueprint classes every VForm `cs-form`): a global
-  // `.v-input + .v-input` also spaces inputs laid out in a row.
-  .cs-form .v-input + .v-input {
-    margin-top: var(--cs-gap-md);
-  }
 }

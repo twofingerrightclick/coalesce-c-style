@@ -13,6 +13,25 @@ Choose the simplest public API that expresses the design:
 
 Component defaults are defined in [`src/defaults.ts`](https://github.com/twofingerrightclick/coalesce-c-style/blob/main/packages/c-style/src/defaults.ts). Sass settings and their generated utility values are defined in [`src/styles/settings.scss`](https://github.com/twofingerrightclick/coalesce-c-style/blob/main/packages/c-style/src/styles/settings.scss). In the installed package, read `dist/styles/settings.scss` when checking exact configured dimensions.
 
+## Form composition
+
+c-style styles each control and the internals of composite components such as radio groups and Coalesce editors. A `v-form` supplies validation and submission behavior; it does not add field spacing or change neighboring controls' heights. Use your own grid, flex layout, or Vuetify utilities to arrange fields and actions.
+
+Vuetify inputs retain their native message-space behavior unless your app or Coalesce explicitly selects `hide-details`. Use `hide-details="auto"` to collapse empty space while showing hints and validation messages, or `:hide-details="false"` to reserve it. Bare `hide-details` hides the details entirely, including validation messages. Explicit props and scoped defaults remain available. c-style's own `CsTimeField` defaults to `auto`.
+
+For a compact vertical stack, choose both policies explicitly:
+
+```vue
+<v-form>
+  <div class="d-flex flex-column ga-4">
+    <c-input :model="item" for="name" hide-details="auto" />
+    <c-input :model="item" for="category" hide-details="auto" />
+  </div>
+</v-form>
+```
+
+Canon's external labels and control dimensions still change component geometry. Check custom input-and-action rows and layouts with validation messages when adopting c-style.
+
 ## The token contract
 
 Import `cStyleTokens` from `coalesce-c-style`, or inspect `$tokens` in the `coalesce-c-style/tokens` Sass module, for the authoritative public token names. Use `CStyleToken` for TypeScript checking and `cs.token(name)` for Sass validation. These definitions replace a separately maintained inventory or count.

@@ -22,9 +22,11 @@
             <h2 class="py-2">
               Editing Widget: <c-display :model="item" for="widgetId" />
             </h2>
-            <c-input :model="item" for="name" />
-            <c-input :model="item" for="category" />
-            <c-input :model="item" for="inventedOn" />
+            <div class="d-flex flex-column ga-4" data-widget-fields>
+              <c-input :model="item" for="name" hide-details="auto" />
+              <c-input :model="item" for="category" hide-details="auto" />
+              <c-input :model="item" for="inventedOn" hide-details="auto" />
+            </div>
           </c-loader-status>
 
           <v-alert

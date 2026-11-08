@@ -113,7 +113,7 @@
       </div>
       <v-row class="mt-4">
         <v-col cols="4">
-          <v-form data-choice="stacked-checkboxes">
+          <v-form class="d-flex flex-column ga-2" data-choice="stacked-checkboxes">
             <v-text-field label="Name" />
             <v-checkbox label="Email me" />
             <v-checkbox label="Text me" />
@@ -128,12 +128,58 @@
           </v-radio-group>
         </v-col>
         <v-col cols="4">
-          <v-form data-choice="stacked-switches">
+          <v-form class="d-flex flex-column ga-3" data-choice="stacked-switches">
             <v-switch label="Wi-Fi" />
             <v-switch label="Bluetooth" :model-value="true" />
           </v-form>
         </v-col>
       </v-row>
+    </section>
+
+    <section data-kitchen="form-boundaries" class="mt-8">
+      <h2 class="text-title-medium mb-4">App-owned form layouts</h2>
+      <component
+        :is="inForm ? VForm : 'div'"
+        v-for="inForm in [false, true]"
+        :key="String(inForm)"
+        :data-form-case="inForm ? 'form' : 'plain'"
+        class="mb-6"
+      >
+        <div class="d-flex ga-4" data-layout="fields">
+          <v-text-field label="First" />
+          <v-text-field label="Second" />
+        </div>
+        <div class="d-flex flex-wrap ga-4" data-layout="choices">
+          <v-checkbox label="Email" />
+          <v-checkbox label="Text" />
+          <v-switch label="Wi-Fi" />
+          <v-switch label="Bluetooth" />
+        </div>
+        <div class="d-flex ga-4 align-start" data-layout="wrapped">
+          <div class="flex-grow-1">
+            <c-input :model="formExample" for="name" />
+          </div>
+          <v-btn>Action</v-btn>
+        </div>
+      </component>
+
+      <h3 class="text-title-small mb-4">Message space</h3>
+      <v-btn data-details-toggle @click="detailsError = !detailsError">Toggle validation message</v-btn>
+      <div v-for="field in detailFields" :key="field.name" class="d-flex ga-4 mt-4">
+        <component
+          :is="field.component"
+          v-for="mode in detailModes"
+          :key="mode.name"
+          v-bind="mode.props"
+          :label="`${field.name}: ${mode.name}`"
+          :error-messages="detailsError ? 'Check this value' : []"
+          :data-details="`${field.name}-${mode.name}`"
+        />
+      </div>
+      <v-defaults-provider :defaults="{ VTextField: { hideDetails: 'auto' } }">
+        <v-text-field label="Scoped auto" data-details="scoped-auto" />
+        <v-text-field label="Explicit reserve" :hide-details="false" data-details="scoped-reserve" />
+      </v-defaults-provider>
     </section>
 
     <section data-kitchen="surfaces" class="mt-8">
@@ -360,9 +406,25 @@ import {
   type CsTimeRange,
 } from "coalesce-c-style";
 import { useTheme } from "vuetify";
+import { VCheckbox, VForm, VRadioGroup, VSwitch, VTextField } from "vuetify/components";
+import { WidgetViewModel } from "@/viewmodels.g";
 import OptionTiles, { type OptionTileItem } from "@/components/OptionTiles.vue";
 
 const vuetifyTheme = useTheme();
+const formExample = new WidgetViewModel();
+const detailsError = ref(false);
+const detailFields = [
+  { name: "text", component: VTextField },
+  { name: "checkbox", component: VCheckbox },
+  { name: "radio", component: VRadioGroup },
+  { name: "switch", component: VSwitch },
+];
+const detailModes = [
+  { name: "native", props: {} },
+  { name: "auto", props: { hideDetails: "auto" } },
+  { name: "reserve", props: { hideDetails: false } },
+  { name: "hidden", props: { hideDetails: true } },
+] as const;
 const plan = ref<string | number | null>("team");
 const plans: OptionTileItem[] = [
   { value: "starter", title: "Starter", amount: "$0", description: "Up to 3 seats." },

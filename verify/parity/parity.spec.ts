@@ -104,6 +104,13 @@ const expected: { why: string; match: Match }[] = [
     match: on(["pagination"], ["block-size"]),
   },
   {
+    why: "Standalone checkbox and switch wrappers keep their 40px input row regardless of siblings; Canon's choice row is 20px. Glyph geometry is checked separately in app/choice.spec.ts.",
+    match: (d) =>
+      d.prop == "block-size" &&
+      ["cb-off", "cb-on", "cb-mixed", "cb-dis", "cb-dis-on", "sw-off", "sw-on", "sw-dis"].includes(d.id) &&
+      d.vuetify == "40px" && d.canon == "20px",
+  },
+  {
     why: "Deviation: Vuetify's group label and hint spacing (radio group 128 vs 134) and messages 8px under a choice (Canon hint 6).",
     match: on(["radio-group", "sw-hint"], ["block-size", "font-size", "line-height"]),
   },
