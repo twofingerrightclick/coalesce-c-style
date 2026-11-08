@@ -41,4 +41,11 @@ export const OpenTime = tpl(`<div style="${box}; height: 460px"><c-datetime-pick
 export const NarrowViewport = tpl(`<div style="height: 620px"><c-datetime-picker :model="p" for="lastLogin" /></div>`, () => ({ p: person(1) }), {
   play: openPicker,
   globals: { viewport: { value: "mobile1" } },
+  parameters: { canonComparison: false },
+});
+
+export const NarrowDate = tpl(`<div style="height: 520px"><c-datetime-picker :model="p" for="birthDate" show-today-button /></div>`, () => ({ p: person(1) }), {
+  play: openPicker,
+  globals: { viewport: { value: "mobile1" } },
+  parameters: { canonComparison: false },
 });

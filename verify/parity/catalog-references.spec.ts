@@ -2,11 +2,20 @@ import { expect, test } from "@playwright/test";
 import { fetchStories, openStory } from "../lib/storybook";
 
 // Rendering a component alone cannot detect a missing Canon reference.
+// These dedicated mobile previews intentionally use the full viewport.
+const mobilePreviews = new Set([
+  "coalesce-inputs-c-datetime-picker--narrow-viewport",
+  "coalesce-inputs-c-datetime-picker--narrow-date",
+]);
 const stories = (await fetchStories()).filter((story) => /^(Vuetify|Coalesce|c-style)\//.test(story.title));
 for (const story of stories) {
   test(`Canon reference: ${story.title} / ${story.name}`, async ({ page }) => {
     await openStory(page, story.id);
     const comparison = page.locator("[data-canon-comparison]");
+    if (mobilePreviews.has(story.id)) {
+      await expect(comparison).toHaveCount(0);
+      return;
+    }
     await expect(comparison).toBeVisible();
     await expect(comparison.locator("[data-canon-loading]")).toHaveCount(0);
     await expect(comparison.locator("[data-canon-error]")).toHaveCount(0);

@@ -100,7 +100,7 @@ const withCStyle: Decorator = (story, context) => ({
   setup: () => ({
     globals: context.globals as StoryGlobals,
     padded: context.parameters.padded !== false,
-    reference: canonReferenceFor(context.title, context.name),
+    reference: context.parameters.canonComparison === false ? undefined : canonReferenceFor(context.title, context.name),
     implementation: context.title.split("/")[0],
   }),
   template: `<StoryShell :globals="globals" :padded="reference ? true : padded">

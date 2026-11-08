@@ -5,9 +5,10 @@ import type { CanonReference } from "../canon/types";
 
 const props = defineProps<{ reference: CanonReference; scheme: "light" | "dark"; implementation: string }>();
 const label = computed(() => props.reference.match === "none" ? "No Canon equivalent" : props.reference.match === "pattern" ? "Related Canon pattern" : "Canon original");
-// Keep teleported menus and dialogs within the implementation column.
+// Keep overlays within the implementation column where possible. Menus must
+// teleport normally: attaching them breaks nested date-picker interactions.
 const overlayDefaults = Object.fromEntries(
-  ["VOverlay", "VDialog", "VBottomSheet", "VMenu", "VTooltip", "VSnackbar"].map((name) => [name, { attach: true }]),
+  ["VOverlay", "VDialog", "VBottomSheet", "VTooltip", "VSnackbar"].map((name) => [name, { attach: true }]),
 );
 </script>
 

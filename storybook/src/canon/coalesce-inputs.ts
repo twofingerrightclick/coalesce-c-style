@@ -49,7 +49,6 @@ const dateStories: Record<string, CanonReference> = {
   opendatetime: pattern("date", "inline", "Canon's inline calendar is the date-selection reference. Coalesce combines a date calendar with time controls in one popup; Canon has no combined date-time picker."),
   opendate: pattern("date", "inline", "Canon's visible calendar is the reference for the open date picker. Calendar navigation and field presentation differ between the libraries."),
   opentime: pattern("time", "clock", "Canon's clock picker is the reference for Coalesce's open time picker."),
-  narrowviewport: pattern("date", "inline", "Canon's calendar is the reference for the narrow date-time popup. Coalesce's combined date and time popup has no exact Canon counterpart."),
 };
 
 const tableStories: Record<string, CanonReference> = {
