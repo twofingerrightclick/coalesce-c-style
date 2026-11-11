@@ -30,7 +30,9 @@ jobs:
           node-version: 24
           package-manager-cache: false
       - uses: actions/configure-pages@v5
-      - run: pnpm install --frozen-lockfile --filter c-style-storybook...
+      # Stories also import demo app components; Sass resolves their package
+      # imports from the demo app, which needs its workspace links installed.
+      - run: pnpm install --frozen-lockfile
       - run: pnpm --filter c-style-storybook build-storybook
       - uses: actions/upload-pages-artifact@v3
         with:

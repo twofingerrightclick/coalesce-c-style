@@ -32,7 +32,7 @@ The mappings in `storybook/src/canon/` select sections from the checked-in `cano
 
 After the first deployment, the component catalog is available at https://twofingerrightclick.github.io/coalesce-c-style/ via `.github/workflows/storybook-pages.yml`. Pushes to `main` rebuild and deploy it; the workflow can also be run manually from the Actions tab.
 
-One-time repository setup: in **Settings → Pages → Build and deployment**, select **GitHub Actions** as the source. The workflow checks out the Canon submodule, installs the Storybook workspace dependencies, builds the static catalog, and uploads it using GitHub's Pages actions. Coalesce stories use in-memory mocks, so no .NET server or database is required.
+One-time repository setup: in **Settings → Pages → Build and deployment**, select **GitHub Actions** as the source. The workflow checks out the Canon submodule, installs the workspace dependencies (including the demo app, whose components some stories import), builds the static catalog, and uploads it using GitHub's Pages actions. Coalesce stories use in-memory mocks, so no .NET server or database is required.
 
 To build locally, run `pnpm --filter c-style-storybook build-storybook` from `MyProject/`. Serve `storybook/storybook-static/` with a static HTTP server to preview it. Asset paths are relative so the catalog also works under the repository's `/coalesce-c-style/` path.
 
