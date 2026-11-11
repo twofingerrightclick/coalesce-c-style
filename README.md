@@ -4,6 +4,8 @@
 
 c-style is a styling plugin for **Vuetify 4 and [IntelliTect Coalesce](https://intellitect.github.io/Coalesce/)**, based on [Canon](https://recepkutuk.github.io/canon/reference/introduction.html). It supplies themes, component defaults, Sass settings and CSS for your existing `v-*` and `c-*` components.
 
+**[Explore the component library →](https://twofingerrightclick.github.io/coalesce-c-style/)** Try the components, switch themes, and preview brand colors and fonts in the interactive Storybook.
+
 The plugin includes light and dark themes that follow the OS, locally bundled Public Sans, and Lucide icons. Set your brand color once to apply it across the app.
 
 ## Why Canon x Coalesce?
@@ -38,22 +40,6 @@ Stock Coalesce starter template (Vuetify 4 + Material) on the left, the same app
 | Before                                                             | After                                                               |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------- |
 | ![Dashboard, stock, dark](docs/showcase/dashboard-before-dark.png) | ![Dashboard, c-style, dark](docs/showcase/dashboard-after-dark.png) |
-
-## What's chunky about stock Vuetify
-
-Vuetify's defaults are Material Design 2 at full volume. Common pain points include:
-
-- **The primary colour is the nav bar.** A slab of saturated brand colour across the top of every page, so the chrome competes with the content.
-- **FontAwesome Solid icons.** Heavy, filled and near-black; they outweigh the text beside them.
-- **Tabs that float in space.** An underline and nothing else, with no container to say what the tabs belong to.
-- **Buttons with drastic elevation.** Drop shadows and Material 2 ripple animations on every click.
-- **Alerts that shout.** The alert level sets the whole background, so a page with four messages looks like a traffic light.
-- **Harsh shadows on every card.** Elevation stands in for borders.
-- **A dropdown caret that doesn't match its field.** A solid triangle on a hairline outline: the heaviest mark in the control.
-
-c-style replaces each one with Canon's quieter equivalent: a neutral nav bar, 1.5px Lucide icons, tabs in a segmented container, flat tonal buttons, alerts with a status edge and an icon, hairline-and-shadow cards and a thin chevron.
-
-The collage below shows these differences on one canvas. Light and dark, stock then c-style:
 
 | Before                                                              | After                                                                |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------- |

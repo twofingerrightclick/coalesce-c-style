@@ -82,7 +82,7 @@ export interface Fixtures {
 }
 
 // Served from storybook/public/avatars (static SVGs), so image stories stay offline.
-const avatar = (file: string) => `/avatars/${file}.svg`;
+const avatar = (file: string) => `${import.meta.env.BASE_URL}avatars/${file}.svg`;
 
 const companies: CompanyDto[] = [
   ["Northwind Traders", "Seattle", 1998, true],

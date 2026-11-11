@@ -48,6 +48,9 @@ const config: StorybookConfig = {
   previewHead: (head) => `${layerOrderStyle}\n${head}`,
   viteFinal: (viteConfig) =>
     mergeConfig(viteConfig, {
+      // Keep built assets and reference fetches relative to the hosted catalog,
+      // including GitHub Pages project URLs and custom domains.
+      base: "./",
       plugins: [
         vue({ template: { transformAssetUrls } }),
         components({ resolvers: [CoalesceVuetifyResolver()], dts: false }),

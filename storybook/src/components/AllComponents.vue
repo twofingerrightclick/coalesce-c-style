@@ -67,7 +67,7 @@ const coalesceNames = [...Object.keys(coalesce).filter((n) => /^C[A-Z]/.test(n))
 const vuetify = computed(() => coverage("vuetify:", vuetifyNames));
 const coalesceCoverage = computed(() => coverage("coalesce:", coalesceNames));
 
-const link = (id: string) => `/?path=/story/${id}`;
+const link = (id: string) => `${import.meta.env.BASE_URL}?path=/story/${id}`;
 </script>
 
 <template>
