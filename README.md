@@ -1,8 +1,8 @@
-![c-style components with Coalesce and Canon logos](docs/showcase/readme-components.png)
-
 # coalesce-c-style
 
 c-style is a styling plugin for **Vuetify 4 and [IntelliTect Coalesce](https://intellitect.github.io/Coalesce/)**, based on [Canon](https://recepkutuk.github.io/canon/reference/introduction.html). It supplies themes, component defaults, Sass settings and CSS for your existing `v-*` and `c-*` components.
+
+![c-style components with Coalesce and Canon logos](docs/showcase/readme-components.png)
 
 **[Explore the component library →](https://twofingerrightclick.github.io/coalesce-c-style/)** Try the components, switch themes, and preview brand colors and fonts in the interactive Storybook.
 
