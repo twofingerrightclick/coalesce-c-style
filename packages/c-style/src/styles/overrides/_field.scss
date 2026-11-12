@@ -69,6 +69,65 @@
     padding-block: 0;
   }
 
+  // Coalesce dispatches numbers to VTextField, not VNumberInput. Paint the
+  // native spin button as Canon's inset, stacked chevrons; its hit testing,
+  // keyboard handling, min/max and step remain the browser's. Firefox keeps
+  // its native spinner. VNumberInput owns separate controls and is excluded.
+  // In forced colors keep the platform arrows instead of painted gradients.
+  @media (forced-colors: none) {
+    .v-text-field:where(:not(.v-number-input)) input:where([type='number'])::-webkit-inner-spin-button {
+      --cs-number-icon: var(--cs-muted);
+      --cs-number-arm: calc(var(--cs-control-height) / 4 - 3px);
+
+      -webkit-appearance: none;
+      opacity: 1;
+      inline-size: calc(var(--cs-control-height) / 2 + 4px);
+      block-size: calc(var(--cs-control-height) - 8px);
+      // Text fields have control padding + a 6px label inset. The spinner
+      // sits 4px from the field edge, without moving the value's start.
+      margin-inline-end: calc(4px - var(--cs-control-pad) - 6px);
+      margin-inline-start: var(--cs-gap-sm);
+      border-radius: max(2px, calc(var(--cs-radius) - 4px));
+      background-color: var(--cs-fill);
+      // Four diagonal strokes form Lucide-style up/down chevrons. Keeping
+      // the strokes in CSS lets the icon follow the active theme tokens.
+      background-image:
+        linear-gradient(135deg, transparent calc(50% - 0.75px), var(--cs-number-icon) calc(50% - 0.75px) calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+        linear-gradient(45deg, transparent calc(50% - 0.75px), var(--cs-number-icon) calc(50% - 0.75px) calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+        linear-gradient(45deg, transparent calc(50% - 0.75px), var(--cs-number-icon) calc(50% - 0.75px) calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+        linear-gradient(135deg, transparent calc(50% - 0.75px), var(--cs-number-icon) calc(50% - 0.75px) calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+        linear-gradient(var(--cs-surface), var(--cs-surface));
+      background-size:
+        var(--cs-number-arm) var(--cs-number-arm),
+        var(--cs-number-arm) var(--cs-number-arm),
+        var(--cs-number-arm) var(--cs-number-arm),
+        var(--cs-number-arm) var(--cs-number-arm),
+        100% 1px;
+      background-position:
+        calc(50% - var(--cs-number-arm) / 2) 25%,
+        calc(50% + var(--cs-number-arm) / 2) 25%,
+        calc(50% - var(--cs-number-arm) / 2) 75%,
+        calc(50% + var(--cs-number-arm) / 2) 75%,
+        center;
+      background-repeat: no-repeat;
+
+      &:hover {
+        background-color: var(--cs-fill-strong);
+      }
+
+      &:active {
+        background-color: color-mix(in srgb, var(--cs-fill-strong), var(--cs-frame-hover));
+      }
+    }
+
+    .v-text-field:where(:not(.v-number-input)) input:where([type='number']:disabled, [type='number'][readonly])::-webkit-inner-spin-button {
+      --cs-number-icon: var(--cs-disabled-fg);
+
+      pointer-events: none;
+      background-color: var(--cs-disabled-bg);
+    }
+  }
+
   // Coalesce color properties use a native color input inside a text field.
   .v-field__input[type='color']::-webkit-color-swatch {
     border-radius: var(--cs-radius);

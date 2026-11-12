@@ -8,7 +8,7 @@ const none = (note: string): CanonReference => ({ match: "none", note });
 
 const inputStories: Record<string, CanonReference> = {
   strings: pattern("field", "every-control", "Canon's labelled controls are the visual reference. Coalesce chooses the text, password, color, and multiline inputs from property metadata."),
-  numbers: pattern("text-input", "types", "Coalesce's numeric properties use text fields with numeric input types. Canon's input types are the reference; these are not the separate plus/minus Number Input."),
+  numbers: pattern("number-input", "end", "Coalesce keeps native number-input behavior, with Canon-style stacked incrementers where browser styling is supported."),
   booleans: pattern("field", "every-control", "Compare Canon's checkbox and switch fields with the metadata-driven boolean controls on the left."),
   enums: pattern("combobox", "multiple", "Canon's selected options and removable tags are the reference for Coalesce enum and flags editors."),
   dates: pattern("date", "size", "Canon's date fields are the reference. Coalesce additionally dispatches DateTime, DateOnly, and TimeOnly properties and formats their values."),
