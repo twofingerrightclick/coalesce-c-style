@@ -50,11 +50,10 @@ Stock Coalesce starter template (Vuetify 4 + Material) on the left, the same app
 
 ## Use it in your app
 
-Choose a c-style release matching your app's Coalesce release:
+Install the latest c-style release:
 
 ```sh
-# Replace <matching-version> with the selected release.
-pnpm add --save-exact "coalesce-c-style@<matching-version>"
+pnpm add coalesce-c-style
 ```
 
 The [package manifest](packages/c-style/package.json) defines supported peer dependency ranges. See [Install](packages/c-style/README.md#install) for choosing and configuring a release.
@@ -96,9 +95,15 @@ Follow the [starter app migration steps](packages/c-style/README.md#adopting-it-
 
 ## Versions and compatibility
 
-Choose a c-style release matching your app's Coalesce version. Versions follow `<Coalesce version>-cs.<build>`; the build suffix identifies c-style updates for that Coalesce release. Pin the chosen version explicitly because these releases use prerelease versions.
+Versions follow `<Coalesce version>-cs.<build>`. The Coalesce version identifies the baseline used for development and testing; the suffix identifies c-style updates. **Your Coalesce version does not need to match exactly.** A matching release provides a known testing baseline, but you can also try the latest c-style release with another Coalesce version when its Vue and Vuetify requirements overlap.
 
-The [package manifest](packages/c-style/package.json) defines the package version, supported peer ranges and dependencies used by its test environment. Read the manifest from the release you are adopting; repository `main` can be ahead of the published package.
+The current development environment uses Coalesce 6.5.1, Vuetify 4.3.2 and Vue 3.5.44. c-style declares support for Vuetify `^4.3.0` (4.3+ below 5) and Vue `^3.5.0`. Other Coalesce versions are expected to work where their component structure remains compatible, but every combination has not been tested.
+
+Despite its name, `coalesce-vue-vuetify3` supports both Vuetify 3 and 4 in Coalesce 6.5.1. c-style targets Vuetify 4; Vuetify 3 compatibility is unverified and outside its declared dependency range. Vue and Vuetify are application-selected peer dependencies, rather than one fixed combination shipped with Coalesce.
+
+Installing by package name selects npm's `latest` tag, including our `-cs` releases. You can optionally pin a specific version for reproducible installs; exact pinning is not required to install these releases.
+
+The package manifest defines the supported peer ranges and development dependencies; the workspace lockfile records their resolved versions. Check the files from the release you are adopting, since repository `main` can be ahead of the published package.
 
 ## Tweak the look
 
